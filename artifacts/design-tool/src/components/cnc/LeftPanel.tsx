@@ -166,6 +166,25 @@ const RISK_COLORS = {
   high: "text-red-400",
 };
 
+function sanitizeUiText(text: string): string {
+  const replacements: Array<[RegExp, string]> = [
+    [/Â°|°/g, "deg"],
+    [/â‰¤|≤/g, "<="],
+    [/â‰¥|≥/g, ">="],
+    [/Ã—|×/g, "x"],
+    [/Â·|·/g, " | "],
+    [/â€”|—|â€“|–/g, "-"],
+    [/â†’|→/g, "->"],
+    [/Â±|±/g, "+/-"],
+    [/âš |⚠/g, "WARNING"],
+  ];
+  let output = text;
+  for (const [pattern, replacement] of replacements) {
+    output = output.replace(pattern, replacement);
+  }
+  return output.replace(/\s{2,}/g, " ").trim();
+}
+
 /**
  * Analyzes profile geometry to auto-detect whether it is an open or closed section.
  * Heuristic: if first and last segment endpoints are within 1% of profile width apart,
@@ -510,7 +529,7 @@ export function LeftPanel() {
           const detectedSrcType = detection.type === "unknown" ? null : detection.type;
           setProfileSourceType(detectedSrcType);
           setProfileSourceConfidence(detection.confidence);
-          // Auto-set thickness band to Â±5% of nominal
+          // Auto-set thickness band to +/-5% of nominal
           const t = useCncStore.getState().materialThickness;
           setThicknessBandMin(parseFloat((t * 0.95).toFixed(3)));
           setThicknessBandMax(parseFloat((t * 1.05).toFixed(3)));
@@ -521,11 +540,11 @@ export function LeftPanel() {
           const isDwg = (result as { convertedFrom?: string }).convertedFrom === "dwg";
           toast({
             title: isDwg ? "DWG Converted & Loaded" : "Profile Loaded",
-            description: `${segCount} segments Â· ${bendCount2} bends Â· ${detectedModel === "closed" ? "Closed Section (Model B)" : "Open Section (Model A)"} auto-detected${bendCount2 === 0 ? " â€” no bends found, check profile or use manual drawing" : ""}`,
+            description: `${segCount} segments | ${bendCount2} bends | ${detectedModel === "closed" ? "Closed Section (Model B)" : "Open Section (Model A)"} auto-detected${bendCount2 === 0 ? " - no bends found, check profile or use manual drawing" : ""}`,
           });
           setError(null);
         } else {
-          toast({ title: "Profile Loaded â€” No Geometry", description: "DXF parsed but 0 segments found. Check that the file contains LINE/POLYLINE/ARC entities.", variant: "destructive" });
+          toast({ title: "Profile Loaded - No Geometry", description: "DXF parsed but 0 segments found. Check that the file contains LINE/POLYLINE/ARC entities.", variant: "destructive" });
         }
 
         const geo = result.geometry;
@@ -564,7 +583,7 @@ export function LeftPanel() {
       geometryLoaded: !!(geometry.segments?.length),
     });
     if (!validation.valid) {
-      const msg = validation.errors[0] ?? "Invalid inputs â€” check material and thickness.";
+      const msg = sanitizeUiText(validation.errors[0] ?? "Invalid inputs - check material and thickness.");
       EngineLogger.warn("Flower", "Validation blocked calculation", validation);
       setError(msg);
       toast({ title: "Input Validation Failed", description: msg, variant: "destructive" });
@@ -601,10 +620,10 @@ export function LeftPanel() {
             return String(w);
           })
           .join(" | ");
-        setError("âš  Warnings: " + warnText);
+        setError(`Warnings: ${sanitizeUiText(warnText)}`);
       }
 
-      scoreTask("flower", `Power Pattern â€” ${materialType} ${materialThickness}mm Ã— ${numStations} stations`, {
+      scoreTask("flower", `Power Pattern - ${materialType} ${materialThickness}mm x ${numStations} stations`, {
         stations: result.stations,
         totalBends: result.totalBends,
         recommendedStations: result.recommendedStations,
@@ -627,20 +646,20 @@ export function LeftPanel() {
         const isSynthesized: boolean = !!(result as { _synthesizedAngles?: boolean })._synthesizedAngles;
 
         if (stCount === 0) {
-          toast({ title: "Generation Warning", description: "Power Pattern ran but returned 0 stations â€” check profile geometry and inputs.", variant: "destructive" });
+          toast({ title: "Generation Warning", description: "Power Pattern ran but returned 0 stations - check profile geometry and inputs.", variant: "destructive" });
         } else if (vStatus === "AUTO_CORRECTED" || vWarnings.length > 0 || isSynthesized) {
           toast({
-            title: "Power Pattern â€” Warnings",
+            title: "Power Pattern - Warnings",
             description: [
-              `${stCount} stations Â· ${materialType} ${materialThickness}mm`,
-              isSynthesized ? "âš  No bends found â€” angles are estimated, not derived from geometry" : "",
-              vAutoFixes > 0 ? `âš  ${vAutoFixes} auto-correction(s) applied (roll gap)` : "",
-              vWarnings.length > 0 ? `âš  ${typeof vWarnings[0] === "string" ? vWarnings[0] : (vWarnings[0] as Record<string,unknown>).issue ?? JSON.stringify(vWarnings[0])}` : "",
-            ].filter(Boolean).join(" Â· "),
+              `${stCount} stations | ${materialType} ${materialThickness}mm`,
+              isSynthesized ? "WARNING: No bends found - angles are estimated, not derived from geometry" : "",
+              vAutoFixes > 0 ? `WARNING: ${vAutoFixes} auto-correction(s) applied (roll gap)` : "",
+              vWarnings.length > 0 ? `WARNING: ${typeof vWarnings[0] === "string" ? vWarnings[0] : (vWarnings[0] as Record<string,unknown>).issue ?? JSON.stringify(vWarnings[0])}` : "",
+            ].filter(Boolean).map(msg => sanitizeUiText(msg)).join(" | "),
             variant: "destructive",
           });
         } else {
-          toast({ title: "Power Pattern Generated", description: `${stCount} stations Â· ${materialType} ${materialThickness}mm Â· Verified â€” now generate Roll Tooling` });
+          toast({ title: "Power Pattern Generated", description: `${stCount} stations | ${materialType} ${materialThickness}mm | Verified - now generate Roll Tooling` });
         }
       }
 

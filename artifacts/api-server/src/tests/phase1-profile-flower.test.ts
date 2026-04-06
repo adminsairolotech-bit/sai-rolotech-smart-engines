@@ -1,5 +1,6 @@
 import { normalizeProfileInput } from "../lib/profile-engine.js";
 import { generateFlowerPattern } from "../lib/power-pattern.js";
+import { parseDxfContent } from "../lib/dxf-parser-util.js";
 
 let passed = 0;
 let failed = 0;
@@ -64,6 +65,43 @@ test("profile schema accepts line+arc segments and produces normalized JSON", ()
   assert(result.profile.segments.some(segment => segment.type === "arc"), "arc segment missing in normalized profile");
   assert(result.profile.bendPoints.length > 0, "bend detection returned no bend points");
   assert(result.profile.totalLength > 0, "total length must be positive");
+});
+
+test("DXF spline entities are reconstructed into non-linear geometry", () => {
+  const dxf = `0
+SECTION
+2
+ENTITIES
+0
+SPLINE
+8
+PROFILE
+11
+0
+21
+0
+11
+30
+21
+20
+11
+60
+21
+-10
+11
+100
+21
+0
+0
+ENDSEC
+0
+EOF`;
+
+  const geometry = parseDxfContent(dxf);
+  assert(geometry.segments.length > 6, "spline should be sampled into multiple segments");
+  assert((geometry.importDiagnostics?.curvedSourceEntityCount ?? 0) >= 1, "spline source entity count missing");
+  assert(geometry.boundingBox.height > 0.1, "spline reconstruction collapsed vertically");
+  assert(geometry.importDiagnostics?.isLikelyStraightLineCollapse !== true, "false straight-line collapse flag for spline");
 });
 
 test("flower output uses progressive pass distribution (not blind equal split)", () => {

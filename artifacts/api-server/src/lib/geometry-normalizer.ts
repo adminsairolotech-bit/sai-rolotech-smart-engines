@@ -1,8 +1,8 @@
 /**
- * geometry-normalizer.ts — P0.A Geometry Normalization Layer
+ * geometry-normalizer.ts - P0.A Geometry Normalization Layer
  *
- * Validates and normalizes parsed DXF geometry before any downstream engine consumes it.
- * Detects: gaps, duplicates, reversed segments, open contours, CW/CCW ordering issues.
+ * Validates and normalizes parsed DXF geometry before downstream engines consume it.
+ * Detects: gaps, duplicates, reversed segments, open contours, and winding order issues.
  */
 
 import type { Segment, ProfileGeometry } from "./dxf-parser-util";
@@ -36,35 +36,28 @@ function dist(ax: number, ay: number, bx: number, by: number): number {
   return Math.sqrt((bx - ax) ** 2 + (by - ay) ** 2);
 }
 
-/** Signed area using the Shoelace formula — positive = CCW, negative = CW */
-function computeSignedArea(segs: Segment[]): number {
+function computeSignedArea(segments: Segment[]): number {
   let area = 0;
-  for (const s of segs) {
-    area += (s.x1 * s.y2 - s.x2 * s.y1);
+  for (const segment of segments) {
+    area += segment.x1 * segment.y2 - segment.x2 * segment.y1;
   }
   return area / 2;
 }
 
-/** Check if two segments are effectively the same (within tolerance) */
 function areDuplicates(a: Segment, b: Segment): boolean {
   const tol = GAP_TOLERANCE;
-  const fwd =
-    dist(a.x1, a.y1, b.x1, b.y1) < tol &&
-    dist(a.x2, a.y2, b.x2, b.y2) < tol;
-  const rev =
-    dist(a.x1, a.y1, b.x2, b.y2) < tol &&
-    dist(a.x2, a.y2, b.x1, b.y1) < tol;
-  return fwd || rev;
+  const forward = dist(a.x1, a.y1, b.x1, b.y1) < tol && dist(a.x2, a.y2, b.x2, b.y2) < tol;
+  const reverse = dist(a.x1, a.y1, b.x2, b.y2) < tol && dist(a.x2, a.y2, b.x1, b.y1) < tol;
+  return forward || reverse;
 }
 
-/** Detect gap between end of segment i and start of segment i+1 */
-function detectGaps(segs: Segment[]): { indices: number[]; breaks: number[] } {
+function detectGaps(segments: Segment[]): { indices: number[]; breaks: number[] } {
   const indices: number[] = [];
   const breaks: number[] = [];
-  for (let i = 0; i < segs.length - 1; i++) {
-    const s1 = segs[i]!;
-    const s2 = segs[i + 1]!;
-    const d = dist(s1.x2, s1.y2, s2.x1, s2.y1);
+  for (let i = 0; i < segments.length - 1; i += 1) {
+    const a = segments[i]!;
+    const b = segments[i + 1]!;
+    const d = dist(a.x2, a.y2, b.x1, b.y1);
     if (d > GAP_TOLERANCE) {
       indices.push(i);
       breaks.push(i + 1);
@@ -73,123 +66,121 @@ function detectGaps(segs: Segment[]): { indices: number[]; breaks: number[] } {
   return { indices, breaks };
 }
 
-/** Detect duplicate segments */
-function detectDuplicates(segs: Segment[]): number[] {
-  const dupIdx: number[] = [];
-  for (let i = 0; i < segs.length; i++) {
-    for (let j = i + 1; j < segs.length; j++) {
-      if (areDuplicates(segs[i]!, segs[j]!)) {
-        if (!dupIdx.includes(j)) dupIdx.push(j);
+function detectDuplicates(segments: Segment[]): number[] {
+  const duplicateIndices: number[] = [];
+  for (let i = 0; i < segments.length; i += 1) {
+    for (let j = i + 1; j < segments.length; j += 1) {
+      if (areDuplicates(segments[i]!, segments[j]!) && !duplicateIndices.includes(j)) {
+        duplicateIndices.push(j);
       }
     }
   }
-  return dupIdx;
+  return duplicateIndices;
 }
 
-/** Remove duplicate segments (keep first occurrence) */
-function removeDuplicates(segs: Segment[]): { cleaned: Segment[]; removed: number } {
-  const dupIdx = detectDuplicates(segs);
-  const dupSet = new Set(dupIdx);
+function removeDuplicates(segments: Segment[]): { cleaned: Segment[]; removed: number } {
+  const duplicateIndices = detectDuplicates(segments);
+  const duplicateSet = new Set(duplicateIndices);
   return {
-    cleaned: segs.filter((_, i) => !dupSet.has(i)),
-    removed: dupIdx.length,
+    cleaned: segments.filter((_, index) => !duplicateSet.has(index)),
+    removed: duplicateIndices.length,
   };
 }
 
-/** Check if contour is closed (last segment end ≈ first segment start) */
-function isContourClosed(segs: Segment[]): boolean {
-  if (segs.length < 2) return false;
-  const first = segs[0]!;
-  const last = segs[segs.length - 1]!;
+function isContourClosed(segments: Segment[]): boolean {
+  if (segments.length < 2) return false;
+  const first = segments[0]!;
+  const last = segments[segments.length - 1]!;
   return dist(last.x2, last.y2, first.x1, first.y1) < GAP_TOLERANCE;
 }
 
-/** Detect tiny/degenerate segments (length < threshold) */
-function detectDegenerateSegments(segs: Segment[]): number[] {
-  const MIN_LENGTH = 0.01;
-  return segs.map((s, i) => (s.length < MIN_LENGTH ? i : -1)).filter(i => i >= 0);
+function detectDegenerateSegments(segments: Segment[]): number[] {
+  const minLength = 0.01;
+  return segments
+    .map((segment, index) => (segment.length < minLength ? index : -1))
+    .filter(index => index >= 0);
 }
 
-/** Force CCW winding by reversing all segments if CW */
-function forceCounterClockwise(segs: Segment[]): { reordered: Segment[]; wasReversed: boolean } {
-  const area = computeSignedArea(segs);
-  if (area < 0) {
-    // CW — reverse the entire chain and flip each segment
-    const reordered: Segment[] = [...segs].reverse().map(s => ({
-      ...s,
-      x1: s.x2, y1: s.y2,
-      x2: s.x1, y2: s.y1,
-      startAngle: s.endAngle,
-      endAngle: s.startAngle,
-    }));
-    return { reordered, wasReversed: true };
-  }
-  return { reordered: segs, wasReversed: false };
+function forceCounterClockwise(segments: Segment[]): { reordered: Segment[]; wasReversed: boolean } {
+  const area = computeSignedArea(segments);
+  if (area >= 0) return { reordered: segments, wasReversed: false };
+
+  const reordered: Segment[] = [...segments].reverse().map(segment => ({
+    ...segment,
+    x1: segment.x2,
+    y1: segment.y2,
+    x2: segment.x1,
+    y2: segment.y1,
+    startAngle: segment.endAngle,
+    endAngle: segment.startAngle,
+  }));
+  return { reordered, wasReversed: true };
 }
 
-/** Try to re-chain segments into a continuous path by matching endpoints */
-function rechainSegments(segs: Segment[]): { chained: Segment[]; gapsRemaining: number } {
-  if (segs.length === 0) return { chained: [], gapsRemaining: 0 };
+function rechainSegments(segments: Segment[]): { chained: Segment[]; gapsRemaining: number } {
+  if (segments.length === 0) return { chained: [], gapsRemaining: 0 };
 
-  const used = new Array(segs.length).fill(false);
-  const result: Segment[] = [segs[0]!];
+  const used = new Array(segments.length).fill(false);
+  const result: Segment[] = [segments[0]!];
   used[0] = true;
-
   let gapsRemaining = 0;
 
-  for (let step = 1; step < segs.length; step++) {
+  for (let step = 1; step < segments.length; step += 1) {
     const last = result[result.length - 1]!;
-    let bestIdx = -1;
-    let bestDist = Infinity;
+    let bestIndex = -1;
+    let bestDistance = Number.POSITIVE_INFINITY;
 
-    for (let j = 0; j < segs.length; j++) {
+    for (let j = 0; j < segments.length; j += 1) {
       if (used[j]) continue;
-      const s = segs[j]!;
-      const dFwd = dist(last.x2, last.y2, s.x1, s.y1);
-      const dRev = dist(last.x2, last.y2, s.x2, s.y2);
+      const segment = segments[j]!;
+      const dForward = dist(last.x2, last.y2, segment.x1, segment.y1);
+      const dReverse = dist(last.x2, last.y2, segment.x2, segment.y2);
 
-      if (dFwd < bestDist) { bestDist = dFwd; bestIdx = j; }
-      if (dRev < bestDist) { bestDist = dRev; bestIdx = -(j + 1); }
+      if (dForward < bestDistance) {
+        bestDistance = dForward;
+        bestIndex = j;
+      }
+      if (dReverse < bestDistance) {
+        bestDistance = dReverse;
+        bestIndex = -(j + 1);
+      }
     }
 
-    if (bestIdx === 0 && bestDist === Infinity) break;
+    if (bestIndex === 0 && !Number.isFinite(bestDistance)) break;
 
-    if (bestIdx < 0) {
-      // Need to reverse
-      const j = -(bestIdx + 1);
-      const s = segs[j]!;
+    if (bestIndex < 0) {
+      const index = -(bestIndex + 1);
+      const segment = segments[index]!;
       const reversed: Segment = {
-        ...s,
-        x1: s.x2, y1: s.y2,
-        x2: s.x1, y2: s.y1,
-        startAngle: s.endAngle,
-        endAngle: s.startAngle,
+        ...segment,
+        x1: segment.x2,
+        y1: segment.y2,
+        x2: segment.x1,
+        y2: segment.y1,
+        startAngle: segment.endAngle,
+        endAngle: segment.startAngle,
       };
       result.push(reversed);
-      used[j] = true;
+      used[index] = true;
     } else {
-      result.push(segs[bestIdx]!);
-      used[bestIdx] = true;
+      result.push(segments[bestIndex]!);
+      used[bestIndex] = true;
     }
 
-    if (bestDist > GAP_TOLERANCE) gapsRemaining++;
+    if (bestDistance > GAP_TOLERANCE) gapsRemaining += 1;
   }
 
   return { chained: result, gapsRemaining };
 }
 
-/**
- * Main normalization entry point.
- * Returns cleaned geometry + health report.
- */
 export function normalizeGeometry(geometry: ProfileGeometry): {
   geometry: ProfileGeometry;
   health: GeometryHealth;
 } {
   const issues: GeometryIssue[] = [];
-  let segs = [...geometry.segments];
+  let segments = [...geometry.segments];
 
-  if (segs.length === 0) {
+  if (segments.length === 0) {
     return {
       geometry,
       health: {
@@ -203,55 +194,49 @@ export function normalizeGeometry(geometry: ProfileGeometry): {
         isClosedContour: false,
         contourBreaks: [],
         dimensionBlocked: true,
-        message: "Geometry is empty — cannot process",
+        message: "Geometry is empty - cannot process",
       },
     };
   }
 
-  // 1. Remove duplicates
-  const { cleaned: dedupedSegs, removed: dupCount } = removeDuplicates(segs);
-  if (dupCount > 0) {
+  const { cleaned: dedupedSegments, removed: duplicateCount } = removeDuplicates(segments);
+  if (duplicateCount > 0) {
     issues.push({
       code: "DUPLICATE_SEGMENTS",
       severity: "warning",
-      message: `Removed ${dupCount} duplicate segment(s)`,
+      message: `Removed ${duplicateCount} duplicate segment(s)`,
     });
   }
-  segs = dedupedSegs;
+  segments = dedupedSegments;
 
-  // 2. Remove degenerate segments
-  const degenerateIdx = detectDegenerateSegments(segs);
-  if (degenerateIdx.length > 0) {
-    const degSet = new Set(degenerateIdx);
-    segs = segs.filter((_, i) => !degSet.has(i));
+  const degenerateIndices = detectDegenerateSegments(segments);
+  if (degenerateIndices.length > 0) {
+    const degenerateSet = new Set(degenerateIndices);
+    segments = segments.filter((_, index) => !degenerateSet.has(index));
     issues.push({
       code: "DEGENERATE_SEGMENTS",
       severity: "warning",
-      message: `Removed ${degenerateIdx.length} degenerate/zero-length segment(s)`,
-      affectedIndices: degenerateIdx,
+      message: `Removed ${degenerateIndices.length} degenerate/zero-length segment(s)`,
+      affectedIndices: degenerateIndices,
     });
   }
 
-  // 3. Re-chain segments for continuity
-  const { chained, gapsRemaining } = rechainSegments(segs);
-  segs = chained;
+  const { chained } = rechainSegments(segments);
+  segments = chained;
 
-  // 4. Detect gaps in re-chained result
-  const { indices: gapIndices, breaks: contourBreaks } = detectGaps(segs);
+  const { indices: gapIndices, breaks: contourBreaks } = detectGaps(segments);
   const gapCount = gapIndices.length;
-
   if (gapCount > 0) {
     issues.push({
       code: "OPEN_CONTOUR_GAPS",
       severity: gapCount > 2 ? "error" : "warning",
-      message: `${gapCount} gap(s) detected between segments — open contour likely`,
+      message: `${gapCount} gap(s) detected between segments - open contour likely`,
       affectedIndices: gapIndices,
     });
   }
 
-  // 5. Closed contour check
-  const closed = isContourClosed(segs);
-  if (!closed && gapCount === 0 && segs.length > 2) {
+  const closed = isContourClosed(segments);
+  if (!closed && gapCount === 0 && segments.length > 2) {
     issues.push({
       code: "OPEN_PROFILE",
       severity: "warning",
@@ -259,25 +244,24 @@ export function normalizeGeometry(geometry: ProfileGeometry): {
     });
   }
 
-  // 6. Winding order
   let windingOrder: GeometryHealth["windingOrder"] = "unknown";
   let reversedCount = 0;
   if (closed) {
-    const area = computeSignedArea(segs);
+    const area = computeSignedArea(segments);
     if (Math.abs(area) < 1e-6) {
       windingOrder = "unknown";
     } else if (area > 0) {
       windingOrder = "CCW";
     } else {
       windingOrder = "CW";
-      const { reordered, wasReversed } = forceCounterClockwise(segs);
+      const { reordered, wasReversed } = forceCounterClockwise(segments);
       if (wasReversed) {
-        segs = reordered;
-        reversedCount = segs.length;
+        segments = reordered;
+        reversedCount = segments.length;
         issues.push({
           code: "FORCED_CCW",
           severity: "warning",
-          message: "Geometry was CW — reversed to CCW for consistent downstream processing",
+          message: "Geometry was CW - reversed to CCW for consistent downstream processing",
         });
       }
     }
@@ -285,32 +269,32 @@ export function normalizeGeometry(geometry: ProfileGeometry): {
     windingOrder = "open";
   }
 
-  // 7. Very-small geometry sanity
-  const totalLength = segs.reduce((sum, s) => sum + s.length, 0);
+  const totalLength = segments.reduce((sum, segment) => sum + segment.length, 0);
   if (totalLength < 1.0) {
     issues.push({
       code: "TINY_GEOMETRY",
       severity: "error",
-      message: `Total profile length is ${totalLength.toFixed(3)} mm — likely a scaling issue`,
+      message: `Total profile length is ${totalLength.toFixed(3)} mm - likely a scaling issue`,
     });
   }
 
-  // 8. Oversized geometry sanity
-  const allX = segs.flatMap(s => [s.x1, s.x2]);
-  const allY = segs.flatMap(s => [s.y1, s.y2]);
-  const minX = Math.min(...allX), maxX = Math.max(...allX);
-  const minY = Math.min(...allY), maxY = Math.max(...allY);
-  const width = maxX - minX, height = maxY - minY;
+  const allX = segments.flatMap(segment => [segment.x1, segment.x2]);
+  const allY = segments.flatMap(segment => [segment.y1, segment.y2]);
+  const minX = Math.min(...allX);
+  const maxX = Math.max(...allX);
+  const minY = Math.min(...allY);
+  const maxY = Math.max(...allY);
+  const width = maxX - minX;
+  const height = maxY - minY;
 
   if (width > 5000 || height > 5000) {
     issues.push({
       code: "OVERSIZED_GEOMETRY",
       severity: "warning",
-      message: `Profile bounding box ${width.toFixed(1)}×${height.toFixed(1)} mm seems very large — check units`,
+      message: `Profile bounding box ${width.toFixed(1)}x${height.toFixed(1)} mm seems very large - check units`,
     });
   }
 
-  // Compute overall severity
   const severityRank: Record<NormalizationSeverity, number> = { ok: 0, warning: 1, error: 2, blocked: 3 };
   let overallSeverity: NormalizationSeverity = "ok";
   for (const issue of issues) {
@@ -324,15 +308,15 @@ export function normalizeGeometry(geometry: ProfileGeometry): {
 
   const normalizedGeometry: ProfileGeometry = {
     ...geometry,
-    segments: segs,
+    segments,
     bends: geometry.bends,
     totalLength,
     boundingBox: { minX, minY, maxX, maxY, width, height },
   };
 
-  const summary = issues.length === 0
-    ? "Geometry is clean — no issues found"
-    : issues.map(i => `[${i.code}] ${i.message}`).join("; ");
+  const message = issues.length === 0
+    ? "Geometry is clean - no issues found"
+    : issues.map(issue => `[${issue.code}] ${issue.message}`).join("; ");
 
   return {
     geometry: normalizedGeometry,
@@ -341,13 +325,13 @@ export function normalizeGeometry(geometry: ProfileGeometry): {
       overallSeverity,
       issues,
       gapCount,
-      duplicateCount: dupCount,
+      duplicateCount,
       reversedCount,
       windingOrder,
       isClosedContour: closed,
       contourBreaks,
       dimensionBlocked,
-      message: summary,
+      message,
     },
   };
 }
