@@ -104,6 +104,53 @@ EOF`;
   assert(geometry.importDiagnostics?.isLikelyStraightLineCollapse !== true, "false straight-line collapse flag for spline");
 });
 
+test("DXF profile selection prefers curved spline path over helper line", () => {
+  const dxf = `0
+SECTION
+2
+ENTITIES
+0
+LINE
+8
+DIMENSION
+10
+0
+20
+0
+11
+800
+21
+0
+0
+SPLINE
+8
+PROFILE
+11
+0
+21
+0
+11
+80
+21
+30
+11
+160
+21
+-25
+11
+240
+21
+10
+0
+ENDSEC
+0
+EOF`;
+
+  const geometry = parseDxfContent(dxf);
+  assert(geometry.segments.length > 5, "profile selector should choose dense spline path, not single helper line");
+  assert((geometry.importDiagnostics?.curvedSegmentCount ?? 0) > 0, "selected path should retain curved segment evidence");
+});
+
 test("flower output uses progressive pass distribution (not blind equal split)", () => {
   const profile = normalizeProfileInput({
     thickness: 1.5,

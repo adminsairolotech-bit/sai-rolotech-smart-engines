@@ -506,6 +506,35 @@ export function LeftPanel() {
       setError(null);
       try {
         const result = await uploadDxf(file);
+        const importDebug = (result as unknown as {
+          importDebug?: {
+            curvedSourceEntityCount?: number;
+            curvedSegmentCount?: number;
+            isLikelyStraightLineCollapse?: boolean;
+            notes?: string[];
+          };
+        }).importDebug;
+
+        const curvedSourceEntityCount = importDebug?.curvedSourceEntityCount ?? 0;
+        const curvedSegmentCount = importDebug?.curvedSegmentCount ?? 0;
+        const collapsed = importDebug?.isLikelyStraightLineCollapse === true;
+
+        if (collapsed || (curvedSourceEntityCount > 0 && curvedSegmentCount === 0)) {
+          const details = sanitizeUiText((importDebug?.notes ?? [])[0] ?? "Arc/spline reconstruction incomplete.");
+          const message = `Profile import failed: arc/spline reconstruction incomplete. ${details}`;
+          setError(message);
+          toast({
+            title: "Import Validation Failed",
+            description: message,
+            variant: "destructive",
+          });
+          setGeometry(null);
+          setStations([]);
+          setRollTooling([]);
+          setGcodeOutputs([]);
+          return;
+        }
+
         setFileName(file.name);
         setGeometry(result.geometry);
         setProfileMetadata(null);
@@ -858,7 +887,7 @@ export function LeftPanel() {
     <div ref={leftPanelRef} className="w-72 flex flex-col overflow-y-auto flex-shrink-0"
       style={{ background: "rgba(9, 10, 24, 0.6)", backdropFilter: "blur(28px) saturate(1.6)", WebkitBackdropFilter: "blur(28px) saturate(1.6)", borderRight: "1px solid rgba(255,255,255,0.08)" }}>
 
-      {/* â”€â”€ Python Engine Status Indicator â”€â”€ */}
+      {/* Python Engine Status Indicator */}
       <div className={`flex items-center gap-1.5 px-3 py-1 text-[9px] border-b ${
         pyApiStatus === "pass"     ? "bg-green-950/20 border-green-900/30 text-green-500" :
         pyApiStatus === "fail"     ? "bg-red-950/20 border-red-900/30 text-red-400" :
@@ -871,7 +900,7 @@ export function LeftPanel() {
         Python Engines:&nbsp;
         <span className="font-semibold">
           {pyApiStatus === "pass" ? "29 engines online" :
-           pyApiStatus === "fail" ? "offline â€” simulation mode" :
+           pyApiStatus === "fail" ? "offline - simulation mode" :
            "checking..."}
         </span>
         {pyApiStatus === "fail" && (

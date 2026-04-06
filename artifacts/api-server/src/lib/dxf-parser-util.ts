@@ -681,23 +681,35 @@ export function parseDxfContent(content: string): ProfileGeometry {
   const scored = components.map((indices) => {
     const segments = indices.map(idx => candidateSegments[idx]!);
     const totalLength = segments.reduce((sum, segment) => sum + segment.length, 0);
-    const arcCount = segments.filter(segment => segment.type === "arc").length;
+    const curvedCount = segments.filter(segment =>
+      segment.type === "arc" ||
+      segment.sourceType === "SPLINE" ||
+      Math.abs(segment.sourceBulge ?? 0) > 1e-9
+    ).length;
     const constructionCount = segments.filter(segment => isConstructionLayerHint(segment.sourceLayer ?? "0")).length;
     const allX = segments.flatMap(segment => [segment.x1, segment.x2]);
     const allY = segments.flatMap(segment => [segment.y1, segment.y2]);
     const width = Math.max(...allX) - Math.min(...allX);
     const height = Math.max(...allY) - Math.min(...allY);
     const span = Math.max(width, height);
+    const segmentCount = segments.length;
     const constructionShare = constructionCount / Math.max(1, segments.length);
-    const score = totalLength + arcCount * 40 + span * 0.3 - constructionShare * 120;
-    return { indices, score, arcCount, constructionShare };
+    const score =
+      totalLength +
+      curvedCount * 90 +
+      segmentCount * 8 +
+      span * 0.3 -
+      constructionShare * 120;
+    return { indices, score, curvedCount, constructionShare, segmentCount };
   });
 
   let candidates = scored;
   const nonConstruction = candidates.filter(candidate => candidate.constructionShare < 0.7);
   if (nonConstruction.length > 0) candidates = nonConstruction;
-  const withArcs = candidates.filter(candidate => candidate.arcCount > 0);
-  if (withArcs.length > 0) candidates = withArcs;
+  const withCurves = candidates.filter(candidate => candidate.curvedCount > 0);
+  if (withCurves.length > 0) candidates = withCurves;
+  const denseComponents = candidates.filter(candidate => candidate.segmentCount > 1);
+  if (denseComponents.length > 0) candidates = denseComponents;
 
   const best = [...candidates].sort((a, b) => b.score - a.score)[0] ?? scored[0]!;
   const selectedSegments = orderSegmentChain(best.indices.map(index => candidateSegments[index]!));
@@ -716,7 +728,7 @@ export function parseDxfContent(content: string): ProfileGeometry {
   const curvedSourceEntityCount = (entityCounts["ARC"] ?? 0) + (entityCounts["SPLINE"] ?? 0) + (entityCounts["CIRCLE"] ?? 0);
   const curvedSegmentCount = selectedSegments.filter(segment => segment.type === "arc" || segment.sourceType === "SPLINE").length;
   const isLikelyStraightLineCollapse =
-    selectedSegments.length >= 2 &&
+    selectedSegments.length >= 1 &&
     curvedSourceEntityCount > 0 &&
     selectedSegments.filter(segment => segment.type === "arc").length === 0 &&
     height <= Math.max(0.5, width * 0.01);
