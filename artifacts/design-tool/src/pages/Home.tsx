@@ -427,7 +427,7 @@ export default function Home({ onBackToDashboard }: HomeProps) {
         { id: "system-setup", label: "System Setup", icon: <Monitor className="w-4 h-4" />, desc: "One-click setup — hardware check, permissions, dependencies install" },
         { id: "desktop-install", label: "Laptop Install Guide", icon: <Download className="w-4 h-4" />, desc: "Windows .exe installer — laptop ka hardware ka poora use" },
         { id: "real-mukabla", label: "Asli Mukabla — Score Card", icon: <Trophy className="w-4 h-4" />, desc: "AutoCAD+COPRA+SolidCAM vs SAI — 20 categories, real scores" },
-        { id: "fea-simulation", label: "FEA Simulation (SolidWorks-style)", icon: <Activity className="w-4 h-4" />, desc: "FLD, Springback FEA, Stress Distribution, Tube Mill FEA" },
+      { id: "fea-simulation", label: "Physics-Informed Simulation", icon: <Activity className="w-4 h-4" />, desc: "Incremental solver, springback debug, stress/pressure charts" },
         { id: "gcode-verify", label: "G-Code Verification (SolidVerify)", icon: <ShieldCheck className="w-4 h-4" />, desc: "Collision, feed rate, safety, structure — 15+ checks" },
         { id: "advanced-cam", label: "Advanced CAM (iMachining-style)", icon: <Cpu className="w-4 h-4" />, desc: "Adaptive, Trochoidal, HSM, Z-Level, G71/G76 turning" },
         { id: "erp-integration", label: "ERP Integration (Tally/SAP/ERPNext)", icon: <Database className="w-4 h-4" />, desc: "BOM builder, PO export, Tally XML, ERPNext JSON, SAP CSV" },

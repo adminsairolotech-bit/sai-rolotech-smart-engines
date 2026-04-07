@@ -743,6 +743,135 @@ export async function runAutoPipeline(payload: {
   return res.json();
 }
 
+export interface Phase3SimulationStation {
+  stationId: string;
+  pass: number;
+  phaseZone: "ENTRY" | "FORMING" | "SIZING";
+  targetBendAngle: number;
+  commandedAngle: number;
+  springbackFactor: number;
+  springbackAngle: number;
+  residualSpringback: number;
+  overbendTargetAngle?: number;
+  unloadingStiffnessMPa?: number;
+  effectiveBendAngle: number;
+  cumulativeEffectiveAngle: number;
+  passStrain: number;
+  cumulativeStrain: number;
+  passStressMPa: number;
+  tangentModulusMPa?: number;
+  contactPressureMPa: number;
+  riskLevel: "LOW" | "MEDIUM" | "HIGH";
+  cumulativePlasticIndicator?: number;
+  solverIterations?: number;
+  solverResidual?: number;
+  solverConverged?: boolean;
+}
+
+export interface Phase3MeshNodeState {
+  nodeId: number;
+  x: number;
+  y: number;
+  afterSpringbackY?: number;
+  localStrain?: number;
+  localStressMPa?: number;
+}
+
+export interface Phase3MeshState {
+  stationId: string;
+  pass: number;
+  nodeStates: Phase3MeshNodeState[];
+}
+
+export interface Phase3ContactNode {
+  nodeId: number;
+  contactPressureMPa?: number;
+  contactState?: "FREE" | "NEAR_CONTACT" | "CONTACT";
+  frictionForceProxy?: number;
+}
+
+export interface Phase3ContactState {
+  stationId: string;
+  pass: number;
+  nodeContacts: Phase3ContactNode[];
+  peakPressureMPa?: number;
+  highContactNodeIds?: number[];
+}
+
+export interface Phase3StrainPoint {
+  stationId: string;
+  pass: number;
+  strainPerPass: number;
+  cumulativeStrain: number;
+  isPeak?: boolean;
+}
+
+export interface Phase3StressPoint {
+  stationId: string;
+  pass: number;
+  stressMPa: number;
+  plasticStrain?: number;
+  regime?: "ELASTIC" | "PLASTIC";
+  isPeak?: boolean;
+}
+
+export interface Phase3PressureZone {
+  stationId: string;
+  pass: number;
+  pressureMPa: number;
+  zone: "LOW" | "MEDIUM" | "HIGH";
+  isHighPressure: boolean;
+}
+
+export interface Phase3SpringbackPass {
+  stationId: string;
+  pass: number;
+  inputAngle: number;
+  springbackFactor: number;
+  overbendTargetAngle?: number;
+  recoveredAngle?: number;
+  finalAngle: number;
+}
+
+export interface Phase3SimulationResponse {
+  success?: boolean;
+  model: string;
+  materialUsed: string;
+  overallRisk: "LOW" | "MEDIUM" | "HIGH";
+  validation: {
+    isSimulationValid: boolean;
+    warnings: string[];
+  };
+  stationSimulation: Phase3SimulationStation[];
+  passSimulation: Phase3SimulationStation[];
+  meshStateHistory: Phase3MeshState[];
+  contactHistory: Phase3ContactState[];
+  strainMap: Phase3StrainPoint[];
+  stressMap: Phase3StressPoint[];
+  pressureZones: Phase3PressureZone[];
+  springbackAdjusted: { passes: Phase3SpringbackPass[] };
+  peakStressMPa: number;
+}
+
+export async function simulatePhase3(payload: {
+  geometry: unknown;
+  materialType: string;
+  materialThickness: number;
+  numStations: number;
+}) {
+  const res = await authFetchJson(getApiUrl("/simulate-phase3"), {
+    geometry: payload.geometry,
+    materialType: payload.materialType,
+    materialThickness: payload.materialThickness,
+    numStations: payload.numStations,
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: "Simulation failed" }));
+    throw new Error(err.error || "Simulation failed");
+  }
+  return res.json() as Promise<Phase3SimulationResponse>;
+}
+
 export async function runTestCases(): Promise<{
   test_suite: string;
   total: number;

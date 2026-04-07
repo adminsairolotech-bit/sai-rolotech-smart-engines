@@ -7,6 +7,8 @@ export interface MaterialModel {
   elasticModulusMPa: number;
   utsMPa: number;
   maxStrain: number;
+  hardeningExponent: number;
+  anisotropyRValue: number;
 }
 
 export interface ResolvedMaterialModel extends MaterialModel {
@@ -37,6 +39,19 @@ const MATERIAL_LABELS: Record<string, string> = {
   TI: "TI",
   PP: "PPGI",
   HSLA: "HSLA",
+};
+
+const ANISOTROPY_RVALUE_BY_CODE: Record<string, number> = {
+  GI: 1.05,
+  CR: 1.10,
+  HR: 0.95,
+  SS: 1.20,
+  AL: 0.85,
+  MS: 1.00,
+  CU: 1.05,
+  TI: 1.35,
+  PP: 1.00,
+  HSLA: 1.15,
 };
 
 const MATERIAL_ALIASES: Record<string, string> = {
@@ -85,6 +100,8 @@ function buildMaterialModel(code: string, materialUsed: string): ResolvedMateria
     elasticModulusMPa: props.elasticGPa * 1000,
     utsMPa: props.utsMPa,
     maxStrain,
+    hardeningExponent: props.nHardening,
+    anisotropyRValue: ANISOTROPY_RVALUE_BY_CODE[code] ?? 1.0,
     materialUsed,
   };
 }

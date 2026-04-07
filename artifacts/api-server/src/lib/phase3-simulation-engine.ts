@@ -1,6 +1,16 @@
 import { computeSpringback } from "./calc-validator.js";
+import { evaluateStationContact, type StationContactState } from "./phase3-contact-model.js";
+import { buildMaterialCurve, stressFromStrain, type MaterialCurve } from "./material-curves.js";
 import type { MaterialModel } from "./material-model.js";
 import { resolveMaterialInput } from "./material-model.js";
+import { solveIncrementalElastoPlasticPass } from "./phase3-solver.js";
+import { solveSpringbackUnloading } from "./phase3-springback-solver.js";
+import {
+  buildStationMeshState,
+  buildStripMeshFromPath,
+  type StationMeshState,
+  type StripMesh,
+} from "./phase3-strip-mesh.js";
 import type { FlowerPassPhysics, FlowerStation } from "./power-pattern.js";
 import type {
   Phase2RollGeometry,
@@ -39,12 +49,20 @@ export interface StationSimulationStep {
   springbackFactor: number;
   springbackAngle: number;
   residualSpringback: number;
+  overbendTargetAngle: number;
+  unloadingStiffnessMPa: number;
   effectiveBendAngle: number;
   cumulativeEffectiveAngle: number;
   passStrain: number;
   cumulativeStrain: number;
+  passStressMPa: number;
+  tangentModulusMPa: number;
   contactPressureMPa: number;
   riskLevel: RollRiskLevel;
+  cumulativePlasticIndicator: number;
+  solverIterations: number;
+  solverResidual: number;
+  solverConverged: boolean;
   defects: SimulationDefect[];
 }
 
@@ -69,6 +87,8 @@ export interface SpringbackAdjustedPass {
   pass: number;
   inputAngle: number;
   springbackFactor: number;
+  overbendTargetAngle: number;
+  recoveredAngle: number;
   finalAngle: number;
 }
 
@@ -86,6 +106,15 @@ export interface PressureZonePoint {
   pressureMPa: number;
   zone: "LOW" | "MEDIUM" | "HIGH";
   isHighPressure: boolean;
+}
+
+export interface StressMapPoint {
+  stationId: string;
+  pass: number;
+  stressMPa: number;
+  plasticStrain: number;
+  regime: "ELASTIC" | "PLASTIC";
+  isPeak: boolean;
 }
 
 export interface FinalProfileSummary {
@@ -107,6 +136,10 @@ export interface Phase3SimulationResult {
   model: "phase3_simulation_engine_v1";
   materialUsed: string;
   materialModel: Phase3MaterialReport;
+  materialCurveUsed: MaterialCurve;
+  stripMesh: StripMesh | null;
+  meshStateHistory: StationMeshState[];
+  contactHistory: StationContactState[];
   stationSimulation: StationSimulationStep[];
   shapeEvolution: StationShapeEvolution[];
   defectSummary: SimulationDefectSummary;
@@ -116,6 +149,8 @@ export interface Phase3SimulationResult {
   finalProfile: FinalProfileSummary | null;
   springbackAdjusted: { passes: SpringbackAdjustedPass[] };
   strainMap: StrainMapPoint[];
+  stressMap: StressMapPoint[];
+  peakStressMPa: number;
   pressureZones: PressureZonePoint[];
   defects: SimulationDefectRecord[];
 }
@@ -233,6 +268,7 @@ export function generatePhase3Simulation(input: Phase3SimulationInput): Phase3Si
 
   const thickness = input.thickness > 0 ? input.thickness : 1;
   const material = resolveMaterialInput(input.material);
+  const materialCurve = buildMaterialCurve(material, thickness);
   const totalTargetAngle = rollStations.reduce((sum, station) => {
     const flowerStation = findStation(station.stationId, input.flowerStations);
     const pass = findPass(station.stationId, input.flowerPasses);
@@ -242,9 +278,12 @@ export function generatePhase3Simulation(input: Phase3SimulationInput): Phase3Si
   const warnings: string[] = [];
   const stationSimulation: StationSimulationStep[] = [];
   const shapeEvolution: StationShapeEvolution[] = [];
+  const meshStateHistory: StationMeshState[] = [];
+  const contactHistory: StationContactState[] = [];
   const springbackPasses: SpringbackAdjustedPass[] = [];
   const strainMapRaw: MutableStrainPoint[] = [];
   const pressureZones: PressureZonePoint[] = [];
+  const stressMapRaw: Omit<StressMapPoint, "isPeak">[] = [];
   const defects: SimulationDefectRecord[] = [];
 
   const defectSummary: SimulationDefectSummary = {
@@ -256,14 +295,57 @@ export function generatePhase3Simulation(input: Phase3SimulationInput): Phase3Si
 
   let cumulativeStrain = 0;
   let cumulativeEffectiveAngle = 0;
+  let cumulativePlasticIndicator = 0;
+  let previousEffectiveAngle = 0;
   let previousPassStrain = 0;
+  const baseGeometry = input.rollGeometryByStation?.[0];
+  const stripMesh = baseGeometry ? buildStripMeshFromPath(baseGeometry.stripContactPath) : null;
 
   for (const rollStation of rollStations) {
     const flowerStation = findStation(rollStation.stationId, input.flowerStations);
     const pass = findPass(rollStation.stationId, input.flowerPasses);
     const targetAngle = inferBendAngle(flowerStation, pass);
     const bendRadius = inferBendRadius(thickness, rollStation, flowerStation, pass);
-    const passStrain = inferPassStrain(thickness, rollStation, flowerStation, pass, bendRadius);
+    const basePassStrain = inferPassStrain(thickness, rollStation, flowerStation, pass, bendRadius);
+    const baseStressState = stressFromStrain(materialCurve, basePassStrain);
+    const pressureHint =
+      baseStressState.stressMPa *
+      (0.2 + targetAngle / 750) *
+      (1 + thickness / 2);
+    const solver = solveIncrementalElastoPlasticPass({
+      materialCurve,
+      thickness,
+      targetAngle,
+      bendRadius,
+      rollGap: rollStation.gap,
+      clearance: rollStation.clearance,
+      basePassStrain,
+      previousPlasticStrain: cumulativePlasticIndicator,
+      previousEffectiveAngle,
+      contactPressureHintMPa: pressureHint,
+    });
+    const passStrain = solver.solvedPassStrain;
+    const stressState = stressFromStrain(materialCurve, passStrain);
+
+    const thicknessFactor = 1 + thickness / 2;
+    const stationDefects: SimulationDefect[] = [];
+    const projectedStressRatio = stressState.stressMPa / Math.max(1e-6, material.utsMPa);
+    const projectedContactPressureMPa =
+      stressState.stressMPa *
+      (0.22 + targetAngle / 700) *
+      thicknessFactor *
+      (1 + projectedStressRatio * 0.25);
+    const unloading = solveSpringbackUnloading({
+      materialCurve,
+      targetAngle,
+      thickness,
+      bendRadius,
+      solvedPassStrain: passStrain,
+      solvedStressMPa: stressState.stressMPa,
+      plasticStrain: solver.plasticStrain,
+      tangentModulusMPa: solver.tangentModulusMPa,
+      contactPressureMPa: projectedContactPressureMPa,
+    });
 
     const classicSpringback = computeSpringback(
       targetAngle,
@@ -272,29 +354,26 @@ export function generatePhase3Simulation(input: Phase3SimulationInput): Phase3Si
       material.yieldStrengthMPa,
       material.elasticModulusMPa,
     );
-    const ratioYe = material.yieldStrengthMPa / Math.max(1, material.elasticModulusMPa);
-    const radiusFactor = clamp(bendRadius / Math.max(0.25, thickness), 1, 4);
-    const simplifiedSpringback = clamp(ratioYe * radiusFactor * 2.2, 0.005, 0.22);
-    const springbackFactor = clamp(
-      simplifiedSpringback + (classicSpringback.springbackFactor - 1) * 0.55,
-      0.005,
-      0.28,
-    );
-    const effectiveBendAngle = Math.max(0, targetAngle * (1 - springbackFactor));
-    const commandedAngle = targetAngle * (1 + springbackFactor * 0.55);
-    const residualSpringback = Math.max(0, targetAngle - effectiveBendAngle);
+    const springbackFactor = unloading.overbendFactor;
+    const springbackRatio = unloading.springbackRatio;
+    const effectiveBendAngle = unloading.finalAngle;
+    const commandedAngle = unloading.overbendTargetAngle;
+    const residualSpringback = unloading.recoveredAngle;
 
     cumulativeStrain += passStrain;
     cumulativeEffectiveAngle += effectiveBendAngle;
+    cumulativePlasticIndicator += solver.plasticStrain;
+    previousEffectiveAngle = effectiveBendAngle;
 
-    const thicknessFactor = 1 + thickness / 2;
-    const contactPressureMPa = passStrain * material.elasticModulusMPa * (0.02 + targetAngle / 5000) * thicknessFactor;
-    const pressureZone = detectPressureZone(contactPressureMPa, material.yieldStrengthMPa);
-    const springbackRatio = residualSpringback / Math.max(1e-6, targetAngle || 1);
-
-    const stationDefects: SimulationDefect[] = [];
     const strainRatio = passStrain / Math.max(1e-6, material.maxStrain);
     const cumulativeRatio = cumulativeStrain / Math.max(1e-6, material.maxStrain);
+    const stressRatio = stressState.stressMPa / Math.max(1e-6, material.utsMPa);
+    const contactPressureMPa =
+      stressState.stressMPa *
+      (0.22 + targetAngle / 700) *
+      thicknessFactor *
+      (1 + stressRatio * 0.25);
+    const pressureZone = detectPressureZone(contactPressureMPa, material.yieldStrengthMPa);
 
     if (strainRatio >= 1.0 || cumulativeRatio >= 1.8) {
       const defect: SimulationDefect = {
@@ -345,8 +424,22 @@ export function generatePhase3Simulation(input: Phase3SimulationInput): Phase3Si
     }
     previousPassStrain = passStrain;
 
+    if (stressRatio > 0.96) {
+      const defect: SimulationDefect = {
+        type: "OVERSTRAIN",
+        severity: stressRatio > 0.995 ? "HIGH" : "MEDIUM",
+        reason: `stress ratio ${toNumber(stressRatio, 3)} approaches tensile limit`,
+      };
+      stationDefects.push(defect);
+      defects.push({ stationId: rollStation.stationId, pass: rollStation.pass, ...defect });
+      pushUniqueStation(defectSummary.overstrainStations, rollStation.stationId);
+    }
+
     const riskScore = clamp(
-      strainRatio * 0.5 + cumulativeRatio * 0.25 + clamp(springbackFactor * 3, 0, 1.2) * 0.25,
+      strainRatio * 0.35 +
+      cumulativeRatio * 0.2 +
+      stressRatio * 0.3 +
+      clamp(springbackFactor * 3, 0, 1.2) * 0.15,
       0,
       1.5,
     );
@@ -365,18 +458,46 @@ export function generatePhase3Simulation(input: Phase3SimulationInput): Phase3Si
       zone: pressureZone,
       isHighPressure: pressureZone === "HIGH",
     });
+    stressMapRaw.push({
+      stationId: rollStation.stationId,
+      pass: rollStation.pass,
+      stressMPa: toNumber(stressState.stressMPa),
+      plasticStrain: toNumber(stressState.plasticStrain, 6),
+      regime: stressState.regime,
+    });
     springbackPasses.push({
       stationId: rollStation.stationId,
       pass: rollStation.pass,
       inputAngle: toNumber(targetAngle),
       springbackFactor: toNumber(springbackFactor, 6),
+      overbendTargetAngle: toNumber(commandedAngle),
+      recoveredAngle: toNumber(residualSpringback),
       finalAngle: toNumber(effectiveBendAngle),
     });
 
     const geometry = findGeometry(rollStation.stationId, input.rollGeometryByStation);
     const progression = totalTargetAngle > 0 ? cumulativeEffectiveAngle / totalTargetAngle : 1;
     if (geometry) {
-      shapeEvolution.push(mapShapeEvolution(geometry, progression, springbackFactor));
+      const stationShape = mapShapeEvolution(geometry, progression, springbackFactor);
+      shapeEvolution.push(stationShape);
+      if (stripMesh) {
+        const meshState = buildStationMeshState(
+          stripMesh,
+          stationShape.formedPath,
+          stationShape.afterSpringbackPath,
+          stationShape.stationId,
+          stationShape.pass,
+          passStrain,
+          stressState.stressMPa,
+        );
+        meshStateHistory.push(meshState);
+        contactHistory.push(evaluateStationContact(
+          meshState,
+          geometry,
+          material,
+          thickness,
+        ));
+      }
     }
 
     stationSimulation.push({
@@ -386,14 +507,22 @@ export function generatePhase3Simulation(input: Phase3SimulationInput): Phase3Si
       targetBendAngle: toNumber(targetAngle),
       commandedAngle: toNumber(commandedAngle),
       springbackFactor: toNumber(springbackFactor, 6),
-      springbackAngle: toNumber(classicSpringback.springbackAngle),
+      springbackAngle: toNumber(residualSpringback || classicSpringback.springbackAngle),
       residualSpringback: toNumber(residualSpringback),
+      overbendTargetAngle: toNumber(commandedAngle),
+      unloadingStiffnessMPa: toNumber(unloading.unloadingStiffnessMPa),
       effectiveBendAngle: toNumber(effectiveBendAngle),
       cumulativeEffectiveAngle: toNumber(cumulativeEffectiveAngle),
       passStrain: toNumber(passStrain, 6),
       cumulativeStrain: toNumber(cumulativeStrain, 6),
+      passStressMPa: toNumber(stressState.stressMPa),
+      tangentModulusMPa: toNumber(solver.tangentModulusMPa),
       contactPressureMPa: toNumber(contactPressureMPa),
       riskLevel,
+      cumulativePlasticIndicator: toNumber(cumulativePlasticIndicator, 6),
+      solverIterations: solver.iterations,
+      solverResidual: solver.residual,
+      solverConverged: solver.converged,
       defects: stationDefects,
     });
   }
@@ -402,6 +531,11 @@ export function generatePhase3Simulation(input: Phase3SimulationInput): Phase3Si
   const strainMap: StrainMapPoint[] = strainMapRaw.map(point => ({
     ...point,
     isPeak: Math.abs(point.strainPerPass - peakStrain) < 1e-9,
+  }));
+  const peakStress = stressMapRaw.reduce((max, point) => Math.max(max, point.stressMPa), 0);
+  const stressMap: StressMapPoint[] = stressMapRaw.map(point => ({
+    ...point,
+    isPeak: Math.abs(point.stressMPa - peakStress) < 1e-9,
   }));
 
   const overallRisk: RollRiskLevel = stationSimulation.some(station => station.riskLevel === "HIGH")
@@ -414,6 +548,9 @@ export function generatePhase3Simulation(input: Phase3SimulationInput): Phase3Si
     warnings.push("Roll geometry missing - shape evolution reduced to scalar strain simulation");
   } else if (shapeEvolution.length !== stationSimulation.length) {
     warnings.push("Some stations are missing rollGeometry entries - shape evolution is partial");
+  }
+  if (contactHistory.length > 0 && !contactHistory.some((station) => station.highContactNodeIds.length > 0)) {
+    warnings.push("Contact model found no near-contact nodes; verify roll gap and contour alignment");
   }
   if (!pressureZones.some(zone => zone.isHighPressure)) {
     warnings.push("No high-pressure zones detected; verify pressure scaling for this profile/material");
@@ -440,6 +577,10 @@ export function generatePhase3Simulation(input: Phase3SimulationInput): Phase3Si
     model: "phase3_simulation_engine_v1",
     materialUsed: material.materialUsed,
     materialModel,
+    materialCurveUsed: materialCurve,
+    stripMesh,
+    meshStateHistory,
+    contactHistory,
     stationSimulation,
     shapeEvolution,
     defectSummary,
@@ -452,6 +593,8 @@ export function generatePhase3Simulation(input: Phase3SimulationInput): Phase3Si
     finalProfile,
     springbackAdjusted: { passes: springbackPasses },
     strainMap,
+    stressMap,
+    peakStressMPa: toNumber(peakStress),
     pressureZones,
     defects,
   };
