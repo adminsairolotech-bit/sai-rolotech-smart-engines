@@ -259,8 +259,8 @@ function CrossSectionView({
 
       {/* Strip */}
       <rect
-        x={upperPx[0].x} y={stripY1}
-        width={upperPx[upperPx.length - 1].x - upperPx[0].x}
+        x={Math.min(upperPx[0].x, upperPx[upperPx.length - 1].x)} y={stripY1}
+        width={Math.abs(upperPx[upperPx.length - 1].x - upperPx[0].x)}
         height={stripH}
         fill="#fbbf24" opacity="0.35" stroke="#fbbf24" strokeWidth="0.8"
       />
@@ -665,6 +665,19 @@ const RELEASE_STATE_OPTIONS: { value: ReleaseState; label: string; color: string
   { value: "manufacturing_release",label: "Manufacturing Release",color: "text-green-400" },
 ];
 
+const EMPTY_PASS: PassData = {
+  pass_no: 1,
+  station_label: "Station 1",
+  target_angle_deg: 0,
+  roll_gap_mm: 0,
+  strip_width_mm: 0,
+  stage_type: "flat",
+  forming_depth_mm: 0,
+  pass_progress_pct: 0,
+  upper_roll_profile: [],
+  lower_roll_profile: [],
+};
+
 export default function RollDrawingPanel({
   rollContour,
   rollDimensions,
@@ -688,24 +701,14 @@ export default function RollDrawingPanel({
   const [jobNo,        setJobNo]          = useState("");
   const [projectName,  setProjectName]    = useState("");
   const { entries: auditEntries, addEntry: addAuditEntry, clearLog: clearAuditLog, backendOk } = useAuditLog();
-
-  if (!rollContour || rollContour.status !== "pass") {
-    return (
-      <div className="bg-slate-800/60 rounded-2xl border border-slate-700 p-6">
-        <div className="flex items-center gap-2 mb-2">
-          <Circle className="w-4 h-4 text-violet-400" />
-          <span className="text-sm font-semibold text-violet-300 uppercase tracking-wider">Roll Tooling Drawing</span>
-        </div>
-        <p className="text-slate-500 text-sm">No roll data. Run the pipeline to generate roll drawings.</p>
-      </div>
-    );
-  }
-
-  const allPasses: PassData[] = [
-    ...(rollContour.passes ?? []),
-    ...(rollContour.calibration_pass ? [rollContour.calibration_pass] : []),
-  ];
-  const pass = allPasses[selected] ?? allPasses[0];
+  const hasRollContour = !!rollContour && rollContour.status === "pass";
+  const allPasses: PassData[] = hasRollContour
+    ? [
+        ...(rollContour?.passes ?? []),
+        ...(rollContour?.calibration_pass ? [rollContour.calibration_pass] : []),
+      ]
+    : [];
+  const pass = allPasses[selected] ?? allPasses[0] ?? EMPTY_PASS;
 
   const rd: RollDimensions = rollDimensions ?? {
     estimated_roll_od_mm: 239,
@@ -718,9 +721,9 @@ export default function RollDrawingPanel({
 
   const stageColor   = STAGE_COLOR[pass.stage_type] || "#8b5cf6";
   const totalPasses  = allPasses.length;
-  const material     = rollContour.material as string;
-  const thickness    = rollContour.thickness_mm as number;
-  const rc = rollContour as unknown as Record<string,unknown>;
+  const material     = (rollContour?.material as string | undefined) ?? "NA";
+  const thickness    = (rollContour?.thickness_mm as number | undefined) ?? 0;
+  const rc = (rollContour ?? {}) as unknown as Record<string,unknown>;
   const profType     = profileTypeProp || (rc.profile_type as string) || "";
   const springbackDeg = springbackDegProp ?? (rc.springback_deg as number) ?? 0;
 
@@ -747,7 +750,7 @@ export default function RollDrawingPanel({
   );
 
   const allModels: DrawingModel[] = useMemo(
-    () => allPasses.map(p => buildDrawingModel(p, rd, modelOpts)),
+    () => (allPasses.length > 0 ? allPasses : [EMPTY_PASS]).map(p => buildDrawingModel(p, rd, modelOpts)),
     [allPasses, rd, modelOpts],
   );
 
@@ -766,6 +769,18 @@ export default function RollDrawingPanel({
   const fDXF       = generateFileName(currentModel, "dxf");
   const fZIP       = generatePackageZipName(currentModel);
   const fAllPDF    = generateAllPdfName(currentModel);
+
+  if (!hasRollContour && false) {
+    return (
+      <div className="bg-slate-800/60 rounded-2xl border border-slate-700 p-6">
+        <div className="flex items-center gap-2 mb-2">
+          <Circle className="w-4 h-4 text-violet-400" />
+          <span className="text-sm font-semibold text-violet-300 uppercase tracking-wider">Roll Tooling Drawing</span>
+        </div>
+        <p className="text-slate-500 text-sm">No roll data. Run the pipeline to generate roll drawings.</p>
+      </div>
+    );
+  }
 
   // ── Handlers ────────────────────────────────────────────────────────────────
 
@@ -823,6 +838,18 @@ export default function RollDrawingPanel({
   }, [allModels, fZIP, releaseState]);
 
   // ─── Render ─────────────────────────────────────────────────────────────────
+
+  if (!hasRollContour) {
+    return (
+      <div className="bg-slate-800/60 rounded-2xl border border-slate-700 p-6">
+        <div className="flex items-center gap-2 mb-2">
+          <Circle className="w-4 h-4 text-violet-400" />
+          <span className="text-sm font-semibold text-violet-300 uppercase tracking-wider">Roll Tooling Drawing</span>
+        </div>
+        <p className="text-slate-500 text-sm">No roll data. Run the pipeline to generate roll drawings.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-slate-800/60 rounded-2xl border border-slate-700/70 overflow-hidden">

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { useCncStore } from "@/store/useCncStore";
 import { Activity, FlaskConical, Download, FileJson, ArrowLeft, Package } from "lucide-react";
 import { InputPanel } from "@/components/python-dashboard/InputPanel";
@@ -24,6 +24,7 @@ import CodexEngineerPanel from "@/components/python-dashboard/CodexEngineerPanel
 import ProfileAnnotationPanel from "@/components/python-dashboard/ProfileAnnotationPanel";
 import {
   runManualModeDebug,
+  semiAutoConfirm,
   exportManualPdf,
   downloadManualPdf,
   runTests,
@@ -95,6 +96,32 @@ export default function PythonDashboard() {
   const [pdfResult, setPdfResult] = useState<Record<string, unknown> | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [confirmedNote, setConfirmedNote] = useState<string | null>(null);
+
+  const buildStageDebugFromPipeline = useCallback((result: Record<string, unknown>) => {
+    const ENGINE_ORDER = [
+      "profile_analysis_engine", "input_engine", "flange_web_lip_engine",
+      "advanced_flower_engine", "station_engine", "roll_logic_engine",
+      "shaft_engine", "bearing_engine", "duty_engine", "roll_design_calc_engine",
+      "machine_layout_engine", "consistency_engine", "final_decision_engine", "report_engine",
+    ];
+
+    return {
+      stage_debug: ENGINE_ORDER.map((k) => {
+        const eng = (result[k] ?? {}) as Record<string, unknown>;
+        return {
+          stage: k,
+          status: (eng.status as string) ?? "not_run",
+          reason: eng.reason as string | undefined,
+          selected_mode: eng.selected_mode as string | undefined,
+          overall_confidence: eng.overall_confidence as number | undefined,
+          consistency_status: eng.consistency_status as string | undefined,
+          blocking: eng.blocking as boolean | undefined,
+          issues_found: eng.issues_found as number | undefined,
+        };
+      }),
+      first_failed_stage: result.failed_stage as string | undefined,
+    };
+  }, []);
 
   useEffect(() => {
     if (!pipelineResult) return;
@@ -287,28 +314,64 @@ export default function PythonDashboard() {
     setPdfResult(null);
     setError(null);
     setConfirmedNote(null);
-    // Build a synthetic stage_debug list from the pipeline result for PipelineStatusPanel
-    const ENGINE_ORDER = [
-      "profile_analysis_engine", "input_engine", "flange_web_lip_engine",
-      "advanced_flower_engine", "station_engine", "roll_logic_engine",
-      "shaft_engine", "bearing_engine", "duty_engine", "roll_design_calc_engine",
-      "machine_layout_engine", "consistency_engine", "final_decision_engine", "report_engine",
-    ];
-    const stages = ENGINE_ORDER.map((k) => {
-      const eng = (result[k] ?? {}) as Record<string, unknown>;
-      return {
-        stage: k,
-        status: (eng.status as string) ?? "not_run",
-        reason: eng.reason as string | undefined,
-        selected_mode: eng.selected_mode as string | undefined,
-        overall_confidence: eng.overall_confidence as number | undefined,
-        consistency_status: eng.consistency_status as string | undefined,
-        blocking: eng.blocking as boolean | undefined,
-        issues_found: eng.issues_found as number | undefined,
-      };
-    });
-    setDebugResult({ stage_debug: stages, first_failed_stage: result.failed_stage as string | undefined });
-  }, []);
+    setDebugResult(buildStageDebugFromPipeline(result));
+  }, [buildStageDebugFromPipeline]);
+
+  const profEng   = (pipelineResult?.profile_analysis_engine ?? (pipelineResult ? {} : null)) as Record<string, unknown> | null;
+  const inputEng  = (pipelineResult?.input_engine ?? (pipelineResult ? {} : null)) as Record<string, unknown> | null;
+  const stEng     = (pipelineResult?.station_engine ?? (pipelineResult ? {} : null)) as Record<string, unknown> | null;
+  const shEng     = (pipelineResult?.shaft_engine ?? {}) as Record<string, unknown>;
+  const brEng     = (pipelineResult?.bearing_engine ?? {}) as Record<string, unknown>;
+
+  const detectedValues = {
+    bend_count: profEng?.bend_count as number | undefined,
+    section_width_mm: profEng?.section_width_mm as number | undefined,
+    section_height_mm: profEng?.section_height_mm as number | undefined,
+    profile_type: (profEng?.profile_type as string) ?? payload?.profile_type,
+    thickness: inputEng?.sheet_thickness_mm as number | undefined,
+    material: inputEng?.material as string | undefined,
+    return_bends: profEng?.return_bends_count as number | undefined,
+    lips_present: (profEng?.profile_type as string) === "lipped_channel",
+    flanges_present: true,
+    station_count: stEng?.recommended_station_count as number | undefined,
+    shaft_mm: shEng.suggested_shaft_diameter_mm as number | undefined,
+    bearing: brEng.suggested_bearing_type as string | undefined,
+  };
+
+  const activePayload = useMemo<ManualModePayload | null>(() => {
+    if (payload) return payload;
+    if (
+      typeof detectedValues.bend_count !== "number" ||
+      typeof detectedValues.section_width_mm !== "number" ||
+      typeof detectedValues.section_height_mm !== "number" ||
+      typeof detectedValues.thickness !== "number" ||
+      typeof detectedValues.material !== "string" ||
+      typeof detectedValues.profile_type !== "string"
+    ) {
+      return null;
+    }
+
+    return {
+      bend_count: detectedValues.bend_count,
+      section_width_mm: detectedValues.section_width_mm,
+      section_height_mm: detectedValues.section_height_mm,
+      thickness: detectedValues.thickness,
+      material: detectedValues.material,
+      profile_type: detectedValues.profile_type,
+      return_bends_count: detectedValues.return_bends ?? 0,
+      lips_present: detectedValues.lips_present,
+    };
+  }, [
+    payload,
+    detectedValues.bend_count,
+    detectedValues.section_width_mm,
+    detectedValues.section_height_mm,
+    detectedValues.thickness,
+    detectedValues.material,
+    detectedValues.profile_type,
+    detectedValues.return_bends,
+    detectedValues.lips_present,
+  ]);
 
   const handleSemiAutoConfirm = useCallback((vals: {
     bend_count: number;
@@ -324,6 +387,20 @@ export default function PythonDashboard() {
     shaft_mm: number;
     bearing: string;
   }) => {
+    const original = {
+      bend_count: detectedValues.bend_count,
+      section_width_mm: detectedValues.section_width_mm,
+      section_height_mm: detectedValues.section_height_mm,
+      profile_type: detectedValues.profile_type,
+      thickness: detectedValues.thickness,
+      material: detectedValues.material,
+      return_bends_count: detectedValues.return_bends,
+      lips_present: detectedValues.lips_present,
+      station_count: detectedValues.station_count,
+      shaft_mm: detectedValues.shaft_mm,
+      bearing: detectedValues.bearing,
+    };
+
     const confirmed: ManualModePayload = {
       bend_count: vals.bend_count,
       section_width_mm: vals.section_width_mm,
@@ -331,10 +408,37 @@ export default function PythonDashboard() {
       thickness: vals.thickness,
       material: vals.material,
       profile_type: vals.profile_type,
+      return_bends_count: vals.return_bends,
+      lips_present: vals.lips_present,
     };
+
     setPayload(confirmed);
-    runDebug(confirmed, true);
-  }, [runDebug]);
+    setSemiAutoLoading(true);
+    setPdfResult(null);
+    setError(null);
+    setConfirmedNote(null);
+
+    semiAutoConfirm({
+      confirmed: {
+        ...confirmed,
+        station_count: vals.station_count,
+        shaft_mm: vals.shaft_mm,
+        bearing: vals.bearing,
+      },
+      original,
+    })
+      .then((data) => {
+        setPipelineResult(data);
+        setDebugResult(buildStageDebugFromPipeline(data));
+        setConfirmedNote("Semi-auto confirmation saved and pipeline re-run with confirmed values.");
+      })
+      .catch((e) => {
+        setError(e instanceof Error ? e.message : "Semi-auto confirmation failed");
+      })
+      .finally(() => {
+        setSemiAutoLoading(false);
+      });
+  }, [buildStageDebugFromPipeline, detectedValues.bearing, detectedValues.bend_count, detectedValues.lips_present, detectedValues.material, detectedValues.profile_type, detectedValues.return_bends, detectedValues.section_height_mm, detectedValues.section_width_mm, detectedValues.shaft_mm, detectedValues.station_count, detectedValues.thickness]);
 
   const handleRunSimulation = useCallback(async (file: File, thickness: number, material: string) => {
     setSimulationLoading(true);
@@ -388,23 +492,23 @@ export default function PythonDashboard() {
   }, []);
 
   const handleExportPdf = useCallback(async () => {
-    if (!payload) return;
+    if (!activePayload) return;
     setLoading(true);
     try {
-      const data = await exportManualPdf(payload);
+      const data = await exportManualPdf(activePayload);
       setPdfResult(data);
     } catch (e) {
       setError(e instanceof Error ? e.message : "PDF export failed");
     } finally {
       setLoading(false);
     }
-  }, [payload]);
+  }, [activePayload]);
 
   const handleDownloadPdf = useCallback(async () => {
-    if (!payload) return;
+    if (!activePayload) return;
     setLoading(true);
     try {
-      const blob = await downloadManualPdf(payload);
+      const blob = await downloadManualPdf(activePayload);
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -416,17 +520,17 @@ export default function PythonDashboard() {
     } finally {
       setLoading(false);
     }
-  }, [payload]);
+  }, [activePayload]);
 
   const handleCadExport = useCallback(async () => {
-    if (!payload) return;
+    if (!activePayload) return;
     setCadLoading(true);
     setError(null);
     try {
       const resp = await fetch("/papi/api/cad-export", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(activePayload),
       });
       const data = await resp.json();
       setCadExportResult(data);
@@ -435,7 +539,7 @@ export default function PythonDashboard() {
     } finally {
       setCadLoading(false);
     }
-  }, [payload]);
+  }, [activePayload]);
 
   const reportEngine    = (pipelineResult?.report_engine ?? {}) as Record<string, unknown>;
   const summary         = (reportEngine?.engineering_summary ?? {}) as Record<string, unknown>;
@@ -453,12 +557,6 @@ export default function PythonDashboard() {
   const rollContourInterf     = (pipelineResult?.roll_contour_interference ?? null) as Record<string, unknown> | null;
   const cadExportData         = (cadExportResult?.cad_export ?? null) as Record<string, unknown> | null;
   const cadCamPrep      = (cadExportResult?.cam_prep ?? camPrep) as Record<string, unknown> | null;
-
-  const profEng   = (pipelineResult?.profile_analysis_engine ?? (pipelineResult ? {} : null)) as Record<string, unknown> | null;
-  const inputEng  = (pipelineResult?.input_engine ?? (pipelineResult ? {} : null)) as Record<string, unknown> | null;
-  const stEng     = (pipelineResult?.station_engine ?? (pipelineResult ? {} : null)) as Record<string, unknown> | null;
-  const shEng     = (pipelineResult?.shaft_engine ?? {}) as Record<string, unknown>;
-  const brEng     = (pipelineResult?.bearing_engine ?? {}) as Record<string, unknown>;
 
   const selectedMode = (finalDecision?.selected_mode as string) ?? "auto_mode";
   const showSemiAutoPanel = pipelineResult && (selectedMode === "semi_auto" || selectedMode === "manual_review");
@@ -524,21 +622,6 @@ export default function PythonDashboard() {
     return { items, overallGrade, scoreLabel };
   })() : null;
 
-  const detectedValues = {
-    bend_count: profEng?.bend_count as number | undefined,
-    section_width_mm: profEng?.section_width_mm as number | undefined,
-    section_height_mm: profEng?.section_height_mm as number | undefined,
-    profile_type: (profEng?.profile_type as string) ?? payload?.profile_type,
-    thickness: inputEng?.sheet_thickness_mm as number | undefined,
-    material: inputEng?.material as string | undefined,
-    return_bends: profEng?.return_bends_count as number | undefined,
-    lips_present: (profEng?.profile_type as string) === "lipped_channel",
-    flanges_present: true,
-    station_count: stEng?.recommended_station_count as number | undefined,
-    shaft_mm: shEng.suggested_shaft_diameter_mm as number | undefined,
-    bearing: brEng.suggested_bearing_type as string | undefined,
-  };
-
   return (
     <div className="min-h-screen bg-[#08090f] text-gray-200 p-4 md:p-6">
       <div className="mx-auto max-w-7xl space-y-4">
@@ -600,7 +683,7 @@ export default function PythonDashboard() {
                 </button>
                 <button
                   onClick={handleExportPdf}
-                  disabled={!payload || loading || selectedMode === "semi_auto" || selectedMode === "manual_review"}
+                  disabled={!activePayload || loading || selectedMode === "semi_auto" || selectedMode === "manual_review"}
                   className="flex items-center justify-center gap-2 rounded-lg border border-violet-500/30 bg-violet-500/10 hover:bg-violet-500/20 disabled:opacity-40 text-violet-300 text-xs font-medium py-2 transition-colors"
                 >
                   <FileJson className="w-3.5 h-3.5" />
@@ -608,7 +691,7 @@ export default function PythonDashboard() {
                 </button>
                 <button
                   onClick={handleDownloadPdf}
-                  disabled={!payload || loading || selectedMode === "semi_auto" || selectedMode === "manual_review"}
+                  disabled={!activePayload || loading || selectedMode === "semi_auto" || selectedMode === "manual_review"}
                   className="flex items-center justify-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 disabled:opacity-40 text-emerald-300 text-xs font-medium py-2 transition-colors"
                 >
                   <Download className="w-3.5 h-3.5" />
@@ -616,7 +699,7 @@ export default function PythonDashboard() {
                 </button>
                 <button
                   onClick={handleCadExport}
-                  disabled={!payload || cadLoading}
+                  disabled={!activePayload || cadLoading}
                   className="flex items-center justify-center gap-2 rounded-lg border border-cyan-500/30 bg-cyan-500/10 hover:bg-cyan-500/20 disabled:opacity-40 text-cyan-300 text-xs font-medium py-2 transition-colors"
                 >
                   <Package className="w-3.5 h-3.5" />
@@ -780,7 +863,7 @@ export default function PythonDashboard() {
               cadExport={cadExportData as any}
               camPrep={cadCamPrep as any}
               isLoading={cadLoading}
-              onRequestExport={payload ? handleCadExport : undefined}
+              onRequestExport={activePayload ? handleCadExport : undefined}
             />
             <WarningPanel warnings={warnings} assumptions={assumptions} />
 

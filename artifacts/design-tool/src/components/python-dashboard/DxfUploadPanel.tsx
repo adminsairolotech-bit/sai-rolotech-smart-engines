@@ -8,6 +8,11 @@ interface DxfPreviewResult {
   preview_available?: boolean;
   source_file?: string;
   file_size_bytes?: number;
+  import_units?: {
+    units_code?: number;
+    units_name?: string;
+    units_scale_to_mm?: number;
+  };
   entity_summary?: {
     total_entities?: number;
     lines?: number;
@@ -151,6 +156,7 @@ export default function DxfUploadPanel({ onPipelineResult, onCenterlinePreview, 
   const bbox = previewResult?.geometry_engine?.bounding_box;
   const profile = previewResult?.profile_preview;
   const entities = previewResult?.entity_summary;
+  const importUnits = previewResult?.import_units;
 
   return (
     <div className="rounded-xl border border-neutral-700 bg-neutral-900 p-4 space-y-4">
@@ -271,6 +277,26 @@ export default function DxfUploadPanel({ onPipelineResult, onCenterlinePreview, 
                   <div className="text-neutral-500 text-[10px]">{label}</div>
                 </div>
               ))}
+            </div>
+          )}
+
+          {importUnits && (
+            <div>
+              <div className="text-neutral-500 text-[10px] uppercase tracking-wide mb-1">Import Units</div>
+              <div className="grid grid-cols-3 gap-2 text-[10px]">
+                <div className="bg-neutral-700/50 rounded p-1.5 text-center">
+                  <div className="font-mono font-bold text-white">{importUnits.units_name ?? "unknown"}</div>
+                  <div className="text-neutral-500 text-[10px]">Unit</div>
+                </div>
+                <div className="bg-neutral-700/50 rounded p-1.5 text-center">
+                  <div className="font-mono font-bold text-white">{importUnits.units_code ?? 0}</div>
+                  <div className="text-neutral-500 text-[10px]">Code</div>
+                </div>
+                <div className="bg-neutral-700/50 rounded p-1.5 text-center">
+                  <div className="font-mono font-bold text-white">x{importUnits.units_scale_to_mm ?? 1}</div>
+                  <div className="text-neutral-500 text-[10px]">to mm</div>
+                </div>
+              </div>
             </div>
           )}
 

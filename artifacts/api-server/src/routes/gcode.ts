@@ -22,6 +22,13 @@ interface GenerateGcodeBody {
   machineProfile?: MachineProfile;
 }
 
+interface GcodeOutputEntry {
+  label: string;
+  gcode: string;
+  stationNumber?: number;
+  lineCount: number;
+}
+
 router.post("/generate-gcode", (req: Request<unknown, unknown, GenerateGcodeBody>, res: Response) => {
   try {
     const { geometry, numStations, stationPrefix, materialType, materialThickness, config, machineProfile } = req.body;
@@ -89,10 +96,16 @@ router.post("/generate-gcode", (req: Request<unknown, unknown, GenerateGcodeBody
 
     // generateGcode takes ALL stations + geometry at once — not per-station
     const gcodeOutput = generateGcode(flowerResult.stations, geometry, gcodeConfig);
+    const outputEntry: GcodeOutputEntry = {
+      label: `${prefix}_all_stations`,
+      gcode: gcodeOutput,
+      lineCount: gcodeOutput.split(/\r?\n/).length,
+    };
 
     res.json({
       success: true,
-      gcodeOutputs: [gcodeOutput],
+      outputs: [outputEntry],
+      gcodeOutputs: [outputEntry],
       gcodeOutput,
       stationCount: flowerResult.stations.length,
       config: gcodeConfig,

@@ -250,6 +250,45 @@ def _run_accuracy_engines(
 _EMPTY = {"status": "pass", "engine": "not_applicable"}
 
 
+def _sheet_profile_to_entities(points: list[Dict[str, Any]]) -> list[Dict[str, Any]]:
+    entities: list[Dict[str, Any]] = []
+    for start, end in zip(points[:-1], points[1:]):
+        entities.append({
+            "type": "line",
+            "start": [float(start.get("x", 0.0)), float(start.get("y", 0.0))],
+            "end": [float(end.get("x", 0.0)), float(end.get("y", 0.0))],
+            "layer": "CENTERLINE_CONVERTED_SHEET",
+            "source_entity_type": "CENTERLINE_SHEET_PROFILE",
+        })
+    return entities
+
+
+def _working_geometry_from_centerline(
+    centerline_result: Dict[str, Any],
+    fallback_geometry_result: Dict[str, Any],
+) -> Dict[str, Any]:
+    if centerline_result.get("status") != "pass":
+        return fallback_geometry_result
+
+    converted_profiles = centerline_result.get("converted_profiles") or []
+    if not converted_profiles:
+        return fallback_geometry_result
+
+    primary_profile = converted_profiles[0]
+    sheet_profile = primary_profile.get("sheet_profile") or []
+    if len(sheet_profile) < 2:
+        return fallback_geometry_result
+
+    working_geometry = clean_geometry(_sheet_profile_to_entities(sheet_profile))
+    if is_fail(working_geometry):
+        return fallback_geometry_result
+
+    working_geometry["geometry_kind"] = "centerline_converted_sheet"
+    working_geometry["source_chain_no"] = primary_profile.get("chain_no")
+    working_geometry["source_point_count"] = primary_profile.get("point_count")
+    return working_geometry
+
+
 def execute_auto_pipeline(data: AutoModeInput) -> Dict[str, Any]:
     """Full auto-mode pipeline — returns complete pipeline dict."""
     import_result = parse_entities(data.entities or [])
@@ -259,6 +298,9 @@ def execute_auto_pipeline(data: AutoModeInput) -> Dict[str, Any]:
     geometry_result = clean_geometry(import_result["geometry"])
     if is_fail(geometry_result):
         return fail_at("geometry_engine", geometry_result)
+    working_geometry_result = geometry_result
+    working_geometry_result = geometry_result
+    working_geometry_result = geometry_result
 
     # ── Centerline Sheet Converter (Arc-Aware) ─────────────────────────────
     raw_entities = import_result.get("geometry") or []
@@ -280,9 +322,20 @@ def execute_auto_pipeline(data: AutoModeInput) -> Dict[str, Any]:
             )
     # ── End Centerline ─────────────────────────────────────────────────────
 
+    if centerline_result.get("status") == "pass":
+        working_geometry_result = _working_geometry_from_centerline(
+            centerline_result,
+            geometry_result,
+        )
+
     profile_result = analyze_profile(geometry_result)
     if is_fail(profile_result):
         return fail_at("profile_analysis_engine", profile_result)
+    if isinstance(profile_result, dict):
+        profile_result["geometry_total_length_mm"] = geometry_result.get("total_length_mm")
+        profile_result["geometry_bounding_box"] = geometry_result.get("bounding_box")
+        profile_result["working_geometry_bounding_box"] = working_geometry_result.get("bounding_box")
+        profile_result["working_geometry_kind"] = working_geometry_result.get("geometry_kind", "raw_import_geometry")
 
     input_result = validate_inputs(data.thickness, data.material)
     if is_fail(input_result):
@@ -308,6 +361,7 @@ def execute_auto_pipeline(data: AutoModeInput) -> Dict[str, Any]:
         "status": "pass",
         "file_import_engine":                 import_result,
         "geometry_engine":                    geometry_result,
+        "working_geometry_engine":            working_geometry_result,
         "centerline_sheet_converter_arc_engine": centerline_result,
         "profile_analysis_engine":            profile_result,
         "input_engine":                       input_result,
@@ -494,10 +548,27 @@ async def dxf_upload(
     geometry_result = clean_geometry(import_result["geometry"])
     if is_fail(geometry_result):
         return fail_at("geometry_engine", geometry_result)
+    working_geometry_result = geometry_result
+
+    raw_entities = import_result.get("geometry") or []
+    if isinstance(raw_entities, dict):
+        raw_entities = raw_entities.get("entities", [])
+    centerline_result = _EMPTY
+    if is_centerline_geometry(raw_entities) and thickness > 0:
+        centerline_result = convert_centerline_to_sheet_arc_aware(
+            geometry=raw_entities,
+            thickness=thickness,
+            mode="both",
+            arc_segments=24,
+        )
+        working_geometry_result = _working_geometry_from_centerline(centerline_result, geometry_result)
 
     profile_result = analyze_profile(geometry_result)
     if is_fail(profile_result):
         return fail_at("profile_analysis_engine", profile_result)
+    if isinstance(profile_result, dict):
+        profile_result["working_geometry_bounding_box"] = working_geometry_result.get("bounding_box")
+        profile_result["working_geometry_kind"] = working_geometry_result.get("geometry_kind", "raw_import_geometry")
 
     input_result = validate_inputs(thickness, material)
     if is_fail(input_result):
@@ -524,6 +595,8 @@ async def dxf_upload(
         "source_file": file.filename,
         "file_import_engine": import_result,
         "geometry_engine": geometry_result,
+        "working_geometry_engine": working_geometry_result,
+        "centerline_sheet_converter_arc_engine": centerline_result,
         "profile_analysis_engine": profile_result,
         "input_engine": input_result,
         **{k: v for k, v in core.items() if k != "status"},
@@ -671,6 +744,7 @@ async def auto_mode_dxf(
     geometry_result = clean_geometry(import_result["geometry"])
     if is_fail(geometry_result):
         return fail_at("geometry_engine", geometry_result)
+    working_geometry_result = geometry_result
 
     # ── Centerline Sheet Converter (Arc-Aware) ─────────────────────────────
     raw_entities = import_result.get("geometry") or []
@@ -773,24 +847,60 @@ async def preview_dxf(
     raw_geo = import_result.get("geometry") or []
     if isinstance(raw_geo, dict):
         raw_geo = raw_geo.get("entities", [])
+    layer_summary: Dict[str, int] = {}
+    source_type_summary: Dict[str, int] = {}
+    sample_entities = []
+    for index, entity in enumerate(raw_geo):
+        layer = str(entity.get("layer", "unknown"))
+        source_type = str(entity.get("source_entity_type", entity.get("type", "unknown")))
+        layer_summary[layer] = layer_summary.get(layer, 0) + 1
+        source_type_summary[source_type] = source_type_summary.get(source_type, 0) + 1
+        if index < 8:
+            sample_entities.append({
+                "type": entity.get("type"),
+                "source_entity_type": source_type,
+                "layer": layer,
+                "start": entity.get("start"),
+                "end": entity.get("end"),
+                "center": entity.get("center"),
+                "radius": entity.get("radius"),
+            })
     entity_counts = {
         "total_entities": len(raw_geo),
         "lines":     sum(1 for e in raw_geo if e.get("type","").upper() in {"LINE"}),
         "arcs":      sum(1 for e in raw_geo if e.get("type","").upper() in {"ARC"}),
         "polylines": sum(1 for e in raw_geo if e.get("type","").upper() in {"LWPOLYLINE", "POLYLINE"}),
+        "splines":   sum(1 for e in raw_geo if str(e.get("source_entity_type", "")).upper() == "SPLINE"),
     }
+    connected_components = geometry_result.get("connected_component_count", 1)
+    geometry_warnings = geometry_result.get("warnings", [])
+    dimension_confidence = "high"
+    if connected_components > 1 or geometry_warnings:
+        dimension_confidence = "medium"
+    if connected_components > 2:
+        dimension_confidence = "low"
 
     return {
         "status": "pass",
         "preview_available": True,
         "source_file": file.filename,
         "file_size_bytes": len(dxf_bytes),
+        "import_units": {
+            "units_code": import_result.get("units_code"),
+            "units_name": import_result.get("units_name"),
+            "units_scale_to_mm": import_result.get("units_scale_to_mm"),
+        },
         "entity_summary": entity_counts,
+        "layer_summary": layer_summary,
+        "source_entity_summary": source_type_summary,
+        "sample_entities": sample_entities,
         "geometry_engine": {
             "status": geometry_result.get("status"),
             "entity_count": geometry_result.get("cleaned_entity_count", geometry_result.get("entity_count")),
+            "connected_component_count": connected_components,
             "bounding_box": geometry_result.get("bounding_box"),
-            "warnings": geometry_result.get("warnings", []),
+            "warnings": geometry_warnings,
+            "dimension_confidence": dimension_confidence,
         },
         "profile_preview": {
             "status": profile_result.get("status"),
@@ -899,6 +1009,8 @@ def semi_auto_confirm(data: Dict[str, Any]):
         raise HTTPException(status_code=422, detail=f"Missing required confirmed fields: {missing}")
 
     try:
+        return_bends_value = confirmed.get("return_bends_count", confirmed.get("return_bends", 0))
+        n_stations_value = confirmed.get("n_stations", confirmed.get("station_count"))
         manual_input = ManualProfileInput(
             bend_count=int(confirmed["bend_count"]),
             section_width_mm=float(confirmed["section_width_mm"]),
@@ -906,6 +1018,10 @@ def semi_auto_confirm(data: Dict[str, Any]):
             thickness=float(confirmed["thickness"]),
             material=str(confirmed["material"]),
             profile_type=confirmed.get("profile_type", "custom"),
+            return_bends_count=int(return_bends_value or 0),
+            lips_present=bool(confirmed.get("lips_present", False)),
+            lip_mm=float(confirmed["lip_mm"]) if confirmed.get("lip_mm") is not None else None,
+            n_stations=int(n_stations_value) if n_stations_value is not None else None,
         )
     except Exception as e:
         raise HTTPException(status_code=422, detail=f"Invalid confirmed values: {e}")

@@ -101,6 +101,20 @@ function cacheSet(key: string, data: unknown): void {
   } catch { /* storage full — ignore */ }
 }
 
+interface NormalizedGcodeOutput {
+  label: string;
+  gcode: string;
+  stationNumber?: number;
+  lineCount: number;
+}
+
+interface RawGcodeOutputObject {
+  label?: unknown;
+  gcode?: unknown;
+  stationNumber?: unknown;
+  lineCount?: unknown;
+}
+
 interface OfflineQueueItem {
   id: string;
   url: string;
@@ -108,6 +122,39 @@ interface OfflineQueueItem {
   body?: string;
   timestamp: string;
   label: string;
+}
+
+function normalizeGcodeOutputs(data: any): NormalizedGcodeOutput[] {
+  const rawOutputs: unknown[] = Array.isArray(data?.outputs)
+    ? data.outputs
+    : Array.isArray(data?.gcodeOutputs)
+    ? data.gcodeOutputs
+    : [];
+
+  return rawOutputs
+    .map((entry: unknown, index: number): NormalizedGcodeOutput | null => {
+      if (typeof entry === "string") {
+        return {
+          label: `program_${index + 1}`,
+          gcode: entry,
+          lineCount: entry.split(/\r?\n/).length,
+        };
+      }
+      if (entry && typeof entry === "object") {
+        const candidate = entry as RawGcodeOutputObject;
+        if (typeof candidate.gcode !== "string") {
+          return null;
+        }
+        return {
+          label: typeof candidate.label === "string" && candidate.label.trim() ? candidate.label : `program_${index + 1}`,
+          gcode: candidate.gcode,
+          stationNumber: typeof candidate.stationNumber === "number" ? candidate.stationNumber : undefined,
+          lineCount: typeof candidate.lineCount === "number" ? candidate.lineCount : candidate.gcode.split(/\r?\n/).length,
+        };
+      }
+      return null;
+    })
+    .filter((entry: NormalizedGcodeOutput | null): entry is NormalizedGcodeOutput => entry !== null);
 }
 
 function queueOfflineRequest(url: string, method: string, body?: string, label?: string): void {
@@ -300,7 +347,10 @@ export async function generateGcode(
       throw new Error(err.error || "Generation failed");
     }
     const data = await res.json();
-    EngineLogger.logResult("GCode", { outputs: data?.gcodeOutputs?.length ?? 0 });
+    const outputs = normalizeGcodeOutputs(data);
+    data.outputs = outputs;
+    data.gcodeOutputs = outputs;
+    EngineLogger.logResult("GCode", { outputs: outputs.length });
     return data;
   });
 }
