@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "score": 100,
+  "requiredSafeZ": 13,
+  "actualBendSequence": [-1, 1, -1],
+  "issueCodes": []
+}

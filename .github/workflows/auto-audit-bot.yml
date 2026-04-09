@@ -1,0 +1,77 @@
+name: Auto Audit Bot
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+      - 'release/*'
+
+jobs:
+  auto-audit:
+    name: auto-audit
+    runs-on: ubuntu-latest
+    env:
+      NODE_ENV: test
+
+    steps:
+      # Pull the exact commit to ensure audit checks run on authoritative code.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Standardize Node runtime for deterministic audit and test behavior.
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      # Install locked dependencies for reproducible CI safety validation.
+      - name: Install dependencies
+        run: npm ci
+
+      # Enforce coding standards that prevent risky patterns in CNC/control paths.
+      - name: Run lint
+        run: npm run lint
+        continue-on-error: false
+
+      # Catch TypeScript contract and null-safety regressions before runtime.
+      - name: Run typecheck
+        run: npm run typecheck
+        continue-on-error: false
+
+      # Execute unit tests serially to reduce flakiness in safety-critical logic.
+      - name: Run unit tests
+        run: npm test -- --runInBand
+        continue-on-error: false
+
+      # Verify geometry invariants used by roll-forming station generation.
+      - name: Run geometry contract tests
+        run: npm run test:geometry --if-present
+        continue-on-error: false
+
+      # Validate export pipeline integrity for downstream manufacturing packages.
+      - name: Run export tests
+        run: npm run test:export --if-present
+        continue-on-error: false
+
+      # Ensure export outputs are deterministic for traceability and audits.
+      - name: Run deterministic export check
+        run: npm run test:deterministic --if-present
+        continue-on-error: false
+
+      # Enforce G-code safety checks before code reaches deployment branches.
+      - name: Run G-code safety validator
+        run: npm run validate:gcode --if-present
+        continue-on-error: false
+
+      # Preserve generated audit evidence for compliance and incident review.
+      - name: Upload audit report artifacts
+        if: ${{ always() && hashFiles('reports/audit/**') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-reports
+          path: reports/audit/
+          if-no-files-found: error

@@ -1,0 +1,197 @@
+import { Router, type IRouter, type Request, type Response } from "express";
+import multer from "multer";
+import { parseDxfContent } from "../lib/dxf-parser-util";
+import { normalizeGeometry } from "../lib/geometry-normalizer";
+import { extractDimensions } from "../lib/geometry-dimension-engine";
+import { execSync, execFileSync } from "child_process";
+import { writeFileSync, readFileSync, mkdirSync, existsSync, readdirSync, rmSync } from "fs";
+import { join } from "path";
+import { tmpdir } from "os";
+
+const router: IRouter = Router();
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 50 * 1024 * 1024 } });
+
+interface MulterRequest extends Request {
+  file?: Express.Multer.File;
+}
+
+const NIX_DWG2DXF_PATHS = [
+  "/nix/store/qlsrrnhdij42y9a8js3088dk4fz59sqk-libredwg-0.13.3/bin/dwg2dxf",
+  "/nix/store/0dqdk5y8qyj0nv4jpv01f2wx8j0rmdb9-libredwg-0.13.3/bin/dwg2dxf",
+  "/nix/store/1vylg5ciz6s4n0nn6bwv6bms8n257dy5-libredwg-0.12.5.6313/bin/dwg2dxf",
+  "/nix/store/0hwpb5bkw820w7w6qppbk5gg85avhjlz-libredwg-0.12.4/bin/dwg2dxf",
+];
+
+function findDwg2DxfBinary(): string | null {
+  for (const p of NIX_DWG2DXF_PATHS) {
+    if (existsSync(p)) return p;
+  }
+  try {
+    const fromWhich = execSync("which dwg2dxf 2>/dev/null", { timeout: 3000 }).toString().trim();
+    if (fromWhich && existsSync(fromWhich)) return fromWhich;
+  } catch {
+    // ignore
+  }
+  return null;
+}
+
+function validateImportReconstruction(
+  geometry: { segments: Array<{ type: string }>; boundingBox: { width: number; height: number } },
+  rawGeometry: { importDiagnostics?: { curvedSourceEntityCount?: number; isLikelyStraightLineCollapse?: boolean } }
+): string | null {
+  const curvedSourceEntityCount = rawGeometry.importDiagnostics?.curvedSourceEntityCount ?? 0;
+  const reconstructedArcSegments = geometry.segments.filter(segment => segment.type === "arc").length;
+  const width = Math.abs(geometry.boundingBox.width ?? 0);
+  const height = Math.abs(geometry.boundingBox.height ?? 0);
+  const nearStraight = height <= Math.max(0.5, width * 0.01);
+  const flaggedByParser = rawGeometry.importDiagnostics?.isLikelyStraightLineCollapse === true;
+
+  if (curvedSourceEntityCount > 0 && (reconstructedArcSegments === 0 || nearStraight || flaggedByParser)) {
+    return "Profile import failed: arc/spline reconstruction incomplete";
+  }
+
+  return null;
+}
+
+const dwg2dxfBinary = findDwg2DxfBinary();
+console.log("[DWG] Converter binary:", dwg2dxfBinary ?? "NOT FOUND");
+
+function convertDwgToDxf(buffer: Buffer): string | null {
+  const binary = dwg2dxfBinary;
+  if (!binary) return null;
+
+  const tempDir = join(tmpdir(), `dwg-convert-${Date.now()}`);
+  try {
+    mkdirSync(tempDir, { recursive: true });
+    const inputFile = join(tempDir, "drawing.dwg");
+    const outputFile = join(tempDir, "drawing.dxf");
+    writeFileSync(inputFile, buffer);
+
+    execFileSync(binary, ["-y", "-o", outputFile, inputFile], {
+      timeout: 30000,
+      cwd: tempDir,
+    });
+
+    if (existsSync(outputFile)) {
+      return readFileSync(outputFile, "utf-8");
+    }
+
+    const files = readdirSync(tempDir).filter((f) => f.toLowerCase().endsWith(".dxf"));
+    if (files.length === 0) return null;
+    return readFileSync(join(tempDir, files[0]!), "utf-8");
+  } catch (err) {
+    console.error("[DWG] conversion error:", err instanceof Error ? err.message : err);
+    return null;
+  } finally {
+    try {
+      rmSync(tempDir, { recursive: true, force: true });
+    } catch {
+      // ignore cleanup failure
+    }
+  }
+}
+
+router.post("/upload-dxf", upload.single("file"), (req: MulterRequest, res: Response) => {
+  try {
+    if (!req.file) {
+      res.status(400).json({ error: "No file uploaded" });
+      return;
+    }
+
+    const originalName = req.file.originalname || "";
+    const ext = originalName.toLowerCase().split(".").pop();
+
+    if (ext === "dwg") {
+      if (dwg2dxfBinary) {
+        const dxfContent = convertDwgToDxf(req.file.buffer);
+        if (dxfContent) {
+          const rawGeometry = parseDxfContent(dxfContent);
+          const { geometry, health } = normalizeGeometry(rawGeometry);
+          const reconstructionError = validateImportReconstruction(geometry, rawGeometry);
+          if (reconstructionError) {
+            res.status(422).json({
+              error: reconstructionError,
+              health,
+              importDebug: rawGeometry.importDiagnostics ?? null,
+              formatHint: "curve_reconstruction_failed",
+            });
+            return;
+          }
+
+          const dimensions = extractDimensions(geometry);
+          res.json({
+            success: true,
+            geometry,
+            health,
+            dimensions,
+            importDebug: rawGeometry.importDiagnostics ?? null,
+            fileName: originalName,
+            segmentCount: geometry.segments.length,
+            bendCount: geometry.bends.length,
+            convertedFrom: "dwg",
+            message: health.isValid
+              ? "DWG converted and parsed successfully"
+              : `DWG parsed with issues: ${health.message}`,
+          });
+          return;
+        }
+
+        res.status(400).json({
+          error: "DWG conversion failed. The file may be corrupted or unsupported. Save as DXF from AutoCAD (File > Save As > DXF R2018) and try again.",
+          formatHint: "dwg_conversion_failed",
+        });
+        return;
+      }
+
+      res.status(400).json({
+        error: "DWG converter is not available on this server. Open the DWG in AutoCAD and export as DXF (File > Save As > DXF).",
+        formatHint: "dwg_unsupported",
+      });
+      return;
+    }
+
+    const content = req.file.buffer.toString("utf-8");
+    const rawGeometry = parseDxfContent(content);
+    const { geometry, health } = normalizeGeometry(rawGeometry);
+    const reconstructionError = validateImportReconstruction(geometry, rawGeometry);
+    if (reconstructionError) {
+      res.status(422).json({
+        error: reconstructionError,
+        health,
+        importDebug: rawGeometry.importDiagnostics ?? null,
+        formatHint: "curve_reconstruction_failed",
+      });
+      return;
+    }
+
+    const dimensions = extractDimensions(geometry);
+    if (geometry.segments.length === 0) {
+      res.status(422).json({
+        error: "DXF parsed but no geometry found. The file may contain only non-graphical data or unsupported entities.",
+        health,
+        importDebug: rawGeometry.importDiagnostics ?? null,
+        formatHint: "no_geometry",
+      });
+      return;
+    }
+
+    res.json({
+      success: true,
+      geometry,
+      health,
+      dimensions,
+      importDebug: rawGeometry.importDiagnostics ?? null,
+      fileName: originalName,
+      segmentCount: geometry.segments.length,
+      bendCount: geometry.bends.length,
+      message: health.isValid
+        ? `Parsed ${geometry.segments.length} segments, ${geometry.bends.length} bends`
+        : `Parsed with ${health.issues.length} issue(s): ${health.message}`,
+    });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Failed to parse DXF file";
+    res.status(400).json({ error: message });
+  }
+});
+
+export default router;

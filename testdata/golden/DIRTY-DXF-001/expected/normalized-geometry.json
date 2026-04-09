@@ -1,0 +1,20 @@
+{
+  "status": "RECOVERED",
+  "normalizationActions": [
+    "removed_duplicate_vertices",
+    "collapsed_near_zero_segments",
+    "closed_open_polyline_gap",
+    "enforced_clockwise_winding"
+  ],
+  "toleranceMm": 0.1,
+  "normalizedGeometry": {
+    "units": "mm",
+    "polyline": [
+      [0, 0],
+      [20, 0],
+      [40, 10],
+      [60, 10],
+      [0, 0]
+    ]
+  }
+}

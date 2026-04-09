@@ -1,0 +1,13 @@
+# Default owners
+* @sai-rolotech/platform
+
+# CNC safety validator and tests
+/artifacts/design-tool/src/validators/ @sai-rolotech/cnc-safety @sai-rolotech/frontend
+
+# Golden regression corpus
+/testdata/golden/ @sai-rolotech/cnc-safety @sai-rolotech/qa
+
+# Validation scripts and automation
+/scripts/validateGcode.ts @sai-rolotech/cnc-safety @sai-rolotech/platform
+/scripts/validateGoldenCorpus.ts @sai-rolotech/cnc-safety @sai-rolotech/qa
+/scripts/testDeterministicExport.ts @sai-rolotech/cnc-safety @sai-rolotech/platform

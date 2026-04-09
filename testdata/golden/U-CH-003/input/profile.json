@@ -1,0 +1,23 @@
+{
+  "caseId": "U-CH-003",
+  "partName": "Symmetric U-Channel",
+  "material": {
+    "type": "MS",
+    "thicknessMm": 2,
+    "springbackFactor": 1.04
+  },
+  "geometry": {
+    "webWidthMm": 50,
+    "flangeHeightMm": 25,
+    "insideRadiusMm": 3
+  },
+  "machineProfile": {
+    "machineName": "SRX-1000",
+    "minSafeZ": 12
+  },
+  "safety": {
+    "highestMaterialZ": 8,
+    "safeClearanceMm": 5
+  },
+  "expectedBendSequence": [-1, 1, -1]
+}
