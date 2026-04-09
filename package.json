@@ -1,0 +1,39 @@
+{
+  "name": "cloud-code-extension",
+  "displayName": "Cloud Code Extension",
+  "description": "A Visual Studio Code extension for cloud code development.",
+  "version": "0.0.1",
+  "publisher": "your-name",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "activationEvents": [
+    "onCommand:cloudCode.run",
+    "onCommand:cloudCode.deploy"
+  ],
+  "main": "./src/extension.ts",
+  "contributes": {
+    "commands": [
+      {
+        "command": "cloudCode.run",
+        "title": "Run Cloud Code"
+      },
+      {
+        "command": "cloudCode.deploy",
+        "title": "Deploy Cloud Code"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./tsconfig.json",
+    "watch": "tsc -watch -p ./tsconfig.json",
+    "postinstall": "node ./out/src/install.js"
+  },
+  "devDependencies": {
+    "typescript": "^4.4.3",
+    "vscode": "^1.1.37",
+    "ts-loader": "^9.2.6"
+  },
+  "dependencies": {}
+}
