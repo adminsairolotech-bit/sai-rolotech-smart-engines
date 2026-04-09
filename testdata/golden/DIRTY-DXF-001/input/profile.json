@@ -1,0 +1,19 @@
+{
+  "caseId": "DIRTY-DXF-001",
+  "source": "legacy_supplier_profile.dxf",
+  "notes": "Duplicate vertices, near-zero segments, mixed winding order, and minor open gap.",
+  "rawGeometry": {
+    "units": "mm",
+    "polyline": [
+      [0, 0],
+      [0.001, 0],
+      [20, 0],
+      [20, 0],
+      [40, 10],
+      [40, 10.0002],
+      [60, 10],
+      [60, 9.998],
+      [0, 0.05]
+    ]
+  }
+}

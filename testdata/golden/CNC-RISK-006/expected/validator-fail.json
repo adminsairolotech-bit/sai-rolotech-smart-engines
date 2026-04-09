@@ -1,0 +1,11 @@
+{
+  "status": "FAIL",
+  "score": 0,
+  "requiredSafeZ": 15,
+  "actualBendSequence": [-1, 1],
+  "issueCodes": [
+    "MISSING_METRIC_MODE",
+    "UNSAFE_LATERAL_MOVE",
+    "MISSING_FINAL_RETRACT"
+  ]
+}
