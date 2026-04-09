@@ -11,7 +11,8 @@
     "build": "tsc --build",
     "typecheck": "tsc --noEmit",
     "push": "drizzle-kit push --config ./drizzle.config.ts",
-    "push-force": "drizzle-kit push --force --config ./drizzle.config.ts"
+    "push-force": "drizzle-kit push --force --config ./drizzle.config.ts",
+    "start": "node -e \"console.log('@workspace/db is a library workspace and has no runtime server.')\""
   },
   "dependencies": {
     "drizzle-orm": "catalog:",

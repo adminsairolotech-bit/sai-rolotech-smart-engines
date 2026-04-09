@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "codegen": "orval --config ./orval.config.ts"
+    "codegen": "orval --config ./orval.config.ts",
+    "start": "node -e \"console.log('@workspace/api-spec is a library workspace and has no runtime server.')\""
   },
   "devDependencies": {
     "orval": "^8.5.2"
