@@ -57,3 +57,23 @@ export async function fetchHealth() {
   const res = await fetch(`${BASE}/health`);
   return res.json();
 }
+
+export async function semiAutoConfirm(payload: {
+  confirmed: ManualModePayload & {
+    station_count?: number;
+    shaft_mm?: number;
+    bearing?: string;
+  };
+  original: Partial<ManualModePayload> & {
+    station_count?: number;
+    shaft_mm?: number;
+    bearing?: string;
+  };
+}) {
+  const res = await fetch(`${BASE}/semi-auto-confirm`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}

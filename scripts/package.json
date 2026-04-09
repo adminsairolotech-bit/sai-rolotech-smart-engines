@@ -9,6 +9,7 @@
     "validate:gcode": "tsx ./validateGcode.ts",
     "validate:golden": "tsx ./validateGoldenCorpus.ts",
     "test:deterministic-export": "tsx ./testDeterministicExport.ts"
+    "start": "tsx ./src/hello.ts"
   },
   "devDependencies": {
     "@types/node": "catalog:",

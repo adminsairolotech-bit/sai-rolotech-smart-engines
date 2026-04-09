@@ -8,5 +8,8 @@
   },
   "dependencies": {
     "zod": "catalog:"
+  },
+  "scripts": {
+    "start": "node -e \"console.log('@workspace/api-zod is a library workspace and has no runtime server.')\""
   }
 }

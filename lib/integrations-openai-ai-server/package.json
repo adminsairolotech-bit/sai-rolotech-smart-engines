@@ -18,5 +18,8 @@
   },
   "devDependencies": {
     "@types/node": "catalog:"
+  },
+  "scripts": {
+    "start": "node -e \"console.log('@workspace/integrations-openai-ai-server is a library workspace and has no standalone runtime server.')\""
   }
 }

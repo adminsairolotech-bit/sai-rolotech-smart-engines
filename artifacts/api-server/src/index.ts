@@ -9,11 +9,7 @@ import { SAI_ERROR_BRAND } from "./lib/ai-confidentiality";
 
 const IS_PRODUCTION = process.env["NODE_ENV"] === "production";
 
-const PORT = process.env["PORT"]
-  ? parseInt(process.env["PORT"])
-  : process.env["API_PORT"]
-  ? parseInt(process.env["API_PORT"])
-  : 8080;
+const PORT = Number(process.env.PORT || 3000);
 
 const FRONTEND_DIST = (() => {
   if (process.env["FRONTEND_DIST"] && existsSync(path.join(process.env["FRONTEND_DIST"], "index.html"))) {
