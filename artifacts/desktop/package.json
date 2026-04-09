@@ -21,7 +21,8 @@
     "dist:installer": "pnpm run build && electron-builder --win nsis",
     "dist:portable": "pnpm run build && electron-builder --win portable",
     "dist:all": "pnpm run build && electron-builder --win nsis portable",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "start": "electron ."
   },
   "dependencies": {
     "electron-updater": "^6.3.9"
