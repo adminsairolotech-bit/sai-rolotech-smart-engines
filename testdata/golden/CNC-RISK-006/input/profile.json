@@ -1,0 +1,18 @@
+{
+  "caseId": "CNC-RISK-006",
+  "partName": "Aggressive Bend With Low Retract",
+  "material": {
+    "type": "SS",
+    "thicknessMm": 3.2,
+    "springbackFactor": 1.08
+  },
+  "machineProfile": {
+    "machineName": "SRX-ALPHA",
+    "minSafeZ": 14
+  },
+  "safety": {
+    "highestMaterialZ": 9,
+    "safeClearanceMm": 6
+  },
+  "expectedBendSequence": [-1, 1]
+}

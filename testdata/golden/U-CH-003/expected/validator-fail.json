@@ -1,0 +1,10 @@
+{
+  "status": "FAIL",
+  "score": 0,
+  "requiredSafeZ": 13,
+  "actualBendSequence": [-1, 1, -1],
+  "issueCodes": [
+    "UNSAFE_LATERAL_MOVE",
+    "MISSING_FINAL_RETRACT"
+  ]
+}

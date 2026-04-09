@@ -11,7 +11,10 @@
     "integrity:generate": "node tools/integrity-generate.mjs",
     "integrity:verify": "node tools/integrity-verify.mjs",
     "integrity:repair": "node tools/integrity-verify.mjs --repair",
-    "check:imports": "node tools/import-check.mjs"
+    "check:imports": "node tools/import-check.mjs",
+    "gcode:validate": "pnpm --filter @workspace/scripts run validate:gcode",
+    "golden:validate": "pnpm --filter @workspace/scripts run validate:golden",
+    "export:determinism": "pnpm --filter @workspace/scripts run test:deterministic-export"
   },
   "private": true,
   "devDependencies": {
