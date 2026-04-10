@@ -41,6 +41,19 @@ from .level4_fea_engine import (
     DieOptimizationConfig,
 )
 
+# Solver management (Level 3 solver detection)
+from .solver_manager import (
+    detect_all_solvers,
+    detect_calculix,
+    detect_abaqus,
+    run_solver,
+    SolverInfo,
+    get_calculix_install_instructions,
+    get_platform,
+    CALCULIX_AVAILABLE,
+    ABAQUS_AVAILABLE,
+)
+
 __all__ = [
     # Level 3 FEA
     "StripMesh", "RollSurface", "generate_strip_mesh", "generate_roll_rigid_surface",
@@ -49,6 +62,11 @@ __all__ = [
     "write_calculix_deck", "write_abaqus_deck", "FEADeckPaths",
     "import_calculix_results", "import_abaqus_odb_text", "FEAResults",
     "run_fea_pipeline", "FEAPipelineResult",
+    # Solver management
+    "detect_all_solvers", "detect_calculix", "detect_abaqus",
+    "run_solver", "SolverInfo",
+    "get_calculix_install_instructions", "get_platform",
+    "CALCULIX_AVAILABLE", "ABAQUS_AVAILABLE",
     # Level 4 FEA
     "Level4FEAPipeline",
     "Level4Config",

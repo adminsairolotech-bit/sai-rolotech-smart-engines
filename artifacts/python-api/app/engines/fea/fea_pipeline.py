@@ -32,7 +32,6 @@ Benchmark case:
 """
 
 import os
-import shutil
 import subprocess
 import math
 import time
@@ -48,6 +47,21 @@ from .material_cards import FEAMaterialCard, build_material_card
 from .contact_setup import ContactSetup, build_contact_setup
 from .deck_writer import FEADeckPaths, write_calculix_deck, write_abaqus_deck
 from .result_importer import FEAResults, import_calculix_results, import_abaqus_odb_text
+from .solver_manager import (
+    detect_all_solvers,
+    detect_calculix,
+    detect_abaqus,
+    run_solver,
+    SolverInfo,
+    CALCULIX_AVAILABLE,
+    ABAQUS_AVAILABLE,
+)
+
+
+# ---------------------------------------------------------------------------
+# Solver status (detected on import)
+# ---------------------------------------------------------------------------
+SOLVER_STATUS = detect_all_solvers()
 
 
 # ---------------------------------------------------------------------------
@@ -129,24 +143,12 @@ def detect_solver(backend: str) -> tuple:
     Returns (available: bool, binary_path: str, version_note: str)
     """
     if backend == "calculix":
-        binary = shutil.which("ccx")
-        if binary:
-            try:
-                out = subprocess.run(
-                    [binary, "-v"],
-                    capture_output=True, text=True, timeout=5
-                )
-                ver = out.stdout.strip() or out.stderr.strip() or "version unknown"
-                return True, binary, ver[:80]
-            except Exception:
-                return True, binary, "version check failed"
-        return False, "ccx (not found on PATH)", "not installed"
+        solver = detect_calculix()
+        return solver.available, solver.binary, solver.version
 
     elif backend == "abaqus":
-        binary = shutil.which("abaqus")
-        if binary:
-            return True, binary, "Abaqus (commercial, licence required)"
-        return False, "abaqus (not found on PATH)", "not installed — commercial licence required"
+        solver = detect_abaqus()
+        return solver.available, solver.binary, solver.version
 
     else:
         raise ValueError(f"Unknown backend: {backend!r}. Use 'calculix' or 'abaqus'.")

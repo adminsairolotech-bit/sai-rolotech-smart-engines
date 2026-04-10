@@ -2088,3 +2088,126 @@ def endpoint_level4_die_optimization(body: dict):
         logger.error("level4-optimize error: %s", exc, exc_info=True)
         return {"status": "fail", "reason": str(exc)}
 
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# FEA SOLVER STATUS — Level 3
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@router.get("/fea-solver-status")
+def endpoint_fea_solver_status():
+    """
+    Check FEA solver availability (Level 3)
+
+    Returns status of CalculiX and Abaqus solvers
+    with installation instructions if not found
+    """
+    try:
+        from app.engines.fea.solver_manager import (
+            detect_all_solvers,
+            get_calculix_install_instructions,
+            get_platform
+        )
+
+        solvers = detect_all_solvers()
+        platform = get_platform()
+
+        return {
+            "status": "pass",
+            "platform": platform,
+            "solvers": {
+                "calculix": {
+                    "available": solvers['calculix'].available,
+                    "binary": solvers['calculix'].binary,
+                    "version": solvers['calculix'].version,
+                    "install_instructions": (
+                        solvers['calculix'].install_instructions
+                        if not solvers['calculix'].available else ""
+                    )
+                },
+                "abaqus": {
+                    "available": solvers['abaqus'].available,
+                    "binary": solvers['abaqus'].binary,
+                    "version": solvers['abaqus'].version,
+                    "install_instructions": (
+                        solvers['abaqus'].install_instructions
+                        if not solvers['abaqus'].available else ""
+                    )
+                }
+            },
+            "wsl_available": platform == "windows",
+            "recommendation": (
+                "Install CalculiX via WSL for free FEA support"
+                if platform == "windows" and not solvers['calculix'].available
+                else "Ready to run FEA" if solvers['calculix'].available
+                else "Install CalculiX to enable Level 3 FEA"
+            )
+        }
+
+    except Exception as exc:
+        logger.error("fea-solver-status error: %s", exc, exc_info=True)
+        return {"status": "fail", "reason": str(exc)}
+
+
+@router.post("/fea-run-solver")
+def endpoint_fea_run_solver(body: dict):
+    """
+    Run FEA solver on pre-generated deck
+
+    Body:
+        job_name: Job name (without extension)
+        backend: 'calculix' or 'abaqus'
+        input_file: Path to input deck (optional, defaults to job_name.inp)
+        timeout: Timeout in seconds (default 300)
+
+    Returns solver results
+    """
+    try:
+        from app.engines.fea.solver_manager import run_solver, detect_calculix
+
+        job_name = str(body.get("job_name", "roll_forming"))
+        backend = str(body.get("backend", "calculix"))
+        input_file = str(body.get("input_file", job_name + ".inp"))
+        timeout = int(body.get("timeout", 300))
+
+        # Get solver binary
+        if backend == "calculix":
+            solver = detect_calculix()
+            if not solver.available:
+                return {
+                    "status": "fail",
+                    "reason": "CalculiX not found",
+                    "install_instructions": solver.install_instructions
+                }
+            binary = solver.binary
+        else:
+            return {
+                "status": "fail",
+                "reason": f"Abaqus not implemented in this endpoint. Use CalculiX."
+            }
+
+        # Run solver
+        import tempfile
+        import os
+
+        # Use temp directory or current directory
+        working_dir = body.get("working_dir", tempfile.gettempdir())
+
+        result = run_solver(
+            binary=binary,
+            job_name=job_name,
+            input_file=input_file,
+            working_dir=working_dir,
+            timeout=timeout
+        )
+
+        return {
+            "status": "pass" if result['success'] else "fail",
+            "backend": backend,
+            "job_name": job_name,
+            "solver_result": result
+        }
+
+    except Exception as exc:
+        logger.error("fea-run-solver error: %s", exc, exc_info=True)
+        return {"status": "fail", "reason": str(exc)}
+
