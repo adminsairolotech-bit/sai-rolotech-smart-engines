@@ -15,13 +15,17 @@ import {
 
 const IS_DEV = import.meta.env.DEV;
 
+// Default credentials
+const DEFAULT_EMAIL = "sairolotech@gmail.com";
+const DEFAULT_MOBILE = "V9667146889";
+
 interface Props {
   onForgotPassword?: () => void;
 }
 
 export function LoginPage({ onForgotPassword }: Props) {
   const { login, signup, loginWithGoogle, loginWithGitHub, loginWithPhone, verifyOTP, otpConfirmation, devLogin, loginWithBiometric, loginWithCrossDevice, loading, error: storeError } = useAuthStore();
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(DEFAULT_EMAIL);
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [isSignup, setIsSignup] = useState(false);
@@ -29,7 +33,7 @@ export function LoginPage({ onForgotPassword }: Props) {
   const [localError, setLocalError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [loginMode, setLoginMode] = useState<"email" | "phone">("email");
-  const [phoneNumber, setPhoneNumber] = useState("+91");
+  const [phoneNumber, setPhoneNumber] = useState(DEFAULT_MOBILE);
   const [otpCode, setOtpCode] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const recaptchaContainerId = "recaptcha-container";
@@ -718,6 +722,21 @@ export function LoginPage({ onForgotPassword }: Props) {
           <p className="text-center text-[11px] text-zinc-700 mt-6">
             Secured access — authorized personnel only
           </p>
+
+          {/* Contact Info */}
+          <div className="mt-6 p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+            <p className="text-[10px] text-zinc-500 mb-2 text-center">Contact Support</p>
+            <div className="flex items-center justify-center gap-4">
+              <a href={`mailto:${DEFAULT_EMAIL}`} className="flex items-center gap-1.5 text-xs text-zinc-400 hover:text-orange-400 transition-colors">
+                <Mail className="w-3.5 h-3.5" />
+                {DEFAULT_EMAIL}
+              </a>
+              <a href={`https://wa.me/${DEFAULT_MOBILE.replace('V', '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-xs text-zinc-400 hover:text-orange-400 transition-colors">
+                <Phone className="w-3.5 h-3.5" />
+                {DEFAULT_MOBILE}
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
