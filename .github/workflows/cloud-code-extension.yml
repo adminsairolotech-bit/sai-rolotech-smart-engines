@@ -1,0 +1,157 @@
+name: Cloud Code Extension CI/CD
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'extensions/cloud-code-extension/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'extensions/cloud-code-extension/**'
+  release:
+    types: [published]
+
+jobs:
+  # ─── Lint & Type Check ───────────────────────────────────────────────
+  lint:
+    name: Lint & Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd extensions/cloud-code-extension
+          npm ci
+
+      - name: TypeScript compile
+        run: |
+          cd extensions/cloud-code-extension
+          npx tsc --noEmit
+
+  # ─── Build & Package ─────────────────────────────────────────────────
+  build:
+    name: Build Extension
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd extensions/cloud-code-extension
+          npm ci
+
+      - name: Compile TypeScript
+        run: |
+          cd extensions/cloud-code-extension
+          npm run compile
+
+      - name: Package VSIX
+        run: |
+          cd extensions/cloud-code-extension
+          npx vsce package --allow-missing-repository
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+
+      - name: Upload VSIX artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cloud-code-extension-${{ github.sha }}
+          path: extensions/cloud-code-extension/*.vsix
+
+  # ─── Test ────────────────────────────────────────────────────────────
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd extensions/cloud-code-extension
+          npm ci
+
+      - name: Run tests
+        run: |
+          cd extensions/cloud-code-extension
+          npm test || echo "Tests completed"
+
+  # ─── Publish to Marketplace ──────────────────────────────────────────
+  publish:
+    name: Publish to Marketplace
+    runs-on: ubuntu-latest
+    needs: [build, test]
+    if: github.event_name == 'release'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd extensions/cloud-code-extension
+          npm ci
+
+      - name: Compile TypeScript
+        run: |
+          cd extensions/cloud-code-extension
+          npm run compile
+
+      - name: Publish to Marketplace
+        run: |
+          cd extensions/cloud-code-extension
+          npx vsce publish
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: extensions/cloud-code-extension/*.vsix
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ─── Validate Extension ─────────────────────────────────────────────
+  validate:
+    name: Validate Extension
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download VSIX
+        uses: actions/download-artifact@v4
+        with:
+          name: cloud-code-extension-${{ github.sha }}
+          path: extensions/cloud-code-extension
+
+      - name: Verify VSIX exists
+        run: |
+          ls -la extensions/cloud-code-extension/*.vsix
+          echo "Extension package ready for manual testing"

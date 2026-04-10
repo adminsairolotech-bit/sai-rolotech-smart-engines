@@ -1,13 +1,24 @@
 {
   "name": "cloud-code-extension",
   "displayName": "Cloud Code Extension",
-  "description": "Sai Rolotech Cloud Code Extension for VS Code - Roll Forming Engineering Suite",
+  "description": "AI-powered VS Code extension for Roll Forming Engineering - Profile Design, Flower Pattern, Roll Tooling CAD, Springback Calculator & G-Code Safety Validator",
   "version": "0.0.1",
   "publisher": "sai-rolotech",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adminsairolotech-bit/sai-rolotech-smart-engines"
+  },
   "engines": {
     "vscode": "^1.96.0"
   },
   "main": "./dist/extension.js",
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -w",
+    "package": "vsce package",
+    "publish": "vsce publish",
+    "test": "node ./src/test/suite/extension.test.js"
+  },
   "activationEvents": [
     "onCommand:cloudCode.openDashboard",
     "onCommand:cloudCode.helloWorld",
@@ -265,12 +276,6 @@
         }
       }
     }
-  },
-  "scripts": {
-    "compile": "tsc -p ./",
-    "watch": "tsc -w",
-    "package": "vsce package",
-    "publish": "vsce publish"
   },
   "devDependencies": {
     "@types/node": "^25.5.2",

@@ -27,14 +27,29 @@ VS Code extension for Roll Forming Engineering Suite — Profile Design, Flower 
 
 ## Quick Start
 
-### 1. Install Extension
+### Option 1: Install from .vsix (Recommended)
+1. Download `cloud-code-extension-0.0.1.vsix`
+2. Open VS Code
+3. Extensions panel → `...` menu → `Install from VSIX`
+4. Select the downloaded .vsix file
+
+### Option 2: Build from Source
 ```bash
-# Open terminal in extension folder
-cd extensions/cloud-code-extension
+# Clone repository
+git clone https://github.com/adminsairolotech-bit/sai-rolotech-smart-engines.git
+cd sai-rolotech-smart-engines/extensions/cloud-code-extension
+
+# Install dependencies
 npm install
+
+# Build extension
 npm run compile
+
+# Package as .vsix
 npm run package
-# Install cloud-code-extension-0.0.1.vsix in VS Code
+
+# Install in VS Code
+# Extensions panel → `...` → Install from VSIX
 ```
 
 ### 2. Setup Local AI (Optional but Recommended)
