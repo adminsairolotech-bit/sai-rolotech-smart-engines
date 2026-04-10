@@ -115,6 +115,10 @@
         "title": "FEA Simulation — COPRA-RF"
       },
       {
+        "command": "cloudCode.openLevel4FEA",
+        "title": "🔬 Level 4 FEA — Full CAE (Hill48/Barlat/Anisotropy)"
+      },
+      {
         "command": "cloudCode.openProcessCard",
         "title": "Process Card — COPRA-RF"
       },

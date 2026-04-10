@@ -1922,3 +1922,169 @@ def endpoint_material_model(code: str):
     except Exception as exc:
         logger.error("material-model error: %s", exc, exc_info=True)
         return {"status": "fail", "reason": str(exc)}
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# LEVEL 4 FEA — COPRA Level 4 Full CAE
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@router.post("/level4-fea")
+def endpoint_level4_fea(body: dict):
+    """
+    COPRA Level 4 Full CAE Simulation
+
+    Full 3D Nonlinear FEA with:
+    - Complete die geometry from roll contour
+    - Springback + residual stress coupling
+    - Material anisotropy (Hill48, Barlat YLD2000p)
+    - Friction calibration
+    - Iterative die face optimization
+
+    Body:
+      profile_result       — from profile_analysis_engine
+      roll_contour_result  — from roll_contour_engine
+      material             — Material code (GI, CR, SS, DP780, etc.)
+      thickness_mm         — Sheet thickness in mm
+      config (optional)    — Configuration overrides
+
+    Returns comprehensive Level 4 FEA results
+    """
+    try:
+        from app.engines.fea.level4_fea_engine import run_level4_fea, Level4Config, Mesh3DConfig, DieOptimizationConfig
+
+        profile_r = body.get("profile_result", {})
+        roll_contour_r = body.get("roll_contour_result", {})
+        material = str(body.get("material", "GI")).upper()
+        thickness = float(body.get("thickness_mm", 2.0))
+
+        # Custom config if provided
+        config = body.get("config", {})
+
+        result = run_level4_fea(
+            profile_result=profile_r,
+            roll_contour_result=roll_contour_r,
+            material=material,
+            thickness=thickness,
+            config=config
+        )
+
+        return result
+
+    except Exception as exc:
+        logger.error("level4-fea error: %s", exc, exc_info=True)
+        return {"status": "fail", "reason": str(exc)}
+
+
+@router.get("/level4-material-anisotropy/{code}")
+def endpoint_level4_anisotropy(code: str):
+    """
+    Get material anisotropy data for Level 4 FEA
+
+    Returns Hill48 R-values and Barlat YLD2000p parameters
+    """
+    try:
+        from app.engines.fea.level4_fea_engine import MaterialAnisotropyData
+
+        material = code.upper()
+        data = MaterialAnisotropyData.from_material(material, 2.0)
+
+        return {
+            "status": "pass",
+            "material_code": material,
+            "r_values": {
+                "R0_deg_0": data.R0,
+                "R45_deg_45": data.R45,
+                "R90_deg_90": data.R90,
+                "R_bar": data.R_bar
+            },
+            "yield_stress_mpa": {
+                "sigma_0": data.sigma0,
+                "sigma_45": data.sigma45,
+                "sigma_90": data.sigma90
+            },
+            "model_recommendation": "BarlatYLD2000p" if material.startswith("DP") or material.startswith("TRIP") else "Hill48"
+        }
+
+    except Exception as exc:
+        logger.error("level4-anisotropy error: %s", exc, exc_info=True)
+        return {"status": "fail", "reason": str(exc)}
+
+
+@router.get("/level4-friction/{material}/{lubricant}")
+def endpoint_level4_friction(material: str, lubricant: str):
+    """
+    Get friction calibration parameters for Level 4 FEA
+
+    Args:
+      material  — GI, CR, SS, AL, DP780, etc.
+      lubricant — dry, oil, phosphate, etc.
+    """
+    try:
+        from app.engines.fea.level4_fea_engine import FrictionCalibration
+
+        mat = material.upper()
+        lub = lubricant.lower()
+
+        friction = FrictionCalibration.from_test(mat, lub)
+
+        return {
+            "status": "pass",
+            "material": mat,
+            "lubricant": lub,
+            "friction_coefficients": {
+                "mu_0_initial": friction.mu_0,
+                "mu_d_die": friction.mu_d,
+                "pressure_sensitivity": friction.pressure_sensitivity
+            },
+            "note": "Use draw bead test for accurate calibration"
+        }
+
+    except Exception as exc:
+        logger.error("level4-friction error: %s", exc, exc_info=True)
+        return {"status": "fail", "reason": str(exc)}
+
+
+@router.post("/level4-optimize-die")
+def endpoint_level4_die_optimization(body: dict):
+    """
+    Run die face optimization loop
+
+    Iteratively adjusts die contour until formed geometry
+    matches target within tolerance
+
+    Body:
+      initial_contour  — Initial die contour points
+      target_geometry  — Target final geometry
+      material         — Material code
+      forming_params   — Forming parameters
+    """
+    try:
+        from app.engines.fea.level4_fea_engine import (
+            DieFaceOptimizer, DieOptimizationConfig
+        )
+
+        initial_contour = body.get("initial_contour", [])
+        target_geometry = body.get("target_geometry", [])
+        material = body.get("material", "GI")
+        forming_params = body.get("forming_params", {})
+
+        config = DieOptimizationConfig()
+        optimizer = DieFaceOptimizer(config)
+
+        result = optimizer.optimize(
+            initial_contour=initial_contour,
+            target_geometry=target_geometry,
+            material_props={"material": material},
+            forming_params=forming_params
+        )
+
+        return {
+            "status": "pass",
+            "level": 4,
+            "optimization": result
+        }
+
+    except Exception as exc:
+        logger.error("level4-optimize error: %s", exc, exc_info=True)
+        return {"status": "fail", "reason": str(exc)}
+

@@ -427,3 +427,98 @@ export async function aiChat(message: string, history?: Array<{ role: string; co
     body: JSON.stringify({ message, history }),
   }, 90000);
 }
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// LEVEL 4 FEA — COPRA Level 4 Full CAE
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export interface Level4FEAInput {
+  profile_result: unknown;
+  roll_contour_result: unknown;
+  material: string;
+  thickness_mm: number;
+  config?: {
+    mesh?: {
+      element_type?: string;
+      mesh_size_strip?: number;
+      mesh_size_die?: number;
+      min_elements_thickness?: number;
+    };
+    solver?: {
+      type?: 'implicit' | 'explicit';
+      max_increments?: number;
+    };
+    optimization?: {
+      max_iterations?: number;
+      convergence_tolerance?: number;
+    };
+  };
+}
+
+export interface Level4MaterialAnisotropy {
+  R_values: {
+    R0_deg_0: number;
+    R45_deg_45: number;
+    R90_deg_90: number;
+    R_bar: number;
+  };
+  yield_stress_mpa: {
+    sigma_0: number;
+    sigma_45: number;
+    sigma_90: number;
+  };
+  model_recommendation: string;
+}
+
+export interface Level4Friction {
+  friction_coefficients: {
+    mu_0_initial: number;
+    mu_d_die: number;
+    pressure_sensitivity: number;
+  };
+  lubricant: string;
+}
+
+export async function runLevel4FEA(params: Level4FEAInput): Promise<{
+  status: string;
+  level: number;
+  copra_compliance: string;
+  geometry?: {
+    strip_width_mm: number;
+    roll_radius_mm: number;
+    thickness_mm: number;
+  };
+  mesh?: {
+    total_nodes: number;
+    total_elements: number;
+    element_type: string;
+    mesh_quality: { quality_grade: string };
+  };
+  material?: Level4MaterialAnisotropy;
+  friction?: Level4Friction;
+  forming?: {
+    solver_type: string;
+    max_stress_mpa: number;
+    max_strain: number;
+    status: string;
+  };
+  springback?: {
+    springback_displacement_mm: number;
+    springback_angle_deg: number;
+  };
+  prerequisites?: string[];
+  limitations?: string[];
+}> {
+  return apiFetch(`${API_BASE}/level4-fea`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+  }, 30000);
+}
+
+export async function getLevel4Anisotropy(code: string): Promise<Level4MaterialAnisotropy> {
+  return apiFetch(`${API_BASE}/level4-material-anisotropy/${code}`, {}, 5000);
+}
+
+export async function getLevel4Friction(material: string, lubricant: string): Promise<Level4Friction> {
+  return apiFetch(`${API_BASE}/level4-friction/${material}/${lubricant}`, {}, 5000);
+}

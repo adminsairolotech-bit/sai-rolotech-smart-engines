@@ -456,6 +456,107 @@ export function activateCommands(context: vscode.ExtensionContext) {
         })
     );
 
+    // ============ LEVEL 4 FEA ============
+    context.subscriptions.push(
+        vscode.commands.registerCommand('cloudCode.openLevel4FEA', async () => {
+            const panel = vscode.window.createOutputChannel('Level 4 FEA');
+            panel.show();
+            panel.appendLine('═══════════════════════════════════════════════════════════');
+            panel.appendLine('     COPRA LEVEL 4 FEA — Full CAE Simulation');
+            panel.appendLine('═══════════════════════════════════════════════════════════\n');
+
+            // Get current profile or use demo data
+            const profileData = {
+                geometry: {
+                    segments: [{ type: 'line', length: 100 }, { type: 'line', length: 50 }],
+                    boundingBox: { width: 100, height: 50 },
+                    bends: [{ angle: 90, radius: 2, segmentIndex: 0, side: 'left', direction: 'up' }]
+                },
+                thickness: 2.0,
+                material: 'GI'
+            };
+
+            try {
+                // Run Level 4 FEA
+                panel.appendLine('Running Level 4 FEA Analysis...\n');
+
+                const result = await apiClient.runLevel4FEA({
+                    profile_result: profileData,
+                    roll_contour_result: {},
+                    material: 'GI',
+                    thickness_mm: 2.0
+                });
+
+                if (result.status === 'pass') {
+                    panel.appendLine('✅ Level 4 FEA Pipeline Complete!\n');
+                    panel.appendLine('─'.repeat(64));
+                    panel.appendLine(`COPRA Compliance: ${result.copra_compliance}`);
+                    panel.appendLine(`Level: ${result.level}`);
+                    panel.appendLine('─'.repeat(64));
+
+                    // Geometry
+                    panel.appendLine('\n📐 GEOMETRY:');
+                    panel.appendLine(`   Strip Width: ${result.geometry?.strip_width_mm}mm`);
+                    panel.appendLine(`   Roll Radius: ${result.geometry?.roll_radius_mm}mm`);
+                    panel.appendLine(`   Thickness: ${result.geometry?.thickness_mm}mm`);
+
+                    // Mesh
+                    panel.appendLine('\n🔲 3D MESH:');
+                    panel.appendLine(`   Total Nodes: ${result.mesh?.total_nodes}`);
+                    panel.appendLine(`   Total Elements: ${result.mesh?.total_elements}`);
+                    panel.appendLine(`   Element Type: ${result.mesh?.element_type}`);
+                    panel.appendLine(`   Quality: ${result.mesh?.mesh_quality?.quality_grade}`);
+
+                    // Material Anisotropy
+                    const matData = result.material as Record<string, unknown> | undefined;
+                    const rVals = matData?.R_values as Record<string, number> | undefined;
+                    const yStress = matData?.yield_stress_mpa as Record<string, number> | undefined;
+                    panel.appendLine('\n🔬 MATERIAL ANISOTROPY:');
+                    panel.appendLine(`   Type: ${matData?.anisotropy_type}`);
+                    panel.appendLine(`   R0 (0°): ${rVals?.R0_deg_0}`);
+                    panel.appendLine(`   R45 (45°): ${rVals?.R45_deg_45}`);
+                    panel.appendLine(`   R90 (90°): ${rVals?.R90_deg_90}`);
+                    panel.appendLine(`   σ0: ${yStress?.sigma_0} MPa`);
+
+                    // Friction
+                    const fricData = result.friction as Record<string, unknown> | undefined;
+                    const fricCoef = fricData?.friction_coefficients as Record<string, number> | undefined;
+                    panel.appendLine('\n⚙️ FRICTION:');
+                    panel.appendLine(`   μ₀ (initial): ${fricCoef?.mu_0_initial}`);
+                    panel.appendLine(`   μ_d (die): ${fricCoef?.mu_d_die}`);
+                    panel.appendLine(`   Lubricant: ${fricData?.lubricant}`);
+
+                    // Forming
+                    panel.appendLine('\n⚡ FORMING ANALYSIS:');
+                    panel.appendLine(`   Solver: ${result.forming?.solver_type}`);
+                    panel.appendLine(`   Max Stress: ${result.forming?.max_stress_mpa} MPa`);
+                    panel.appendLine(`   Max Strain: ${result.forming?.max_strain}`);
+                    panel.appendLine(`   Status: ${result.forming?.status}`);
+
+                    // Springback
+                    panel.appendLine('\n↩️ SPRINGBACK:');
+                    panel.appendLine(`   Displacement: ${result.springback?.springback_displacement_mm}mm`);
+                    panel.appendLine(`   Angle: ${result.springback?.springback_angle_deg}°`);
+
+                    // Prerequisites
+                    panel.appendLine('\n📋 PREREQUISITES:');
+                    (result.prerequisites || []).forEach((p: string) => {
+                        panel.appendLine(`   • ${p}`);
+                    });
+
+                    panel.appendLine('\n═══════════════════════════════════════════════════════════');
+                    panel.appendLine('Level 4 FEA ready! Install CalculiX for full solve.');
+                    vscode.window.showInformationMessage('Level 4 FEA Analysis Complete!');
+                } else {
+                    panel.appendLine(`❌ Error: ${JSON.stringify(result)}`);
+                }
+            } catch (err) {
+                panel.appendLine(`❌ Level 4 FEA Error: ${err}`);
+                vscode.window.showErrorMessage(`Level 4 FEA failed: ${err}`);
+            }
+        })
+    );
+
     // ============ PROCESS CARD ============
     context.subscriptions.push(
         vscode.commands.registerCommand('cloudCode.openProcessCard', () => {
