@@ -4,3 +4,8 @@ node_modules/
 .vscode-test/
 *.ts.map
 *.log
+*.vsix
+package-lock.json
+src/test/
+*.pyc
+__pycache__/
