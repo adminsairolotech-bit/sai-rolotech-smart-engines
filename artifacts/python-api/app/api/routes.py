@@ -61,6 +61,7 @@ from app.engines.oss_cad_stack_engine import (
     get_cad_stack_architecture_map,
 )
 from app.engines.bend_allowance_engine import calculate_flat_blank, flat_blank_from_profile
+from app.engines.springback_engine import calculate_springback
 from app.engines.bom_engine import generate_bom
 from app.engines.process_card_engine import generate_process_card, process_card_to_text
 from app.utils.project_persistence import (
@@ -1571,6 +1572,35 @@ def endpoint_bend_allowance(body: dict):
 
     except Exception as exc:
         logger.error("bend-allowance error: %s", exc, exc_info=True)
+        return {"status": "fail", "reason": str(exc)}
+
+
+# ─── POST /api/springback ──────────────────────────────────────────────────────
+
+@router.post("/springback")
+def endpoint_springback(body: dict):
+    """
+    Calculate springback compensation using dual model approach.
+
+    Body:
+      material (str):           GI, CR, HR, SS, AL, etc.
+      target_angle_deg (float): desired final bend angle
+      thickness_mm (float):    sheet thickness (optional)
+      bend_radius_mm (float):   inner bend radius (optional)
+
+    Returns springback_deg, corrected_angle_deg, model_used, confidence.
+    """
+    try:
+        material = str(body.get("material", "GI")).upper()
+        target_angle = float(body.get("target_angle_deg", 90))
+        thickness = float(body.get("thickness_mm", 2.0)) if body.get("thickness_mm") else None
+        bend_radius = float(body.get("bend_radius_mm", 2.0)) if body.get("bend_radius_mm") else None
+
+        result = calculate_springback(material, target_angle, thickness, bend_radius)
+        return result
+
+    except Exception as exc:
+        logger.error("springback error: %s", exc, exc_info=True)
         return {"status": "fail", "reason": str(exc)}
 
 

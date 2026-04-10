@@ -1,53 +1,58 @@
 {
-  "startedAt": "2026-04-03T04:22:00.176Z",
-  "lastHealthCheck": "2026-04-03T04:32:00.314Z",
+  "startedAt": "2026-04-10T00:14:14.902Z",
+  "lastHealthCheck": "2026-04-10T00:24:14.960Z",
   "lastGitPush": null,
   "lastGitPushResult": null,
   "lastGitPull": null,
   "lastGitPullResult": null,
   "gitPullCount": 0,
-  "healthChecksPassed": 5,
-  "healthChecksFailed": 0,
-  "consecutiveFailures": 0,
+  "healthChecksPassed": 0,
+  "healthChecksFailed": 5,
+  "consecutiveFailures": 5,
   "gitPushCount": 0,
   "gitPushErrors": 0,
   "apiPort": 8080,
   "isElectron": false,
   "logs": [
     {
-      "time": "04:22:00 am",
+      "time": "05:44:14 am",
       "type": "success",
       "message": "Watchdog SHURU — auto-push + health monitor active"
     },
     {
-      "time": "04:22:10 am",
+      "time": "05:44:24 am",
       "type": "info",
       "message": "Startup auto-push check kar raha hai..."
     },
     {
-      "time": "04:24:00 am",
-      "type": "info",
-      "message": "Health: API OK"
+      "time": "05:46:14 am",
+      "type": "warn",
+      "message": "Health: API FAIL (consecutive: 1/5)"
     },
     {
-      "time": "04:26:00 am",
-      "type": "info",
-      "message": "Health: API OK"
+      "time": "05:48:14 am",
+      "type": "warn",
+      "message": "Health: API FAIL (consecutive: 2/5)"
     },
     {
-      "time": "04:28:00 am",
-      "type": "info",
-      "message": "Health: API OK"
+      "time": "05:50:14 am",
+      "type": "warn",
+      "message": "Health: API FAIL (consecutive: 3/5)"
     },
     {
-      "time": "04:30:00 am",
-      "type": "info",
-      "message": "Health: API OK"
+      "time": "05:52:14 am",
+      "type": "warn",
+      "message": "Health: API FAIL (consecutive: 4/5)"
     },
     {
-      "time": "04:32:00 am",
-      "type": "info",
-      "message": "Health: API OK"
+      "time": "05:54:14 am",
+      "type": "warn",
+      "message": "Health: API FAIL (consecutive: 5/5)"
+    },
+    {
+      "time": "05:54:14 am",
+      "type": "error",
+      "message": "Bahut zyada failures — server restart ho raha hai (self-heal)"
     }
   ]
 }

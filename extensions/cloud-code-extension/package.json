@@ -1,27 +1,281 @@
 {
-  "name": "workspace",
-  "version": "0.0.0",
-  "license": "MIT",
+  "name": "cloud-code-extension",
+  "displayName": "Cloud Code Extension",
+  "description": "Sai Rolotech Cloud Code Extension for VS Code - Roll Forming Engineering Suite",
+  "version": "0.0.1",
+  "publisher": "sai-rolotech",
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onCommand:cloudCode.openDashboard",
+    "onCommand:cloudCode.helloWorld",
+    "onCommand:cloudCode.validateGcode",
+    "onCommand:cloudCode.apiStatus",
+    "onCommand:cloudCode.openProject",
+    "onCommand:cloudCode.newProfile",
+    "onCommand:cloudCode.openProfileDesigner",
+    "onCommand:cloudCode.openFlowerPattern",
+    "onCommand:cloudCode.openRollTooling",
+    "onCommand:cloudCode.openMaterialDatabase",
+    "onCommand:cloudCode.openMachineConfig",
+    "onCommand:cloudCode.openSpringbackCalculator",
+    "onCommand:cloudCode.openStripWidthCalculator",
+    "onCommand:cloudCode.openExportUI",
+    "onCommand:cloudCode.openBOMGenerator",
+    "onCommand:cloudCode.open3DPreview",
+    "onCommand:cloudCode.openFEASimulation",
+    "onCommand:cloudCode.openProcessCard",
+    "onCommand:cloudCode.openPunchEditor",
+    "onCommand:cloudCode.openAIChat",
+    "onCommand:cloudCode.runPipeline",
+    "onCommand:cloudCode.checkEngines",
+    "onView:cloudCode.aiChat"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "cloudCode.openDashboard",
+        "title": "Dashboard - Sai Rolotech"
+      },
+      {
+        "command": "cloudCode.helloWorld",
+        "title": "Hello World - Cloud Code"
+      },
+      {
+        "command": "cloudCode.validateGcode",
+        "title": "Validate G-Code"
+      },
+      {
+        "command": "cloudCode.apiStatus",
+        "title": "API Server Status"
+      },
+      {
+        "command": "cloudCode.openProject",
+        "title": "Open Project"
+      },
+      {
+        "command": "cloudCode.newProfile",
+        "title": "New Roll Forming Profile"
+      },
+      {
+        "command": "cloudCode.openProfileDesigner",
+        "title": "Profile Designer — COPRA-RF"
+      },
+      {
+        "command": "cloudCode.openFlowerPattern",
+        "title": "Flower Pattern — COPRA-RF"
+      },
+      {
+        "command": "cloudCode.openRollTooling",
+        "title": "Roll Tooling CAD — COPRA-RF"
+      },
+      {
+        "command": "cloudCode.openMaterialDatabase",
+        "title": "Material Database — COPRA-RF"
+      },
+      {
+        "command": "cloudCode.openMachineConfig",
+        "title": "Machine Configuration — COPRA-RF"
+      },
+      {
+        "command": "cloudCode.openSpringbackCalculator",
+        "title": "Springback Calculator — COPRA-RF"
+      },
+      {
+        "command": "cloudCode.openStripWidthCalculator",
+        "title": "Strip Width Calculator — COPRA-RF"
+      },
+      {
+        "command": "cloudCode.openExportUI",
+        "title": "CAD Export Center — COPRA-RF"
+      },
+      {
+        "command": "cloudCode.openBOMGenerator",
+        "title": "Bill of Materials — COPRA-RF"
+      },
+      {
+        "command": "cloudCode.open3DPreview",
+        "title": "3D Flower Preview — COPRA-RF"
+      },
+      {
+        "command": "cloudCode.openFEASimulation",
+        "title": "FEA Simulation — COPRA-RF"
+      },
+      {
+        "command": "cloudCode.openProcessCard",
+        "title": "Process Card — COPRA-RF"
+      },
+      {
+        "command": "cloudCode.openPunchEditor",
+        "title": "Punch Editor — COPRA-RF"
+      },
+      {
+        "command": "cloudCode.openTubeForming",
+        "title": "Tube Forming — COPRA-RF"
+      },
+      {
+        "command": "cloudCode.openAIChat",
+        "title": "AI Assistant — Gemini/Roll Forming Expert"
+      },
+      {
+        "command": "cloudCode.runPipeline",
+        "title": "🚀 Run Auto-Pipeline — Full Engineering Analysis"
+      },
+      {
+        "command": "cloudCode.checkEngines",
+        "title": "🔍 Check Engine Status — API & Python"
+      },
+      {
+        "command": "cloudCode.setAPIKey",
+        "title": "🔑 Set API Key — Gemini / OpenRouter / Custom (Secure)"
+      },
+      {
+        "command": "cloudCode.checkAPIKeys",
+        "title": "🔐 Check API Key Status"
+      },
+      {
+        "command": "cloudCode.clearAPIKey",
+        "title": "🗑️ Clear API Key"
+      },
+      {
+        "command": "cloudCode.addKeyToPool",
+        "title": "🔑 Add Key(s) to Pool — Multi-Key Smart Rotation"
+      },
+      {
+        "command": "cloudCode.keyPoolStatus",
+        "title": "📊 Key Pool Status — View All Keys"
+      },
+      {
+        "command": "cloudCode.importAllKeys",
+        "title": "📥 Import All Keys — Paste Multiple Keys at Once"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "cloudCode.openProfileDesigner",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "cloudCode.openFlowerPattern",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "cloudCode.openRollTooling",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "cloudCode.openMaterialDatabase",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "cloudCode.openMachineConfig",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "cloudCode.openSpringbackCalculator",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "cloudCode.openStripWidthCalculator",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "cloudCode.openExportUI",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "cloudCode.openBOMGenerator",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "cloudCode.open3DPreview",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "cloudCode.openFEASimulation",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "cloudCode.openProcessCard",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "cloudCode.openPunchEditor",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "cloudCode.openTubeForming",
+          "when": "editorTextFocus"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "cloudCode.openProfileDesigner",
+          "when": "false"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Cloud Code",
+      "properties": {
+        "cloudCode.pythonApiPort": {
+          "type": "number",
+          "default": 9000,
+          "description": "Port for Python API backend"
+        },
+        "cloudCode.apiServerPort": {
+          "type": "number",
+          "default": 8080,
+          "description": "Port for API Server"
+        },
+        "cloudCode.geminiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Gemini API key for AI chat (free tier available at aistudio.google.com)"
+        },
+        "cloudCode.openRouterKey": {
+          "type": "string",
+          "default": "",
+          "description": "OpenRouter API key for Claude Sonnet 4.6 deep thinking ($5 free credits)"
+        },
+        "cloudCode.customApiUrl": {
+          "type": "string",
+          "default": "",
+          "description": "Custom AI API endpoint URL"
+        },
+        "cloudCode.customApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Custom AI API key"
+        },
+        "cloudCode.aiProvider": {
+          "type": "string",
+          "default": "gemini",
+          "enum": ["gemini", "openrouter", "custom", "offline"],
+          "description": "AI provider to use (gemini recommended for free tier)"
+        },
+        "cloudCode.geminiModel": {
+          "type": "string",
+          "default": "gemini-2.5-flash",
+          "enum": ["gemini-2.5-flash", "gemini-2.5-pro"],
+          "description": "Gemini model: flash=fast+free, pro=better reasoning"
+        }
+      }
+    }
+  },
   "scripts": {
-    "dev": "pnpm --filter @workspace/api-server run dev & pnpm --filter @workspace/design-tool run dev",
-    "preinstall": "node -e \"['package-lock.json','yarn.lock'].forEach(f=>{try{require('fs').unlinkSync(f)}catch(e){}});if(process.env.npm_config_user_agent&&!process.env.npm_config_user_agent.startsWith('pnpm/')){console.error('Use pnpm instead');process.exit(1)}\"",
-    "build": "pnpm run typecheck && pnpm -r --if-present run build",
-    "typecheck:libs": "tsc --build",
-    "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck",
-    "integrity:generate": "node tools/integrity-generate.mjs",
-    "integrity:verify": "node tools/integrity-verify.mjs",
-    "integrity:repair": "node tools/integrity-verify.mjs --repair",
-    "check:imports": "node tools/import-check.mjs",
-    "gcode:validate": "pnpm --filter @workspace/scripts run validate:gcode",
-    "golden:validate": "pnpm --filter @workspace/scripts run validate:golden",
-    "export:determinism": "pnpm --filter @workspace/scripts run test:deterministic-export"
+    "compile": "tsc -p ./",
+    "watch": "tsc -w",
+    "package": "vsce package",
+    "publish": "vsce publish"
   },
-  "private": true,
   "devDependencies": {
-    "prettier": "^3.8.1",
-    "typescript": "~5.9.2"
-  },
-  "dependencies": {
-    "@replit/connectors-sdk": "^0.3.0"
+    "@types/node": "^25.5.2",
+    "@types/vscode": "^1.96.0",
+    "@vscode/vsce": "^3.2.0",
+    "typescript": "^5.0.0"
   }
 }
