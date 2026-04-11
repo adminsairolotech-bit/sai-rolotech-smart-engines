@@ -8,196 +8,75 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Inter', system-ui, sans-serif; background: #0f0f23; color: #e2e8f0; min-height: 100vh; }
-
     .container { display: flex; min-height: 100vh; }
-
-    .sidebar {
-      width: 260px;
-      background: linear-gradient(180deg, #1a1a3e 0%, #0f0f23 100%);
-      border-right: 1px solid rgba(255,255,255,0.1);
-      padding: 24px 16px;
-      position: fixed;
-      height: 100vh;
-      overflow-y: auto;
-    }
-
-    .logo {
-      font-size: 1.4rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 32px;
-      padding: 0 12px;
-    }
-
-    .nav-item {
-      padding: 12px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-bottom: 4px;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 500;
-    }
-
+    .sidebar { width: 260px; background: linear-gradient(180deg, #1a1a3e 0%, #0f0f23 100%); border-right: 1px solid rgba(255,255,255,0.1); padding: 24px 16px; position: fixed; height: 100vh; overflow-y: auto; }
+    .logo { font-size: 1.4rem; font-weight: 700; background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 32px; padding: 0 12px; }
+    .nav-item { padding: 12px 16px; border-radius: 8px; cursor: pointer; margin-bottom: 4px; transition: all 0.2s; display: flex; align-items: center; gap: 12px; font-weight: 500; }
     .nav-item:hover { background: rgba(99,102,241,0.15); }
     .nav-item.active { background: rgba(99,102,241,0.25); color: #818cf8; }
-
     .nav-icon { font-size: 1.2rem; }
-
     .main { flex: 1; margin-left: 260px; padding: 32px; }
-
     .header { margin-bottom: 32px; }
     .header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
     .header p { color: #94a3b8; }
-
-    .card {
-      background: linear-gradient(135deg, #1e1e3f, #252550);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 16px;
-      padding: 24px;
-      margin-bottom: 24px;
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
+    .card { background: linear-gradient(135deg, #1e1e3f, #252550); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 24px; margin-bottom: 24px; }
     .card-title { font-size: 1.2rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-
-    .btn {
-      padding: 10px 20px;
-      border-radius: 8px;
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
+    .btn { padding: 10px 20px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: all 0.2s; }
     .btn-primary { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(99,102,241,0.4); }
     .btn-secondary { background: rgba(255,255,255,0.1); color: #e2e8f0; }
-    .btn-secondary:hover { background: rgba(255,255,255,0.15); }
-    .btn-danger { background: linear-gradient(135deg, #ef4444, #f87171); color: white; }
-
     .form-group { margin-bottom: 16px; }
     .form-group label { display: block; margin-bottom: 6px; font-weight: 500; color: #94a3b8; }
-    .form-group input, .form-group textarea, .form-group select {
-      width: 100%;
-      padding: 12px 16px;
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(0,0,0,0.3);
-      color: white;
-      font-size: 14px;
-    }
-    .form-group input:focus, .form-group textarea:focus {
-      outline: none;
-      border-color: #6366f1;
-    }
-
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white; font-size: 14px; }
+    .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #6366f1; }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-
-    .endpoint-card {
-      background: rgba(0,0,0,0.3);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 12px;
-      padding: 20px;
-    }
-
-    .endpoint-url {
-      font-family: 'Courier New', monospace;
-      background: rgba(0,0,0,0.4);
-      padding: 8px 12px;
-      border-radius: 6px;
-      margin-bottom: 12px;
-      font-size: 13px;
-      color: #a5b4fc;
-    }
-
-    .response-box {
-      background: #000;
-      border-radius: 8px;
-      padding: 16px;
-      max-height: 300px;
-      overflow: auto;
-      font-family: 'Courier New', monospace;
-      font-size: 12px;
-      white-space: pre-wrap;
-      word-break: break-all;
-    }
-
+    .response-box { background: #000; border-radius: 8px; padding: 16px; max-height: 300px; overflow: auto; font-family: 'Courier New', monospace; font-size: 12px; white-space: pre-wrap; word-break: break-all; }
     .status { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
     .status.success { background: rgba(34,197,94,0.2); color: #22c55e; }
     .status.error { background: rgba(239,68,68,0.2); color: #ef4444; }
-    .status.pending { background: rgba(234,179,8,0.2); color: #eab308; }
-
     .loader { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid #6366f1; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-    .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
-    .tab { padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 500; background: rgba(255,255,255,0.05); }
-    .tab.active { background: #6366f1; color: white; }
-
-    table { width: 100%; border-collapse: collapse; }
-    th, td { text-align: left; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-    th { color: #94a3b8; font-weight: 500; }
-
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      padding: 16px 24px;
-      border-radius: 12px;
-      font-weight: 500;
-      transform: translateX(200%);
-      transition: transform 0.3s;
-      z-index: 1000;
-    }
+    .toast { position: fixed; bottom: 24px; right: 24px; padding: 16px 24px; border-radius: 12px; font-weight: 500; transform: translateX(200%); transition: transform 0.3s; z-index: 1000; }
     .toast.show { transform: translateX(0); }
     .toast.success { background: #22c55e; color: white; }
     .toast.error { background: #ef4444; color: white; }
+    .cmd-card { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px; }
+    .cmd-card h3 { font-size: 14px; margin-bottom: 8px; color: #a5b4fc; }
+    .cmd-card p { font-size: 12px; color: #94a3b8; margin-bottom: 8px; }
+    .cmd-trigger { display: inline-block; background: rgba(99,102,241,0.2); padding: 4px 8px; border-radius: 4px; font-size: 11px; margin: 2px; }
+    .cmd-action { font-family: 'Courier New', monospace; background: rgba(0,0,0,0.4); padding: 8px; border-radius: 6px; font-size: 11px; color: #22c55e; margin-top: 8px; }
+    .cat-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; }
+    .cat-navigation { background: rgba(59,130,246,0.2); color: #60a5fa; }
+    .cat-api { background: rgba(168,85,247,0.2); color: #c084fc; }
+    .cat-leads { background: rgba(34,197,94,0.2); color: #4ade80; }
+    .cat-whatsapp { background: rgba(37,211,102,0.2); color: #25d4a; }
+    .cat-ai { background: rgba(249,115,22,0.2); color: #fb923c; }
+    .cat-engineering { background: rgba(236,72,153,0.2); color: #f472b6; }
+    .cat-files { background: rgba(6,182,212,0.2); color: #22d3ee; }
+    .cat-admin { background: rgba(239,68,68,0.2); color: #f87171; }
+    .cat-system { background: rgba(107,114,128,0.2); color: #9ca3af; }
+    .cat-utilities { background: rgba(99,102,241,0.2); color: #818cf8; }
+    .cat-custom { background: rgba(234,179,8,0.2); color: #facc15; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    th { color: #94a3b8; font-weight: 500; }
+    .endpoint-url { font-family: 'Courier New', monospace; background: rgba(0,0,0,0.4); padding: 8px 12px; border-radius: 6px; margin-bottom: 12px; font-size: 13px; color: #a5b4fc; }
   </style>
 </head>
 <body>
   <div class="container">
     <aside class="sidebar">
       <div class="logo">SAI RoloTech</div>
-
-      <div class="nav-item active" onclick="showSection('dashboard')">
-        <span class="nav-icon">📊</span> Dashboard
-      </div>
-      <div class="nav-item" onclick="showSection('auth')">
-        <span class="nav-icon">🔐</span> Authentication
-      </div>
-      <div class="nav-item" onclick="showSection('agents')">
-        <span class="nav-icon">🤖</span> Agents
-      </div>
-      <div class="nav-item" onclick="showSection('skills')">
-        <span class="nav-icon">⚡</span> Skills
-      </div>
-      <div class="nav-item" onclick="showSection('indiamart')">
-        <span class="nav-icon">📦</span> IndiaMART
-      </div>
-      <div class="nav-item" onclick="showSection('api-tester')">
-        <span class="nav-icon">🔌</span> API Tester
-      </div>
+      <div class="nav-item active" onclick="showSection('dashboard')"><span class="nav-icon">📊</span> Dashboard</div>
+      <div class="nav-item" onclick="showSection('agents')"><span class="nav-icon">🤖</span> Agent Commands</div>
+      <div class="nav-item" onclick="showSection('api-tester')"><span class="nav-icon">🔌</span> API Tester</div>
+      <div class="nav-item" onclick="showSection('health')"><span class="nav-icon">💚</span> Health</div>
     </aside>
 
     <main class="main">
-      <!-- Dashboard Section -->
+      <!-- Dashboard -->
       <section id="dashboard">
-        <div class="header">
-          <h1>API Dashboard</h1>
-          <p>Manage your SAI RoloTech backend APIs</p>
-        </div>
-
+        <div class="header"><h1>API Dashboard</h1><p>SAI RoloTech Agent Memory System</p></div>
         <div class="grid">
           <div class="card">
             <div class="card-title">🔗 API Status</div>
@@ -207,416 +86,176 @@
                 <div style="color: #94a3b8; font-size: 14px;">API Server</div>
               </div>
               <div style="flex: 1; text-align: center; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 12px;">
-                <div style="font-size: 2rem; font-weight: 700; color: #6366f1;" id="endpoints-count">0</div>
-                <div style="color: #94a3b8; font-size: 14px;">Endpoints</div>
-              </div>
-              <div style="flex: 1; text-align: center; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 12px;">
-                <div style="font-size: 2rem; font-weight: 700; color: #f59e0b;" id="response-time">-</div>
-                <div style="color: #94a3b8; font-size: 14px;">Response Time</div>
+                <div style="font-size: 2rem; font-weight: 700; color: #6366f1;" id="cmd-count">0</div>
+                <div style="color: #94a3b8; font-size: 14px;">Commands</div>
               </div>
             </div>
-            <button class="btn btn-primary" style="width: 100%; margin-top: 16px;" onclick="checkHealth()">
-              Check API Health
-            </button>
+            <button class="btn btn-primary" style="width: 100%; margin-top: 16px;" onclick="checkHealth()">Check Health</button>
           </div>
         </div>
       </section>
 
-      <!-- Auth Section -->
-      <section id="auth" style="display: none;">
-        <div class="header">
-          <h1>🔐 Authentication</h1>
-          <p>Manage API tokens and authentication</p>
-        </div>
-
-        <div class="grid">
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">Verify Token</div>
-            </div>
-            <div class="form-group">
-              <label>Token</label>
-              <input type="text" id="auth-token" placeholder="Enter your admin token">
-            </div>
-            <button class="btn btn-primary" onclick="verifyToken()">Verify Token</button>
-            <div class="response-box" id="auth-response" style="margin-top: 16px; display: none;"></div>
-          </div>
-
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">Token Format</div>
-            </div>
-            <div class="endpoint-url">POST /api/admin/verify</div>
-            <p style="color: #94a3b8; font-size: 14px;">Body: { "token": "your-token" }</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Agents Section -->
+      <!-- Agent Commands -->
       <section id="agents" style="display: none;">
-        <div class="header">
-          <h1>🤖 Agents</h1>
-          <p>Manage Claude Code agents</p>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">List All Agents</div>
-            <button class="btn btn-primary" onclick="loadAgents()">Refresh</button>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Type</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="agents-list">
-              <tr><td colspan="4" style="text-align: center; color: #94a3b8;">Click "Refresh" to load agents</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="card" style="margin-top: 24px;">
-          <div class="card-header">
-            <div class="card-title">Create Agent</div>
-          </div>
-          <div class="form-group">
-            <label>Agent Name</label>
-            <input type="text" id="agent-name" placeholder="my-agent">
-          </div>
-          <div class="form-group">
-            <label>Agent Type</label>
-            <select id="agent-type">
-              <option value="coding">Coding</option>
-              <option value="research">Research</option>
-              <option value="automation">Automation</option>
-            </select>
-          </div>
-          <button class="btn btn-primary" onclick="createAgent()">Create Agent</button>
-        </div>
-      </section>
-
-      <!-- Skills Section -->
-      <section id="skills" style="display: none;">
-        <div class="header">
-          <h1>⚡ Skills</h1>
-          <p>Manage Claude Code skills</p>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Available Skills</div>
-            <button class="btn btn-primary" onclick="loadSkills()">Load Skills</button>
-          </div>
-          <div id="skills-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; margin-top: 16px;">
-            <div style="padding: 20px; background: rgba(0,0,0,0.3); border-radius: 12px; text-align: center; color: #94a3b8;">Click "Load Skills" to view</div>
-          </div>
-        </div>
-
-        <div class="card" style="margin-top: 24px;">
-          <div class="card-header">
-            <div class="card-title">Add New Skill</div>
-          </div>
-          <div class="form-group">
-            <label>Skill Name</label>
-            <input type="text" id="skill-name" placeholder="my-awesome-skill">
-          </div>
-          <div class="form-group">
-            <label>Skill Description</label>
-            <textarea id="skill-desc" rows="3" placeholder="What does this skill do?"></textarea>
-          </div>
-          <div class="form-group">
-            <label>Skill Content (JSON)</label>
-            <textarea id="skill-content" rows="6" placeholder='{"trigger": "...", "instructions": "..."}'></textarea>
-          </div>
-          <button class="btn btn-primary" onclick="addSkill()">Add Skill</button>
-        </div>
-      </section>
-
-      <!-- IndiaMART Section -->
-      <section id="indiamart" style="display: none;">
-        <div class="header">
-          <h1>📦 IndiaMART Leads</h1>
-          <p>Manage and sync IndiaMART leads</p>
-        </div>
-
+        <div class="header"><h1>🤖 Agent Commands</h1><p>50+ commands memory with context awareness</p></div>
         <div class="grid">
           <div class="card">
-            <div class="card-title">Sync Leads</div>
-            <p style="color: #94a3b8; margin: 12px 0;">Sync leads from IndiaMART platform</p>
-            <button class="btn btn-primary" onclick="syncIndiaMART()">
-              <span id="sync-loader" style="display: none;" class="loader"></span>
-              Sync Now
-            </button>
+            <div class="card-title">Search Commands</div>
+            <div class="form-group">
+              <input type="text" id="cmd-search" placeholder="Search (e.g. 'leads', 'ai', 'login')" onkeyup="searchCommands()">
+            </div>
+            <div id="search-results" style="margin-top: 12px;"></div>
           </div>
-
           <div class="card">
-            <div class="card-title">Statistics</div>
-            <div style="display: flex; gap: 16px; margin-top: 16px;">
-              <div style="flex: 1; text-align: center;">
-                <div style="font-size: 1.5rem; font-weight: 700; color: #22c55e;" id="leads-total">0</div>
-                <div style="color: #94a3b8; font-size: 12px;">Total Leads</div>
-              </div>
-              <div style="flex: 1; text-align: center;">
-                <div style="font-size: 1.5rem; font-weight: 700; color: #f59e0b;" id="leads-new">0</div>
-                <div style="color: #94a3b8; font-size: 12px;">New</div>
-              </div>
+            <div class="card-title">Stats</div>
+            <div id="agent-stats" style="text-align: center; padding: 20px;">
+              <div class="loader"></div>
             </div>
           </div>
         </div>
-
+        <div class="card">
+          <div class="card-header"><div class="card-title">All Commands</div><button class="btn btn-primary" onclick="loadAgents()">Refresh</button></div>
+          <div id="commands-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin-top: 16px;"></div>
+        </div>
         <div class="card" style="margin-top: 24px;">
-          <div class="card-header">
-            <div class="card-title">Recent Leads</div>
+          <div class="card-title">Learn New Command</div>
+          <div class="grid" style="margin-top: 16px;">
+            <div class="form-group"><label>Command Name</label><input type="text" id="new-cmd-name" placeholder="My Command"></div>
+            <div class="form-group"><label>Triggers (comma sep)</label><input type="text" id="new-cmd-trigger" placeholder="cmd1, cmd2"></div>
           </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Product</th>
-                <th>City</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            <tbody id="leads-list">
-              <tr><td colspan="5" style="text-align: center; color: #94a3b8;">Click "Sync Now" to load leads</td></tr>
-            </tbody>
-          </table>
+          <div class="form-group"><label>Action (API endpoint)</label><input type="text" id="new-cmd-action" placeholder="POST /api/my-endpoint"></div>
+          <div class="form-group"><label>Description</label><input type="text" id="new-cmd-desc" placeholder="What does this do?"></div>
+          <div class="form-group"><label>Category</label>
+            <select id="new-cmd-category">
+              <option value="custom">Custom</option><option value="crm">CRM</option><option value="ai">AI</option>
+              <option value="engineering">Engineering</option><option value="automation">Automation</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="addNewCommand()">Add Command</button>
         </div>
       </section>
 
-      <!-- API Tester Section -->
+      <!-- API Tester -->
       <section id="api-tester" style="display: none;">
-        <div class="header">
-          <h1>🔌 API Tester</h1>
-          <p>Test any API endpoint manually</p>
-        </div>
-
+        <div class="header"><h1>🔌 API Tester</h1><p>Test any endpoint</p></div>
         <div class="card">
-          <div class="form-group">
-            <label>Endpoint URL</label>
-            <input type="text" id="api-url" placeholder="/api/health">
+          <div class="form-group"><label>Endpoint URL</label><input type="text" id="api-url" placeholder="/api/health"></div>
+          <div class="form-group"><label>Method</label>
+            <select id="api-method"><option value="GET">GET</option><option value="POST">POST</option><option value="PUT">PUT</option><option value="DELETE">DELETE</option></select>
           </div>
-          <div class="form-group">
-            <label>Method</label>
-            <select id="api-method">
-              <option value="GET">GET</option>
-              <option value="POST">POST</option>
-              <option value="PUT">PUT</option>
-              <option value="DELETE">DELETE</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Headers (JSON)</label>
-            <textarea id="api-headers" rows="2" placeholder='{"Authorization": "Bearer token"}'>{}</textarea>
-          </div>
-          <div class="form-group">
-            <label>Body (JSON)</label>
-            <textarea id="api-body" rows="4" placeholder='{"key": "value"}'>{}</textarea>
-          </div>
-          <button class="btn btn-primary" onclick="testAPI()">Send Request</button>
+          <div class="form-group"><label>Body (JSON)</label><textarea id="api-body" rows="4" placeholder='{"key": "value"}'>{}</textarea></div>
+          <button class="btn btn-primary" onclick="testAPI()">Send</button>
           <div class="response-box" id="tester-response" style="margin-top: 16px; display: none;"></div>
         </div>
-
         <div class="card" style="margin-top: 24px;">
           <div class="card-title">Quick Endpoints</div>
           <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px;">
-            <button class="btn btn-secondary" onclick="quickTest('/api/health')">/api/health</button>
-            <button class="btn btn-secondary" onclick="quickTest('/api/admin/stats')">/api/admin/stats</button>
-            <button class="btn btn-secondary" onclick="quickTest('/api/integration-status')">/api/integration-status</button>
-            <button class="btn btn-secondary" onclick="quickTest('/api/lead-analytics')">/api/lead-analytics</button>
+            <button class="btn btn-secondary" onclick="quickTest('/agents')">GET /agents</button>
+            <button class="btn btn-secondary" onclick="quickTest('/api/health')">GET /api/health</button>
+            <button class="btn btn-secondary" onclick="quickTest('/api/integration-status')">GET /api/integration-status</button>
           </div>
         </div>
       </section>
+
+      <!-- Health -->
+      <section id="health" style="display: none;">
+        <div class="header"><h1>💚 Health Check</h1><p>System status</p></div>
+        <div class="card"><div id="health-response"><div class="loader"></div></div></div>
+      </section>
     </main>
   </div>
-
   <div class="toast" id="toast"></div>
 
   <script>
-    const API_BASE = window.location.origin;
+    const BASE = window.location.origin;
 
-    // Navigation
-    function showSection(section) {
+    function showSection(id) {
       document.querySelectorAll('section').forEach(s => s.style.display = 'none');
-      document.getElementById(section).style.display = 'block';
+      document.getElementById(id).style.display = 'block';
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
       event.target.closest('.nav-item').classList.add('active');
+      if (id === 'agents') loadAgents();
+      if (id === 'health') checkHealth();
     }
 
-    // Toast notifications
-    function showToast(message, type = 'success') {
-      const toast = document.getElementById('toast');
-      toast.textContent = message;
-      toast.className = `toast ${type} show`;
-      setTimeout(() => toast.classList.remove('show'), 3000);
+    function showToast(msg, type = 'success') {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.className = `toast ${type} show`;
+      setTimeout(() => t.classList.remove('show'), 3000);
     }
 
-    // API Health Check
     async function checkHealth() {
-      const start = Date.now();
       try {
-        const res = await fetch(`${API_BASE}/api/health`);
-        const data = await res.json();
-        const time = Date.now() - start;
-
+        const res = await fetch(`${BASE}/api/health`);
+        const d = await res.json();
         document.getElementById('api-status').innerHTML = '<span class="status success">Online</span>';
-        document.getElementById('response-time').textContent = time + 'ms';
-        document.getElementById('endpoints-count').textContent = '40+';
-
-        showToast('API is healthy! Response: ' + time + 'ms');
-      } catch (e) {
+        document.getElementById('health-response').innerHTML = `<pre class="response-box">${JSON.stringify(d, null, 2)}</pre>`;
+        document.getElementById('cmd-count').textContent = '37+';
+      } catch(e) {
         document.getElementById('api-status').innerHTML = '<span class="status error">Offline</span>';
-        showToast('API is not reachable!', 'error');
+        showToast('API unreachable', 'error');
       }
     }
 
-    // Auth Functions
-    async function verifyToken() {
-      const token = document.getElementById('auth-token').value;
-      if (!token) return showToast('Please enter a token', 'error');
-
-      const res = await fetch(`${API_BASE}/api/admin/verify`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token })
-      });
-
-      const data = await res.json();
-      const box = document.getElementById('auth-response');
-      box.style.display = 'block';
-      box.innerHTML = JSON.stringify(data, null, 2);
-    }
-
-    // Agents Functions
     async function loadAgents() {
-      const res = await fetch(`${API_BASE}/api/agents`);
-      const data = await res.json();
-
-      const tbody = document.getElementById('agents-list');
-      if (data.agents && data.agents.length) {
-        tbody.innerHTML = data.agents.map(a => `
-          <tr>
-            <td>${a.name || 'Unknown'}</td>
-            <td><span class="status ${a.status === 'active' ? 'success' : 'pending'}">${a.status || 'unknown'}</span></td>
-            <td>${a.type || 'coding'}</td>
-            <td><button class="btn btn-danger" style="padding: 4px 8px; font-size: 12px;">Delete</button></td>
-          </tr>
-        `).join('');
-      } else {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No agents found</td></tr>';
-      }
+      const res = await fetch(`${BASE}/agents`);
+      const d = await res.json();
+      const stats = await fetch(`${BASE}/agents/stats`).then(r => r.json()).catch(() => ({stats:{totalCommands:0}}));
+      document.getElementById('agent-stats').innerHTML = `
+        <div style="font-size: 1.5rem; font-weight: 700; color: #6366f1;">${stats.stats.totalCommands}</div>
+        <div style="color: #94a3b8;">Total Commands</div>
+      `;
+      const grid = document.getElementById('commands-grid');
+      grid.innerHTML = d.commands.map(c => `
+        <div class="cmd-card">
+          <h3>${c.name}</h3>
+          <p>${c.description}</p>
+          <div>${c.trigger.map(t => `<span class="cmd-trigger">${t}</span>`).join('')}</div>
+          <div class="cmd-action">${c.action}</div>
+          <span class="cat-badge cat-${c.category}">${c.category}</span>
+        </div>
+      `).join('');
+      showToast(`Loaded ${d.total} commands!`);
     }
 
-    async function createAgent() {
-      const name = document.getElementById('agent-name').value;
-      const type = document.getElementById('agent-type').value;
-      if (!name) return showToast('Please enter agent name', 'error');
+    async function searchCommands() {
+      const q = document.getElementById('cmd-search').value;
+      if (!q) { document.getElementById('search-results').innerHTML = ''; return; }
+      const res = await fetch(`${BASE}/agents/search?q=${encodeURIComponent(q)}`);
+      const d = await res.json();
+      document.getElementById('search-results').innerHTML = d.results.length
+        ? d.results.slice(0, 5).map(c => `<div class="cmd-card" style="margin-bottom:8px;"><b>${c.name}</b>: ${c.action}</div>`).join('')
+        : '<p style="color:#94a3b8">No results</p>';
+    }
 
-      const res = await fetch(`${API_BASE}/api/agents`, {
+    async function addNewCommand() {
+      const name = document.getElementById('new-cmd-name').value;
+      const trigger = document.getElementById('new-cmd-trigger').value;
+      const action = document.getElementById('new-cmd-action').value;
+      const desc = document.getElementById('new-cmd-desc').value;
+      const cat = document.getElementById('new-cmd-category').value;
+      if (!name || !trigger || !action) return showToast('Fill required fields', 'error');
+      const res = await fetch(`${BASE}/agents`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, type })
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({name, trigger: trigger.split(','), action, description: desc, category: cat})
       });
-
-      const data = await res.json();
-      showToast(data.success ? 'Agent created!' : 'Failed to create agent');
-      loadAgents();
+      const d = await res.json();
+      if (d.success) { showToast('Command added!'); loadAgents(); }
+      else showToast(d.error || 'Failed', 'error');
     }
 
-    // Skills Functions
-    async function loadSkills() {
-      const res = await fetch(`${API_BASE}/api/skills`);
-      const data = await res.json();
-
-      const grid = document.getElementById('skills-grid');
-      if (data.skills && data.skills.length) {
-        grid.innerHTML = data.skills.map(s => `
-          <div style="padding: 16px; background: rgba(0,0,0,0.3); border-radius: 12px;">
-            <div style="font-weight: 600; margin-bottom: 8px;">${s.name}</div>
-            <div style="font-size: 12px; color: #94a3b8;">${s.description || 'No description'}</div>
-          </div>
-        `).join('');
-      } else {
-        grid.innerHTML = '<div style="padding: 20px; background: rgba(0,0,0,0.3); border-radius: 12px;">No skills found</div>';
-      }
-    }
-
-    async function addSkill() {
-      const name = document.getElementById('skill-name').value;
-      const description = document.getElementById('skill-desc').value;
-      const content = document.getElementById('skill-content').value;
-
-      if (!name) return showToast('Please enter skill name', 'error');
-
-      const res = await fetch(`${API_BASE}/api/skills`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, description, content: JSON.parse(content || '{}') })
-      });
-
-      const data = await res.json();
-      showToast(data.success ? 'Skill added!' : 'Failed to add skill');
-      loadSkills();
-    }
-
-    // IndiaMART Functions
-    async function syncIndiaMART() {
-      const loader = document.getElementById('sync-loader');
-      loader.style.display = 'inline-block';
-
-      try {
-        const res = await fetch(`${API_BASE}/api/indiamart/sync`, { method: 'POST' });
-        const data = await res.json();
-
-        document.getElementById('leads-total').textContent = data.total || 0;
-        document.getElementById('leads-new').textContent = data.new || 0;
-
-        const tbody = document.getElementById('leads-list');
-        if (data.leads && data.leads.length) {
-          tbody.innerHTML = data.leads.slice(0, 20).map(l => `
-            <tr>
-              <td>${l.name || 'Unknown'}</td>
-              <td>${l.phone || '-'}</td>
-              <td>${l.product || '-'}</td>
-              <td>${l.city || '-'}</td>
-              <td>${l.receivedAt ? new Date(l.receivedAt).toLocaleDateString() : '-'}</td>
-            </tr>
-          `).join('');
-        }
-
-        showToast(`Synced ${data.new || 0} new leads!`);
-      } catch (e) {
-        showToast('Sync failed!', 'error');
-      }
-
-      loader.style.display = 'none';
-    }
-
-    // API Tester Functions
     async function testAPI() {
       const url = document.getElementById('api-url').value;
       const method = document.getElementById('api-method').value;
-      const headers = JSON.parse(document.getElementById('api-headers').value || '{}');
       const body = document.getElementById('api-body').value;
-
-      if (!url) return showToast('Please enter URL', 'error');
-
-      const opts = { method, headers: { 'Content-Type': 'application/json', ...headers } };
-      if (['POST', 'PUT'].includes(method) && body) {
-        opts.body = body;
-      }
-
-      const res = await fetch(API_BASE + url, opts);
-      const data = await res.json();
-
+      const opts = {method, headers:{'Content-Type':'application/json'}};
+      if (['POST','PUT'].includes(method) && body) opts.body = body;
+      const res = await fetch(BASE + url, opts);
+      const d = await res.json().catch(() => ({error: 'Invalid JSON'}));
       const box = document.getElementById('tester-response');
       box.style.display = 'block';
-      box.innerHTML = JSON.stringify({ status: res.status, ...data }, null, 2);
+      box.innerHTML = JSON.stringify({status: res.status, ...d}, null, 2);
     }
 
     function quickTest(url) {
@@ -624,7 +263,6 @@
       testAPI();
     }
 
-    // Initial check
     checkHealth();
   </script>
 </body>

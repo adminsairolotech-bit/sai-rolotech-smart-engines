@@ -46,6 +46,7 @@ import simulationRouter from "./simulation";
 import crmAnalyticsRouter from "./crm-analytics";
 import crmAccountRouter from "./crm-account";
 import aiLeadScoreRouter from "./ai-lead-score";
+import agentRouter from "./agent";
 
 const router: IRouter = Router();
 
@@ -65,6 +66,9 @@ router.use(installRouter);
 
 // GitHub webhook — public (GitHub directly calls this, no user token)
 router.use(githubWebhookPublicRouter);
+
+// ── Agent Memory Routes (PUBLIC - no auth) ─────────────────────
+router.use("/agents", agentRouter);
 
 router.use(requireAuth as any);
 router.use(injectRbacUser as any);
@@ -104,8 +108,10 @@ router.use(codexEngineerRouter);
 router.use(profileRouter);
 router.use(simulationRouter);
 
+// ── Agent Memory Routes ─────────────────────────────────────────
+router.use("/agents", agentRouter);
+
 // ── CRM Analytics & Account Routes ───────────────────────────────
-// These sit after /admin so admin auth is already handled if needed
 router.use(crmAnalyticsRouter);  // GET /api/lead-analytics
 router.use(crmAccountRouter);   // POST /api/account-deletion-request, DELETE /api/users/:id
 router.use(aiLeadScoreRouter);  // POST/GET /api/ai-score-leads
