@@ -6,6 +6,7 @@ import path from "path";
 import { existsSync, readFileSync } from "fs";
 import apiRouter from "./routes/index.js";
 import { SAI_ERROR_BRAND } from "./lib/ai-confidentiality";
+import { securityHeaders, auditMiddleware } from "./middleware/security.js";
 
 const IS_PRODUCTION = process.env["NODE_ENV"] === "production";
 
@@ -54,6 +55,10 @@ app.use(cors({
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
+// Security headers on all responses
+app.use(securityHeaders);
+
+// General rate limit: 1000 req/15min per IP
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 1000,
@@ -61,6 +66,9 @@ const limiter = rateLimit({
   legacyHeaders: false,
 });
 app.use(limiter);
+
+// Audit trail — logs all API requests
+app.use(auditMiddleware);
 
 app.use((req, _res, next) => {
   console.log(`[req] ${req.method} ${req.path}`);

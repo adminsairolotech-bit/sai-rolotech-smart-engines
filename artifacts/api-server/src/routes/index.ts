@@ -43,6 +43,9 @@ import engineeringEnginesRouter from "./engineering-engines";
 import codexEngineerRouter from "./codex-engineer";
 import profileRouter from "./profile";
 import simulationRouter from "./simulation";
+import crmAnalyticsRouter from "./crm-analytics";
+import crmAccountRouter from "./crm-account";
+import aiLeadScoreRouter from "./ai-lead-score";
 
 const router: IRouter = Router();
 
@@ -100,6 +103,12 @@ router.use(engineeringEnginesRouter);
 router.use(codexEngineerRouter);
 router.use(profileRouter);
 router.use(simulationRouter);
+
+// ── CRM Analytics & Account Routes ───────────────────────────────
+// These sit after /admin so admin auth is already handled if needed
+router.use(crmAnalyticsRouter);  // GET /api/lead-analytics
+router.use(crmAccountRouter);   // POST /api/account-deletion-request, DELETE /api/users/:id
+router.use(aiLeadScoreRouter);  // POST/GET /api/ai-score-leads
 
 startAutoBackup(600);
 startAutoUpdate();

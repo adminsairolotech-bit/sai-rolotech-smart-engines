@@ -1,0 +1,16 @@
+node_modules
+mobile/node_modules
+dist
+.env
+.env.local
+*.log
+.DS_Store
+attached_assets/
+.replit
+*.json
+!package.json
+!package-lock.json
+!mobile/package.json
+!mobile/package-lock.json
+!mobile/eas.json
+mobile/google-service-account.json

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Offline — SAI RoloTech</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #f0f7ff 0%, #eef4ff 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .card {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 3rem 2rem;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.08);
+    }
+    .icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+      border-radius: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 2.5rem;
+    }
+    h1 { font-size: 1.5rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
+    p { font-size: 0.9375rem; color: #64748b; line-height: 1.6; margin-bottom: 1.5rem; }
+    .status-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .status-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.75rem;
+      padding: 0.75rem;
+      font-size: 0.8125rem;
+      color: #475569;
+    }
+    .status-item .label { font-weight: 600; color: #1e293b; display: block; margin-bottom: 2px; }
+    .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
+    .dot-green { background: #22c55e; }
+    .dot-red { background: #ef4444; }
+    button {
+      width: 100%;
+      padding: 0.875rem;
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+      color: white;
+      border: none;
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    button:hover { opacity: 0.9; }
+    .footer { margin-top: 1.5rem; font-size: 0.8125rem; color: #94a3b8; }
+    .cached-note {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0.75rem;
+      padding: 0.875rem;
+      font-size: 0.8125rem;
+      color: #166534;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">📡</div>
+    <h1>Internet Nahi Hai</h1>
+    <p>SAI RoloTech ke saath connect karne ke liye internet connection chahiye. Thodi der baad try karein.</p>
+
+    <div class="cached-note">
+      ✅ Kuch pages offline bhi chalte hain — cached data se kaam kar sakte hain.
+    </div>
+
+    <div class="status-grid">
+      <div class="status-item">
+        <span class="label">Network</span>
+        <span class="dot dot-red" id="netDot"></span>
+        <span id="netStatus">Checking...</span>
+      </div>
+      <div class="status-item">
+        <span class="label">App Cache</span>
+        <span class="dot dot-green"></span>
+        Available
+      </div>
+      <div class="status-item">
+        <span class="label">Last Seen</span>
+        <span id="lastSeen">—</span>
+      </div>
+      <div class="status-item">
+        <span class="label">SAI RoloTech</span>
+        <span class="dot dot-green"></span>
+        Installed
+      </div>
+    </div>
+
+    <button onclick="tryReconnect()">🔄 Dobara Try Karein</button>
+    <div class="footer">SAI RoloTech Design Engine • India Ka #1 Roll Forming Platform</div>
+  </div>
+
+  <script>
+    function updateStatus() {
+      const online = navigator.onLine;
+      document.getElementById('netDot').className = 'dot ' + (online ? 'dot-green' : 'dot-red');
+      document.getElementById('netStatus').textContent = online ? 'Connected' : 'Offline';
+    }
+
+    function tryReconnect() {
+      if (navigator.onLine) {
+        window.location.href = '/';
+      } else {
+        const btn = document.querySelector('button');
+        btn.textContent = '⚠️ Abhi Bhi Offline...';
+        setTimeout(() => { btn.textContent = '🔄 Dobara Try Karein'; }, 2000);
+      }
+    }
+
+    window.addEventListener('online', () => {
+      updateStatus();
+      setTimeout(() => window.location.href = '/', 1000);
+    });
+    window.addEventListener('offline', updateStatus);
+
+    const lastSeen = localStorage.getItem('sai-last-online');
+    if (lastSeen) {
+      document.getElementById('lastSeen').textContent = new Date(lastSeen).toLocaleTimeString('en-IN');
+    }
+
+    updateStatus();
+    if (navigator.onLine) localStorage.setItem('sai-last-online', new Date().toISOString());
+  </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+# Override gitignore for EAS builds
+# android/ and ios/ are needed by EAS local build
+node_modules/
+.expo/
+*.log
+google-service-account.json

@@ -1,0 +1,92 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "SVjpprpGJjo8YMg_Xo_9R"
+uri = "file://sairolotech-build.tar.gz"
+type = "unspecified"
+title = "SAI Rolotech CRM - Production Build"
+
+[[outputs]]
+id = "DSB9sThxsxlB95oSXPkDf"
+uri = "file://android-release-aab.zip"
+type = "unspecified"
+title = "SAI RoloTech CRM — Android AAB (Play Store Upload File)"
+
+[[outputs]]
+id = "wXnWHMtWApSJGNLkpSF2L"
+uri = "file://android-api35-release.zip"
+type = "unspecified"
+title = "SAI RoloTech CRM — Android AAB (API Level 35) — Play Store Ready"
+
+[[outputs]]
+id = "BnfWSqOS_wJesX1EqShi1"
+uri = "file://android-v2-release.zip"
+type = "unspecified"
+title = "SAI RoloTech CRM — Android AAB v2 (API 35, VersionCode 3)"
+
+[[outputs]]
+id = "BbBNN00PZtAVMWwvlnBhO"
+uri = "file://public/android-v4-release.zip"
+type = "unspecified"
+title = "android-v4-release.zip (versionCode=4)"
+
+[[outputs]]
+id = "xk39Lk3GBQXCooTZY0sxJ"
+uri = "file://public/android-versionCode4-FINAL.zip"
+type = "unspecified"
+title = "SAI RoloTech AAB — Naye App ke liye Upload Karo (Extract karke .aab upload karo)"
+
+[[outputs]]
+id = "NlXjmkU4i_Erqm0LMxSoa"
+uri = "file://public/android-v1.0.44-API35.zip"
+type = "unspecified"
+title = "SAI RoloTech AAB — API 35 (Play Console mein upload karo)"
+
+[[outputs]]
+id = "19YErykiu3QMKVbaDylQQ"
+uri = "file://public/android-v1.0.47-API35-SIGNED.zip"
+type = "unspecified"
+title = "SAI RoloTech AAB — API 35 + EAS Keystore Signed (Play Console mein upload karo)"
+
+[[outputs]]
+id = "T-olRBAa5cAsfoSr41uUV"
+uri = "file://public/android-v1.0.49-FINAL.zip"
+type = "unspecified"
+title = "SAI RoloTech AAB — v1.0.49 (No CAMERA + Sahi Package Name)"
+
+[[outputs]]
+id = "-IpdlwEQYB4cD8HjCbGO6"
+uri = "file://public/playstore-screenshots/screenshot-1-login.png"
+type = "image"
+title = "Screenshot 1 - Login Page"
+
+[[outputs]]
+id = "VJLbLD4rz_DpAQLB624FN"
+uri = "file://public/playstore-screenshots/screenshot-2-dashboard.png"
+type = "image"
+title = "Screenshot 2 - Dashboard"
+
+[[outputs]]
+id = "l8oKx2m6CENbgfOcjb9nP"
+uri = "file://public/playstore-screenshots/screenshot-3-ai-photo.png"
+type = "image"
+title = "Screenshot 3 - AI Photo Solution"
+
+[[outputs]]
+id = "joWGFaPYLUln8hWv4xt3L"
+uri = "file://public/playstore-screenshots/screenshot-4-plc-codes.png"
+type = "image"
+title = "Screenshot 4 - PLC Error Codes"
+
+[[outputs]]
+id = "3oLrc7j0gFLrxMNTr_khF"
+uri = "file://public/playstore-screenshots/screenshot-5-quotation.png"
+type = "image"
+title = "Screenshot 5 - Quotation System"
+
+[[outputs]]
+id = "n_Mgqcwf-7gTRRNz9rgfO"
+uri = "file://public/playstore-screenshots/screenshot-6-maintenance.png"
+type = "image"
+title = "Screenshot 6 - Maintenance Guide"

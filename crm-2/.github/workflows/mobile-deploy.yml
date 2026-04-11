@@ -1,0 +1,230 @@
+name: "📱 Mobile — Play Store Build & Submit"
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-android:
+    name: "🤖 Android — Build AAB"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "⬇️ Checkout"
+        uses: actions/checkout@v4
+
+      - name: "⚙️ Setup Node.js"
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: "☕ Setup Java 17"
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: "🤖 Setup Android SDK"
+        uses: android-actions/setup-android@v3
+
+      - name: "📦 Install Android Build Tools & NDK"
+        run: |
+          sdkmanager --licenses <<< "y
+          y
+          y
+          y
+          y
+          y
+          y"
+          sdkmanager "build-tools;35.0.0" "platforms;android-35" "ndk;26.3.11579264"
+          echo "ANDROID_HOME=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
+          echo "ANDROID_NDK_HOME=$ANDROID_SDK_ROOT/ndk/26.3.11579264" >> $GITHUB_ENV
+
+      - name: "🛠️ Setup EAS CLI"
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: "📦 Install Mobile Dependencies"
+        run: npm install
+        working-directory: mobile
+
+      - name: "🔢 Auto-Bump versionCode"
+        run: |
+          cd mobile
+          CURRENT=$(jq '.expo.android.versionCode' app.json)
+          NEW=$((CURRENT + 1))
+          jq ".expo.android.versionCode = $NEW" app.json > app.json.tmp && mv app.json.tmp app.json
+          echo "versionCode: $CURRENT → $NEW"
+          echo "VERSION_CODE=$NEW" >> $GITHUB_ENV
+          echo "✅ VERSION_CODE set to $NEW for EAS build"
+
+      - name: "🏗️ Expo Prebuild — Generate Android Project"
+        run: |
+          export VERSION_CODE=${{ env.VERSION_CODE }}
+          npx expo prebuild --clean --platform android --non-interactive
+          echo "✅ Android project generated"
+          ls -la android/app/ | head -10
+        working-directory: mobile
+
+      - name: "🔧 Force Kotlin 1.9.25 via Gradle Init Script"
+        run: |
+          mkdir -p ~/.gradle
+          cat > ~/.gradle/init.gradle << 'INITEOF'
+          allprojects {
+            buildscript {
+              configurations.all {
+                resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+                  if (details.requested.group == 'org.jetbrains.kotlin') {
+                    details.useVersion '1.9.25'
+                    details.because 'Force Kotlin 1.9.25 for Compose Compiler 1.5.15 compatibility'
+                  }
+                }
+              }
+            }
+            configurations.all {
+              resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+                if (details.requested.group == 'org.jetbrains.kotlin') {
+                  details.useVersion '1.9.25'
+                  details.because 'Force Kotlin 1.9.25 for Compose Compiler 1.5.15 compatibility'
+                }
+              }
+            }
+          }
+          INITEOF
+
+      - name: "🔑 Download Keystore from EAS"
+        run: |
+          cd mobile
+
+          echo "📥 Downloading keystore from Expo (EAS)..."
+
+          QUERY='query($appId:String!){app{byId(appId:$appId){androidAppCredentials{androidAppBuildCredentialsList{isDefault androidKeystore{id type keystore keystorePassword keyAlias keyPassword}}}}}}'
+
+          RESPONSE=$(curl -s -X POST \
+            -H "Authorization: Bearer ${{ secrets.EXPO_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            "https://api.expo.dev/graphql" \
+            -d "{\"query\":\"$QUERY\",\"variables\":{\"appId\":\"2873f4f3-f488-46ef-9d0f-199ee9e9a26c\"}}")
+
+          echo "API Response (redacted passwords):"
+          echo "$RESPONSE" | node -e "
+          const d=require('fs').readFileSync('/dev/stdin','utf8');
+          const j=JSON.parse(d);
+          if(j.errors){console.log('ERROR:',JSON.stringify(j.errors));process.exit(1);}
+          const creds=j.data.app.byId.androidAppCredentials;
+          if(!creds||creds.length===0){console.log('No Android credentials found');process.exit(1);}
+          const buildCreds=creds[0].androidAppBuildCredentialsList;
+          const defaultCred=buildCreds.find(c=>c.isDefault)||buildCreds[0];
+          const ks=defaultCred.androidKeystore;
+          console.log('Keystore ID:',ks.id);
+          console.log('Key Alias:',ks.keyAlias);
+          console.log('Keystore type:',ks.type);
+          const ksData=ks.keystore;
+          const fs=require('fs');
+          fs.writeFileSync('/tmp/ks_pass.txt',ks.keystorePassword);
+          fs.writeFileSync('/tmp/ks_alias.txt',ks.keyAlias);
+          fs.writeFileSync('/tmp/key_pass.txt',ks.keyPassword);
+          if(ksData.startsWith('http')){
+            console.log('Keystore is URL — will download');
+            fs.writeFileSync('/tmp/ks_mode.txt','url');
+            fs.writeFileSync('/tmp/ks_url.txt',ksData);
+          } else {
+            console.log('Keystore is base64 — will decode');
+            fs.writeFileSync('/tmp/ks_mode.txt','base64');
+            fs.writeFileSync('/tmp/ks_data.txt',ksData);
+          }
+          "
+
+          MODE=$(cat /tmp/ks_mode.txt)
+          if [ "$MODE" = "url" ]; then
+            KS_URL=$(cat /tmp/ks_url.txt)
+            curl -s -L -o android/app/upload-keystore.jks "$KS_URL"
+          else
+            cat /tmp/ks_data.txt | base64 -d > android/app/upload-keystore.jks
+          fi
+          echo "✅ Keystore ready: $(du -h android/app/upload-keystore.jks | cut -f1)"
+
+          keytool -list -keystore android/app/upload-keystore.jks \
+            -storepass "$(cat /tmp/ks_pass.txt)" -alias "$(cat /tmp/ks_alias.txt)" 2>/dev/null | grep SHA1 || echo "SHA1 check skipped"
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: "📝 Configure Signing in build.gradle"
+        run: |
+          cd mobile/android/app
+
+          KS_PASS=$(cat /tmp/ks_pass.txt)
+          KS_ALIAS=$(cat /tmp/ks_alias.txt)
+          KEY_PASS=$(cat /tmp/key_pass.txt)
+
+          cat > signing.gradle << SIGNEOF
+          android {
+            signingConfigs {
+              release {
+                storeFile file("upload-keystore.jks")
+                storePassword "$KS_PASS"
+                keyAlias "$KS_ALIAS"
+                keyPassword "$KEY_PASS"
+              }
+            }
+            buildTypes {
+              release {
+                signingConfig signingConfigs.release
+              }
+            }
+          }
+          SIGNEOF
+
+          echo 'apply from: "signing.gradle"' >> build.gradle
+          echo "✅ Signing config applied with EAS keystore"
+
+      - name: "🔨 Build Android AAB with Gradle"
+        run: |
+          cd mobile/android
+          chmod +x gradlew
+          ./gradlew bundleRelease --no-daemon --warning-mode=all
+          echo "✅ AAB build complete"
+          ls -lh app/build/outputs/bundle/release/
+        env:
+          ANDROID_HOME: ${{ env.ANDROID_HOME }}
+          ANDROID_NDK_HOME: ${{ env.ANDROID_NDK_HOME }}
+          ORG_GRADLE_PROJECT_kotlinVersion: "1.9.25"
+
+      - name: "📦 Prepare AAB for upload"
+        run: |
+          cp mobile/android/app/build/outputs/bundle/release/app-release.aab mobile/android-release.aab
+          echo "AAB size: $(du -h mobile/android-release.aab | cut -f1)"
+
+      - name: "📤 Upload AAB as Artifact"
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-release-aab
+          path: mobile/android-release.aab
+          retention-days: 30
+
+      - name: "🚀 Upload AAB to GitHub Release"
+        run: |
+          TAG="${{ github.event.release.tag_name }}"
+          RELEASE_ID="${{ github.event.release.id }}"
+          cd mobile
+          zip -j "android-release-v${TAG}.zip" android-release.aab
+          curl -s -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/zip" \
+            --data-binary @"android-release-v${TAG}.zip" \
+            "https://uploads.github.com/repos/${{ github.repository }}/releases/${RELEASE_ID}/assets?name=android-release-v${TAG}.zip"
+          echo "✅ AAB uploaded to GitHub release $TAG"
+
+      - name: "🧹 Cleanup"
+        run: |
+          rm -f mobile/google-service-account.json
+          rm -f mobile/android-release.aab
+          rm -f mobile/android/app/upload-keystore.jks
+        if: always()
+
+      - name: "✅ Done"
+        run: echo "Android AAB built and uploaded to GitHub release!"

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="hi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0" />
+
+    <!-- Primary -->
+    <title>SAI RoloTech — Design Engine</title>
+    <meta name="description" content="India Ka #1 Roll Forming Machine Design Engine — 92% Accuracy, 500+ Profiles. AI Quotation, PMEGP Project Reports, Machine Troubleshooter." />
+    <meta name="keywords" content="roll forming machine, design engine, C purlin, Z purlin, roofing sheet, SAI RoloTech, PMEGP loan, machine quotation" />
+    <meta name="author" content="SAI RoloTech, Pune, Maharashtra" />
+    <meta name="theme-color" content="#2563eb" />
+
+    <!-- PWA / Mobile -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="SAI RoloTech" />
+    <meta name="msapplication-TileColor" content="#2563eb" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="SAI RoloTech Design Engine" />
+    <meta property="og:description" content="92% Accuracy ke saath koi bhi roll forming profile design karein." />
+    <meta property="og:site_name" content="SAI RoloTech" />
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon.svg" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <style>
+      :root {
+        --sat: env(safe-area-inset-top, 0px);
+        --sab: env(safe-area-inset-bottom, 0px);
+        --sal: env(safe-area-inset-left, 0px);
+        --sar: env(safe-area-inset-right, 0px);
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; height: 100%; }
+      body {
+        padding-top: var(--sat);
+        padding-left: var(--sal);
+        padding-right: var(--sar);
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        overscroll-behavior: none;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      }
+      #root { min-height: 100%; padding-bottom: var(--sab); }
+      button, a { touch-action: manipulation; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js', { scope: '/' })
+            .then(r => console.log('[PWA] SW registered:', r.scope))
+            .catch(e => console.log('[PWA] SW failed:', e));
+        });
+      }
+      if (window.navigator.standalone) {
+        document.documentElement.classList.add('ios-standalone');
+      }
+    </script>
+  </body>
+</html>
