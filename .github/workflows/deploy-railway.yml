@@ -1,0 +1,58 @@
+name: Deploy to Railway
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Authenticate Railway
+        run: railway login --browserless
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: Link Railway Project
+        run: |
+          railway link \
+            --project ${{ secrets.RAILWAY_PROJECT_ID }} \
+            --workspace ${{ secrets.RAILWAY_WORKSPACE_ID }}
+
+      - name: Build CRM Frontend
+        run: |
+          cd crm-2
+          npm install -g pnpm
+          pnpm install
+          pnpm build
+
+      - name: Copy Frontend to API Server
+        run: |
+          mkdir -p artifacts/api-server/dist
+          cp -r crm-2/dist artifacts/api-server/dist/public
+
+      - name: Build API Server
+        run: |
+          cd artifacts/api-server
+          pnpm install
+          pnpm run build
+
+      - name: Deploy to Railway
+        run: railway up --service api-server
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
