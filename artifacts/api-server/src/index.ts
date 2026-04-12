@@ -75,6 +75,12 @@ app.use((req, _res, next) => {
   next();
 });
 
+// Public Agent Memory API - no auth required
+import agentRouter from "./routes/agent.js";
+import ollamaRouter from "./routes/ollama.js";
+app.use("/agents", agentRouter);
+app.use("/ollama", ollamaRouter);
+
 app.use("/api", apiRouter);
 
 app.use("/api", (err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
@@ -151,7 +157,12 @@ app.use("/api", (err: Error, _req: express.Request, res: express.Response, _next
 })();
 </script></head><body style="background:#070710"></body></html>`;
 
-  app.use((req, res) => {
+  // SPA catch-all — must never intercept /ollama or /agents
+  // Guard here ensures any misrouted API paths return 404 JSON instead of HTML
+  app.use((req, res, next) => {
+    if (req.path.startsWith("/api/") || req.path.startsWith("/ollama") || req.path.startsWith("/agents")) {
+      return res.status(404).json({ error: "API route not found", path: req.path });
+    }
     res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     res.setHeader("Pragma", "no-cache");
     res.setHeader("Expires", "0");

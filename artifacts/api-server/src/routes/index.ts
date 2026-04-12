@@ -47,6 +47,7 @@ import crmAnalyticsRouter from "./crm-analytics";
 import crmAccountRouter from "./crm-account";
 import aiLeadScoreRouter from "./ai-lead-score";
 import agentRouter from "./agent";
+import ollamaRouter from "./ollama";
 
 const router: IRouter = Router();
 
@@ -69,6 +70,9 @@ router.use(githubWebhookPublicRouter);
 
 // ── Agent Memory Routes (PUBLIC - no auth) ─────────────────────
 router.use("/agents", agentRouter);
+
+// ── Ollama Local AI (PUBLIC - no auth) ─────────────────────────
+router.use("/ollama", ollamaRouter);
 
 router.use(requireAuth as any);
 router.use(injectRbacUser as any);
