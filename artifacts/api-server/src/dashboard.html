@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAI RoloTech Agent Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: #0f0f23; color: #e2e8f0; min-height: 100vh; }
+    .container { display: flex; min-height: 100vh; }
+    .sidebar { width: 260px; background: linear-gradient(180deg, #1a1a3e 0%, #0f0f23 100%); border-right: 1px solid rgba(255,255,255,0.1); padding: 24px 16px; position: fixed; height: 100vh; overflow-y: auto; }
+    .logo { font-size: 1.4rem; font-weight: 700; background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 32px; padding: 0 12px; }
+    .nav-item { padding: 12px 16px; border-radius: 8px; cursor: pointer; margin-bottom: 4px; transition: all 0.2s; display: flex; align-items: center; gap: 12px; font-weight: 500; }
+    .nav-item:hover { background: rgba(99,102,241,0.15); }
+    .nav-item.active { background: rgba(99,102,241,0.25); color: #818cf8; }
+    .main { flex: 1; margin-left: 260px; padding: 32px; }
+    .header { margin-bottom: 32px; }
+    .header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
+    .header p { color: #94a3b8; }
+    .card { background: linear-gradient(135deg, #1e1e3f, #252550); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 24px; margin-bottom: 24px; }
+    .card-title { font-size: 1.2rem; font-weight: 600; }
+    .btn { padding: 10px 20px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-primary { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(99,102,241,0.4); }
+    .btn-secondary { background: rgba(255,255,255,0.1); color: #e2e8f0; }
+    .btn-success { background: linear-gradient(135deg, #22c55e, #4ade80); color: white; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; margin-bottom: 6px; font-weight: 500; color: #94a3b8; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white; font-size: 14px; }
+    .form-group textarea { min-height: 100px; resize: vertical; }
+    .response-box { background: #000; border-radius: 8px; padding: 16px; max-height: 300px; overflow: auto; font-family: 'Courier New', monospace; font-size: 12px; white-space: pre-wrap; }
+    .status { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .status.success { background: rgba(34,197,94,0.2); color: #22c55e; }
+    .status.error { background: rgba(239,68,68,0.2); color: #ef4444; }
+    .status.info { background: rgba(99,102,241,0.2); color: #818cf8; }
+    .loader { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid #6366f1; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .toast { position: fixed; bottom: 24px; right: 24px; padding: 16px 24px; border-radius: 12px; font-weight: 500; transform: translateX(200%); transition: transform 0.3s; z-index: 1000; }
+    .toast.show { transform: translateX(0); }
+    .toast.success { background: #22c55e; color: white; }
+    .toast.error { background: #ef4444; color: white; }
+    .cmd-card { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+    .cat-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; }
+    .cat-ai { background: rgba(249,115,22,0.2); color: #fb923c; }
+    .cat-crm { background: rgba(34,197,94,0.2); color: #4ade80; }
+    .cat-engineering { background: rgba(236,72,153,0.2); color: #f472b6; }
+    .cat-custom { background: rgba(234,179,8,0.2); color: #facc15; }
+    .chat-container { background: #000; border-radius: 12px; padding: 16px; height: 350px; overflow-y: auto; margin-bottom: 16px; }
+    .chat-message { padding: 12px; border-radius: 12px; margin-bottom: 12px; max-width: 85%; }
+    .chat-user { background: rgba(99,102,241,0.2); color: #a5b4fc; margin-left: auto; }
+    .chat-assistant { background: rgba(34,197,94,0.1); color: #e2e8f0; }
+    .chat-system { background: rgba(255,255,255,0.05); color: #94a3b8; font-size: 12px; text-align: center; }
+    .model-btn { padding: 8px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); cursor: pointer; margin: 4px; }
+    .model-btn:hover { border-color: #6366f1; }
+    .model-btn.active { background: rgba(99,102,241,0.3); border-color: #6366f1; color: #818cf8; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <div class="logo">SAI RoloTech</div>
+      <div class="nav-item active" onclick="showSection('ai')"><span>🤖</span> AI Chat</div>
+      <div class="nav-item" onclick="showSection('expert')"><span>🔧</span> Roll Expert</div>
+      <div class="nav-item" onclick="showSection('commands')"><span>📋</span> Commands</div>
+      <div class="nav-item" onclick="showSection('api')"><span>🔌</span> API Tester</div>
+      <div class="nav-item" onclick="showSection('status')"><span>💚</span> Status</div>
+    </aside>
+    <main class="main">
+      <section id="ai">
+        <div class="header"><h1>🤖 Local AI Chat</h1><p>Offline AI with Ollama - No internet needed!</p></div>
+        <div class="card">
+          <div class="card-title">Available Models</div>
+          <div id="model-list" style="margin-bottom:16px; display:flex; flex-wrap:wrap;"></div>
+        </div>
+        <div class="card">
+          <div class="chat-container" id="chat-messages">
+            <div class="chat-message chat-system">Welcome! Select a model and start chatting. Ollama must be running: ollama serve</div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="chat-input" placeholder="Type your message..." style="flex:1;" onkeyup="if(event.key==='Enter')sendChat()">
+            <button class="btn btn-primary" onclick="sendChat()">Send</button>
+            <button class="btn btn-secondary" onclick="clearChat()">Clear</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="expert" style="display:none;">
+        <div class="header"><h1>🔧 Roll Forming Expert</h1><p>Specialized AI for machine design & troubleshooting</p></div>
+        <div class="card">
+          <div class="card-title">Quick Questions</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
+            <button class="btn btn-secondary" onclick="askExpert('C-channel design kaise karein?')">C-Channel</button>
+            <button class="btn btn-secondary" onclick="askExpert('Springback compensation kya hai?')">Springback</button>
+            <button class="btn btn-secondary" onclick="askExpert('Strip width calculate kaise karein?')">Strip Width</button>
+            <button class="btn btn-secondary" onclick="askExpert('Flower pattern design kya hai?')">Flower Pattern</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="chat-container" id="expert-messages">
+            <div class="chat-message chat-system">Roll Forming Expert ready! Ask anything about machines.</div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="expert-input" placeholder="Ask about roll forming..." style="flex:1;" onkeyup="if(event.key==='Enter')askExpertInput()">
+            <button class="btn btn-success" onclick="askExpertInput()">Ask</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="commands" style="display:none;">
+        <div class="header"><h1>📋 Agent Commands</h1><p>37+ commands memory with context awareness</p></div>
+        <div class="card">
+          <div class="form-group">
+            <input type="text" id="cmd-search" placeholder="Search commands (e.g. 'leads', 'ai', 'login')" onkeyup="searchCommands()">
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">All Commands</div>
+          <div id="commands-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-top:16px;"></div>
+        </div>
+        <div class="card" style="margin-top:24px;">
+          <div class="card-title">Learn New Command</div>
+          <div class="grid" style="margin-top:16px;">
+            <div class="form-group"><label>Name</label><input type="text" id="new-cmd-name" placeholder="My Command"></div>
+            <div class="form-group"><label>Triggers (comma sep)</label><input type="text" id="new-cmd-trigger" placeholder="cmd1, cmd2"></div>
+          </div>
+          <div class="form-group"><label>Action</label><input type="text" id="new-cmd-action" placeholder="POST /api/my-endpoint"></div>
+          <div class="form-group"><label>Description</label><input type="text" id="new-cmd-desc" placeholder="What does this do?"></div>
+          <button class="btn btn-primary" onclick="addNewCommand()">Add Command</button>
+        </div>
+      </section>
+
+      <section id="api" style="display:none;">
+        <div class="header"><h1>🔌 API Tester</h1></div>
+        <div class="card">
+          <div class="form-group"><label>Endpoint</label><input type="text" id="api-url" placeholder="/api/health"></div>
+          <div class="form-group"><label>Method</label>
+            <select id="api-method"><option>GET</option><option>POST</option><option>PUT</option><option>DELETE</option></select>
+          </div>
+          <div class="form-group"><label>Body (JSON)</label><textarea id="api-body" placeholder='{}'>{}</textarea></div>
+          <button class="btn btn-primary" onclick="testAPI()">Send Request</button>
+          <div class="response-box" id="tester-response" style="margin-top:16px;display:none;"></div>
+        </div>
+        <div class="card" style="margin-top:24px;">
+          <div class="card-title">Quick Endpoints</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;">
+            <button class="btn btn-secondary" onclick="quickTest('/agents')">GET /agents</button>
+            <button class="btn btn-secondary" onclick="quickTest('/ollama/status')">GET /ollama/status</button>
+            <button class="btn btn-secondary" onclick="quickTest('/ollama/models')">GET /ollama/models</button>
+            <button class="btn btn-secondary" onclick="quickTest('/api/health')">GET /api/health</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="status" style="display:none;">
+        <div class="header"><h1>💚 System Status</h1></div>
+        <div class="grid">
+          <div class="card">
+            <div class="card-title">API Server</div>
+            <div id="api-status" style="text-align:center;padding:20px;"><div class="loader"></div></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Ollama</div>
+            <div id="ollama-status" style="text-align:center;padding:20px;"><div class="loader"></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Commands</div>
+          <div id="cmd-stats" style="text-align:center;padding:20px;"><div class="loader"></div></div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const BASE = window.location.origin;
+    let selectedModel = 'llama3.2:3b';
+    let chatHistory = [];
+
+    function showSection(id) {
+      document.querySelectorAll('section').forEach(s => s.style.display = 'none');
+      document.getElementById(id).style.display = 'block';
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      event.target.closest('.nav-item').classList.add('active');
+      if (id === 'commands') loadAgents();
+      if (id === 'status') loadStatus();
+      if (id === 'ai') loadModels();
+    }
+
+    function showToast(msg, type = 'success') {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.className = `toast ${type} show`;
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    // AI Chat
+    async function loadModels() {
+      try {
+        const res = await fetch(`${BASE}/ollama/models`);
+        const d = await res.json();
+        const models = d.models || [];
+        document.getElementById('model-list').innerHTML = models.map(m =>
+          `<button class="model-btn ${m.name === selectedModel ? 'active' : ''}" onclick="selectModel('${m.name}')">${m.name}</button>`
+        ).join('') || '<p style="color:#ef4444">Ollama not running. Start with: <code>ollama serve</code></p>';
+      } catch(e) {
+        document.getElementById('model-list').innerHTML = '<p style="color:#ef4444">Ollama not running</p>';
+      }
+    }
+
+    function selectModel(m) {
+      selectedModel = m;
+      document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      showToast(`Model: ${m}`);
+    }
+
+    function addMsg(role, text) {
+      const div = document.getElementById('chat-messages');
+      const m = document.createElement('div');
+      m.className = `chat-message chat-${role}`;
+      m.textContent = text;
+      div.appendChild(m);
+      div.scrollTop = div.scrollHeight;
+    }
+
+    async function sendChat() {
+      const text = document.getElementById('chat-input').value.trim();
+      if (!text) return;
+      addMsg('user', text);
+      chatHistory.push({ role: 'user', content: text });
+      document.getElementById('chat-input').value = '';
+      const loading = document.createElement('div');
+      loading.className = 'chat-message chat-assistant';
+      loading.innerHTML = '<span class="loader"></span> Thinking...';
+      document.getElementById('chat-messages').appendChild(loading);
+      try {
+        const res = await fetch(`${BASE}/ollama/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: [{ role: 'user', content: text }], model: selectedModel })
+        });
+        const d = await res.json();
+        loading.remove();
+        addMsg('assistant', d.message?.content || 'No response');
+      } catch(e) {
+        loading.remove();
+        addMsg('assistant', 'Error: ' + e.message);
+      }
+    }
+
+    function clearChat() {
+      document.getElementById('chat-messages').innerHTML = '<div class="chat-message chat-system">Chat cleared.</div>';
+      chatHistory = [];
+    }
+
+    // Expert
+    function addExpertMsg(role, text) {
+      const div = document.getElementById('expert-messages');
+      const m = document.createElement('div');
+      m.className = `chat-message chat-${role}`;
+      m.textContent = text;
+      div.appendChild(m);
+      div.scrollTop = div.scrollHeight;
+    }
+
+    async function askExpert(q) {
+      addExpertMsg('user', q);
+      const loading = document.createElement('div');
+      loading.className = 'chat-message chat-assistant';
+      loading.innerHTML = '<span class="loader"></span> Expert thinking...';
+      document.getElementById('expert-messages').appendChild(loading);
+      try {
+        const res = await fetch(`${BASE}/ollama/expert`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: q })
+        });
+        const d = await res.json();
+        loading.remove();
+        addExpertMsg('assistant', d.answer || 'No response');
+      } catch(e) {
+        loading.remove();
+        addExpertMsg('assistant', 'Error: ' + e.message);
+      }
+    }
+
+    function askExpertInput() {
+      const q = document.getElementById('expert-input').value.trim();
+      if (q) { document.getElementById('expert-input').value = ''; askExpert(q); }
+    }
+
+    // Commands
+    async function loadAgents() {
+      const d = await fetch(`${BASE}/agents`).then(r => r.json());
+      document.getElementById('commands-grid').innerHTML = (d.commands || []).map(c =>
+        `<div class="cmd-card"><b>${c.name}</b><p>${c.description}</p><span class="cat-badge cat-${c.category}">${c.category}</span></div>`
+      ).join('') || 'No commands';
+    }
+
+    async function searchCommands() {
+      const q = document.getElementById('cmd-search').value;
+      if (!q) return;
+      const d = await fetch(`${BASE}/agents/search?q=${encodeURIComponent(q)}`).then(r => r.json());
+      document.getElementById('commands-grid').innerHTML = (d.results || []).map(c =>
+        `<div class="cmd-card"><b>${c.name}</b>: ${c.action}</div>`
+      ).join('') || 'No results';
+    }
+
+    async function addNewCommand() {
+      const name = document.getElementById('new-cmd-name').value;
+      const trigger = document.getElementById('new-cmd-trigger').value;
+      const action = document.getElementById('new-cmd-action').value;
+      const desc = document.getElementById('new-cmd-desc').value;
+      if (!name || !trigger || !action) return showToast('Fill required fields', 'error');
+      const res = await fetch(`${BASE}/agents`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, trigger: trigger.split(','), action, description: desc, category: 'custom' })
+      });
+      const d = await res.json();
+      if (d.success) { showToast('Command added!'); loadAgents(); }
+      else showToast(d.error || 'Failed', 'error');
+    }
+
+    // API Tester
+    async function testAPI() {
+      const url = document.getElementById('api-url').value;
+      const method = document.getElementById('api-method').value;
+      const body = document.getElementById('api-body').value;
+      const opts = { method, headers: { 'Content-Type': 'application/json' } };
+      if (['POST', 'PUT'].includes(method) && body) opts.body = body;
+      try {
+        const res = await fetch(BASE + url, opts);
+        const d = await res.json().catch(() => ({ error: 'Invalid JSON' }));
+        document.getElementById('tester-response').style.display = 'block';
+        document.getElementById('tester-response').textContent = JSON.stringify({ status: res.status, ...d }, null, 2);
+      } catch(e) {
+        document.getElementById('tester-response').style.display = 'block';
+        document.getElementById('tester-response').textContent = 'Error: ' + e.message;
+      }
+    }
+
+    function quickTest(url) {
+      document.getElementById('api-url').value = url;
+      testAPI();
+    }
+
+    // Status
+    async function loadStatus() {
+      // API Status
+      fetch(`${BASE}/api/health`).then(r => r.json()).then(d => {
+        document.getElementById('api-status').innerHTML = '<span class="status success">Online</span><p style="margin-top:8px;">Uptime: ' + Math.floor(d.uptime / 60) + ' min</p>';
+      }).catch(() => {
+        document.getElementById('api-status').innerHTML = '<span class="status error">Offline</span>';
+      });
+
+      // Ollama Status
+      fetch(`${BASE}/ollama/status`).then(r => r.json()).then(d => {
+        if (d.available) {
+          document.getElementById('ollama-status').innerHTML = '<span class="status success">Ollama Active</span><p style="margin-top:8px;">' + (d.models?.length || 0) + ' models</p>';
+        } else {
+          document.getElementById('ollama-status').innerHTML = '<span class="status error">Ollama Offline</span><p style="margin-top:8px;">Run: ollama serve</p>';
+        }
+      }).catch(() => {
+        document.getElementById('ollama-status').innerHTML = '<span class="status error">Check failed</span>';
+      });
+
+      // Commands
+      fetch(`${BASE}/agents/stats`).then(r => r.json()).then(d => {
+        document.getElementById('cmd-stats').innerHTML = '<div style="font-size:1.5rem;font-weight:700;color:#6366f1;">' + d.stats.totalCommands + '</div><div>' + d.stats.totalCommands + ' commands</div>';
+      }).catch(() => {
+        document.getElementById('cmd-stats').innerHTML = 'Failed';
+      });
+    }
+  </script>
+</body>
+</html>

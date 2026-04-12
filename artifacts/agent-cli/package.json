@@ -1,0 +1,25 @@
+{
+  "name": "@workspace/agent-cli",
+  "version": "1.0.0",
+  "description": "MASTER - Universal AI Agent for Laptop",
+  "type": "module",
+  "main": "src/cli.ts",
+  "bin": {
+    "master": "src/cli.ts"
+  },
+  "scripts": {
+    "start": "tsx src/cli.ts",
+    "server": "tsx src/index.ts",
+    "dev": "tsx watch src/cli.ts"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "socket.io": "^4.8.0",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.9.0",
+    "@types/node": "^22.0.0"
+  }
+}
