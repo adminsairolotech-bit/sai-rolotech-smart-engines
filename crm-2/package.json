@@ -8,6 +8,9 @@
     "build": "vite build",
     "typecheck": "npx tsc --noEmit -p mobile/tsconfig.json",
     "test": "node --test tests/integration-status.smoke.test.mjs",
+    "test:vitest": "npx vitest run",
+    "test:vitest:watch": "npx vitest",
+    "test:coverage": "npx vitest run --coverage",
     "preview": "vite preview",
     "server": "node --env-file=.env server/index.js",
     "start": "npm run build && node --env-file=.env server/index.js",
@@ -66,11 +69,20 @@
     "zod-validation-error": "^5.0.0"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@typescript-eslint/eslint-plugin": "^8.58.1",
     "@vitejs/plugin-react": "^4.7.0",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react": "^7.37.5",
+    "jsdom": "^29.0.2",
+    "prettier": "^3.8.2",
     "typescript": "^6.0.2",
-    "vite": "^5.4.21"
+    "vite": "^5.4.21",
+    "vitest": "^4.1.4"
   }
 }
