@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAI Rolotech Engine - AI Agent</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg-primary: #0d1117;
+      --bg-secondary: #161b22;
+      --bg-tertiary: #21262d;
+      --bg-hover: #30363d;
+      --border: #30363d;
+      --text-primary: #e6edf3;
+      --text-secondary: #8b949e;
+      --text-muted: #6e7681;
+      --accent-blue: #58a6ff;
+      --accent-green: #3fb950;
+      --accent-purple: #a371f7;
+      --accent-orange: #d29922;
+      --accent-red: #f85149;
+      --accent-cyan: #39c5cf;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      height: 100vh;
+      overflow: hidden;
+    }
+    .app {
+      display: grid;
+      grid-template-columns: 260px 1fr 300px;
+      grid-template-rows: 60px 1fr;
+      height: 100vh;
+    }
+    .header {
+      grid-column: 1 / -1;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+    .header-left { display: flex; align-items: center; gap: 15px; }
+    .logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 18px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: rgba(63, 185, 80, 0.15);
+      border: 1px solid rgba(63, 185, 80, 0.3);
+      border-radius: 12px;
+      font-size: 12px;
+      color: var(--accent-green);
+    }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--accent-green);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    .header-center { display: flex; gap: 10px; }
+    .header-right { display: flex; align-items: center; gap: 15px; }
+    .model-selector {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 12px;
+      color: var(--text-primary);
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .sidebar {
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    .sidebar-header { padding: 15px; border-bottom: 1px solid var(--border); }
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 12px;
+      gap: 8px;
+    }
+    .search-box input {
+      flex: 1;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 13px;
+      outline: none;
+    }
+    .search-box input::placeholder { color: var(--text-muted); }
+    .sidebar-section { padding: 10px; }
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 8px 10px;
+    }
+    .channel-item, .agent-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .channel-item:hover, .agent-item:hover { background: var(--bg-hover); }
+    .channel-item.active, .agent-item.active {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+    }
+    .channel-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .channel-icon.telegram { background: #0088cc22; color: #0088cc; }
+    .channel-icon.whatsapp { background: #25d36622; color: #25d366; }
+    .channel-icon.discord { background: #5865f222; color: #5865f2; }
+    .channel-icon.web { background: var(--accent-blue); color: white; }
+    .channel-info { flex: 1; }
+    .channel-name { font-size: 13px; font-weight: 500; }
+    .channel-status { font-size: 11px; color: var(--text-muted); }
+    .agent-badge {
+      padding: 2px 6px;
+      background: var(--accent-purple);
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+    .main {
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-primary);
+    }
+    .chat-header {
+      padding: 15px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .chat-title { font-size: 16px; font-weight: 600; }
+    .chat-actions { display: flex; gap: 10px; }
+    .chat-btn {
+      padding: 6px 12px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-secondary);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .chat-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 20px; }
+    .message { display: flex; gap: 12px; margin-bottom: 20px; }
+    .message.user { flex-direction: row-reverse; }
+    .message-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--bg-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .message.assistant .message-avatar {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    }
+    .message.user .message-avatar { background: var(--accent-green); }
+    .message-content { max-width: 70%; }
+    .message.user .message-content { text-align: right; }
+    .message-text {
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .message.user .message-text {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+    }
+    .message-time { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+    .message.user .message-time { text-align: right; }
+    .code-block {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+      margin-top: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      overflow-x: auto;
+    }
+    .chat-input-area {
+      padding: 15px 20px;
+      border-top: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+    .command-hints { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+    .hint-btn {
+      padding: 4px 10px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .hint-btn:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+      border-color: var(--accent-blue);
+    }
+    .input-wrapper { display: flex; gap: 10px; }
+    .chat-input {
+      flex: 1;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .chat-input:focus { border-color: var(--accent-blue); }
+    .chat-input::placeholder { color: var(--text-muted); }
+    .send-btn {
+      padding: 12px 24px;
+      background: var(--accent-blue);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .send-btn:hover { background: #4393e6; }
+    .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .right-panel {
+      background: var(--bg-secondary);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+    .panel-tabs { display: flex; border-bottom: 1px solid var(--border); }
+    .panel-tab {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .panel-tab.active { color: var(--text-primary); border-bottom-color: var(--accent-blue); }
+    .panel-tab:hover { background: var(--bg-hover); }
+    .panel-content { flex: 1; overflow-y: auto; padding: 15px; }
+    .stat-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+    .stat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .stat-label { font-size: 12px; color: var(--text-secondary); }
+    .stat-value { font-size: 14px; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+    .stat-bar { height: 4px; background: var(--bg-primary); border-radius: 2px; overflow: hidden; }
+    .stat-fill { height: 100%; border-radius: 2px; transition: width 0.3s; }
+    .stat-fill.cpu { background: var(--accent-blue); }
+    .stat-fill.memory { background: var(--accent-purple); }
+    .stat-fill.disk { background: var(--accent-orange); }
+    .stat-fill.network { background: var(--accent-green); }
+    .memory-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      background: var(--bg-tertiary);
+      border-radius: 6px;
+      margin-bottom: 6px;
+      font-size: 12px;
+    }
+    .memory-type {
+      padding: 2px 6px;
+      background: var(--accent-blue);
+      border-radius: 3px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+    .memory-type.session { background: var(--accent-purple); }
+    .memory-type.persistent { background: var(--accent-green); }
+    .robot-container {
+      position: fixed;
+      bottom: 20px;
+      right: 320px;
+      width: 200px;
+      height: 200px;
+      pointer-events: none;
+      z-index: 100;
+    }
+    .robot-canvas { width: 100%; height: 100%; }
+    .typing-indicator { display: flex; gap: 4px; padding: 8px; }
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--text-muted);
+      border-radius: 50%;
+      animation: typing 1.4s infinite;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typing {
+      0%, 100% { transform: translateY(0); opacity: 0.5; }
+      50% { transform: translateY(-4px); opacity: 1; }
+    }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-tertiary); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--bg-hover); }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="header-left">
+        <div class="logo">SAI Rolotech Engine</div>
+        <div class="status-badge">
+          <div class="status-dot"></div>
+          <span>Connected</span>
+        </div>
+      </div>
+      <div class="header-center">
+        <button class="chat-btn" onclick="clearChat()">New Chat</button>
+        <button class="chat-btn" onclick="downloadChat()">Export</button>
+      </div>
+      <div class="header-right">
+        <select class="model-selector" id="modelSelect">
+          <option value="google/gemini-2.5-flash">Gemini 2.5 Flash</option>
+          <option value="google/gemini-2.0-flash">Gemini 2.0 Flash</option>
+          <option value="anthropic/claude-3-haiku">Claude 3 Haiku</option>
+        </select>
+        <div style="font-size: 20px;">🤖</div>
+      </div>
+    </header>
+
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="search-box">
+          <span>🔍</span>
+          <input type="text" placeholder="Search...">
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="section-title">Channels</div>
+        <div class="channel-item active">
+          <div class="channel-icon web">💬</div>
+          <div class="channel-info">
+            <div class="channel-name">Web Chat</div>
+            <div class="channel-status">Active</div>
+          </div>
+        </div>
+        <div class="channel-item">
+          <div class="channel-icon telegram">📱</div>
+          <div class="channel-info">
+            <div class="channel-name">Telegram</div>
+            <div class="channel-status">Connect bot</div>
+          </div>
+        </div>
+        <div class="channel-item">
+          <div class="channel-icon discord">🎮</div>
+          <div class="channel-info">
+            <div class="channel-name">Discord</div>
+            <div class="channel-status">Connect bot</div>
+          </div>
+        </div>
+        <div class="channel-item">
+          <div class="channel-icon whatsapp">💬</div>
+          <div class="channel-info">
+            <div class="channel-name">WhatsApp</div>
+            <div class="channel-status">Connect bot</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="section-title">AI Agents</div>
+        <div class="agent-item active">
+          <div class="channel-icon web">🧠</div>
+          <div class="channel-info"><div class="channel-name">Orchestrator</div></div>
+          <span class="agent-badge">MAIN</span>
+        </div>
+        <div class="agent-item">
+          <div class="channel-icon web">💻</div>
+          <div class="channel-info"><div class="channel-name">Coder</div></div>
+        </div>
+        <div class="agent-item">
+          <div class="channel-icon web">🏭</div>
+          <div class="channel-info"><div class="channel-name">Roll Forming</div></div>
+        </div>
+        <div class="agent-item">
+          <div class="channel-icon web">📐</div>
+          <div class="channel-info"><div class="channel-name">AutoCAD</div></div>
+        </div>
+        <div class="agent-item">
+          <div class="channel-icon web">🎬</div>
+          <div class="channel-info"><div class="channel-name">Video Editor</div></div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="chat-header">
+        <div class="chat-title">🤖 SAI Rolotech Assistant</div>
+        <div class="chat-actions">
+          <button class="chat-btn" onclick="downloadChat()">📥 Export</button>
+          <button class="chat-btn" onclick="showShortcuts()">⌨️ Shortcuts</button>
+        </div>
+      </div>
+
+      <div class="chat-messages" id="chatMessages">
+        <div class="message assistant">
+          <div class="message-avatar">🤖</div>
+          <div class="message-content">
+            <div class="message-text">
+              <strong>Namaste! 🙏</strong><br><br>
+              I'm SAI Rolotech Engine - your AI assistant. I specialize in:<br><br>
+              • <strong>Roll Forming Engineering</strong> - C-Channel, Z-Purlin, machine setup<br>
+              • <strong>AutoCAD</strong> - Commands, LISP scripting, 3D modeling<br>
+              • <strong>Video Editing</strong> - Filmora techniques, transitions<br>
+              • <strong>Industrial Automation</strong> - PLC, HMI, SCADA, VFD<br>
+              • <strong>Programming</strong> - Python, JavaScript, TypeScript<br><br>
+              Type your question or use the command buttons below!
+            </div>
+            <div class="message-time">Just now</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-input-area">
+        <div class="command-hints">
+          <button class="hint-btn" onclick="insertCommand('code ')">💻 Code</button>
+          <button class="hint-btn" onclick="insertCommand('cad ')">📐 AutoCAD</button>
+          <button class="hint-btn" onclick="insertCommand('edit ')">🎬 Video</button>
+          <button class="hint-btn" onclick="insertCommand('ask ')">❓ Ask</button>
+          <button class="hint-btn" onclick="insertCommand('search ')">🔍 Search</button>
+        </div>
+        <div class="input-wrapper">
+          <input type="text" class="chat-input" id="chatInput" placeholder="Type your message or command..." onkeypress="handleKeyPress(event)">
+          <button class="send-btn" id="sendBtn" onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+    </main>
+
+    <aside class="right-panel">
+      <div class="panel-tabs">
+        <div class="panel-tab active" onclick="switchTab('stats')">Stats</div>
+        <div class="panel-tab" onclick="switchTab('memory')">Memory</div>
+        <div class="panel-tab" onclick="switchTab('tools')">Tools</div>
+      </div>
+
+      <div class="panel-content" id="panelContent">
+        <div id="statsTab">
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">CPU</span>
+              <span class="stat-value" id="cpuValue">--</span>
+            </div>
+            <div class="stat-bar">
+              <div class="stat-fill cpu" id="cpuBar" style="width: 0%"></div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Memory</span>
+              <span class="stat-value" id="memValue">--</span>
+            </div>
+            <div class="stat-bar">
+              <div class="stat-fill memory" id="memBar" style="width: 0%"></div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Disk</span>
+              <span class="stat-value" id="diskValue">--</span>
+            </div>
+            <div class="stat-bar">
+              <div class="stat-fill disk" id="diskBar" style="width: 0%"></div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">API Status</span>
+              <span class="stat-value" style="color: var(--accent-green)">✓ Online</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Messages</span>
+              <span class="stat-value" id="msgCount">0</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="memoryTab" style="display: none;">
+          <div class="memory-item">
+            <span class="memory-type">Session</span>
+            <span>Roll forming commands</span>
+          </div>
+          <div class="memory-item">
+            <span class="memory-type">Session</span>
+            <span>AutoCAD queries</span>
+          </div>
+          <div class="memory-item">
+            <span class="memory-type persistent">Persistent</span>
+            <span>User preferences</span>
+          </div>
+        </div>
+
+        <div id="toolsTab" style="display: none;">
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">🌐 Browser</span>
+              <span class="stat-value" style="color: var(--accent-green)">✓ Ready</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">🔍 Web Search</span>
+              <span class="stat-value" style="color: var(--accent-green)">✓ Ready</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">💻 Code Runner</span>
+              <span class="stat-value" style="color: var(--accent-green)">✓ Ready</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="robot-container">
+    <canvas class="robot-canvas" id="robotCanvas"></canvas>
+  </div>
+
+  <script>
+    const API_KEY = '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';
+    const API_URL = 'https://openrouter.ai/api/v1';
+    const SYSTEM_PROMPT = `You are SAI Rolotech Engine - an expert AI assistant specializing in:
+1. ROLL FORMING ENGINEERING - C-Channel, Z-Purlin, machine setup, defects, quality control
+2. AUTOCAD - All commands, LISP scripting, 3D modeling, dimensions
+3. VIDEO EDITING - Filmora-level techniques, transitions, color grading, audio
+4. INDUSTRIAL AUTOMATION - PLC, HMI, SCADA, VFD, Servo Motors
+5. GENERAL PROGRAMMING - Python, JavaScript, TypeScript, and more
+Be concise, practical, and domain-expert level in your responses.
+Use Hindi/English mix (Hinglish) when appropriate.
+Format code properly with syntax highlighting.
+For CAD commands, include LISP examples when relevant.`;
+
+    let messages = [];
+    let isTyping = false;
+    let messageCount = 0;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initRobot();
+      updateStats();
+      setInterval(updateStats, 5000);
+      document.getElementById('chatInput').focus();
+    });
+
+    async function sendMessage() {
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text || isTyping) return;
+
+      addMessage('user', text);
+      input.value = '';
+      messageCount++;
+      document.getElementById('msgCount').textContent = messageCount;
+
+      showTyping();
+      isTyping = true;
+
+      const apiMessages = [{ role: 'system', content: SYSTEM_PROMPT }, ...messages];
+      const model = document.getElementById('modelSelect').value;
+
+      try {
+        const response = await fetch(`${API_URL}/chat/completions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${API_KEY}`,
+            'HTTP-Referer': 'https://sairolotech.com',
+            'X-Title': 'SAI Rolotech Engine'
+          },
+          body: JSON.stringify({ model: model, messages: apiMessages, max_tokens: 2048 })
+        });
+
+        if (!response.ok) throw new Error(`API Error: ${response.status}`);
+
+        const data = await response.json();
+        const reply = data.choices?.[0]?.message?.content || 'No response received.';
+
+        hideTyping();
+        addMessage('assistant', reply);
+        messages.push({ role: 'user', content: text });
+        messages.push({ role: 'assistant', content: reply });
+      } catch (error) {
+        hideTyping();
+        addMessage('assistant', `Error: ${error.message}. Please try again.`);
+      }
+
+      isTyping = false;
+    }
+
+    function addMessage(role, content) {
+      const container = document.getElementById('chatMessages');
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const formattedContent = formatCodeBlocks(content);
+
+      container.insertAdjacentHTML('beforeend', `
+        <div class="message ${role}">
+          <div class="message-avatar">${role === 'assistant' ? '🤖' : '👤'}</div>
+          <div class="message-content">
+            <div class="message-text">${formattedContent}</div>
+            <div class="message-time">${time}</div>
+          </div>
+        </div>
+      `);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function formatCodeBlocks(text) {
+      return text.replace(/```(\w*)\n?([\s\S]*?)```/g, (match, lang, code) =>
+        `<div class="code-block"><code>${code.trim()}</code></div>`
+      ).replace(/\n/g, '<br>');
+    }
+
+    function showTyping() {
+      const container = document.getElementById('chatMessages');
+      container.insertAdjacentHTML('beforeend', `
+        <div class="message assistant" id="typingIndicator">
+          <div class="message-avatar">🤖</div>
+          <div class="message-content">
+            <div class="message-text">
+              <div class="typing-indicator">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function hideTyping() {
+      const typing = document.getElementById('typingIndicator');
+      if (typing) typing.remove();
+    }
+
+    function handleKeyPress(event) {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+      }
+    }
+
+    function insertCommand(cmd) {
+      document.getElementById('chatInput').value = cmd;
+      document.getElementById('chatInput').focus();
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('statsTab').style.display = tab === 'stats' ? 'block' : 'none';
+      document.getElementById('memoryTab').style.display = tab === 'memory' ? 'block' : 'none';
+      document.getElementById('toolsTab').style.display = tab === 'tools' ? 'block' : 'none';
+    }
+
+    function clearChat() {
+      document.getElementById('chatMessages').innerHTML = `
+        <div class="message assistant">
+          <div class="message-avatar">🤖</div>
+          <div class="message-content">
+            <div class="message-text">Chat cleared! How can I help you?</div>
+            <div class="message-time">Just now</div>
+          </div>
+        </div>
+      `;
+      messages = [];
+    }
+
+    function updateStats() {
+      const cpu = Math.floor(Math.random() * 40) + 20;
+      const mem = Math.floor(Math.random() * 30) + 40;
+      const disk = Math.floor(Math.random() * 20) + 60;
+      document.getElementById('cpuValue').textContent = `${cpu}%`;
+      document.getElementById('cpuBar').style.width = `${cpu}%`;
+      document.getElementById('memValue').textContent = `${mem}%`;
+      document.getElementById('memBar').style.width = `${mem}%`;
+      document.getElementById('diskValue').textContent = `${disk}%`;
+      document.getElementById('diskBar').style.width = `${disk}%`;
+    }
+
+    function downloadChat() {
+      const text = messages.map(m => `${m.role.toUpperCase()}: ${m.content}`).join('\n\n');
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'chat-history.txt';
+      a.click();
+    }
+
+    function showShortcuts() {
+      alert('Keyboard Shortcuts:\n\nEnter - Send message\nShift+Enter - New line');
+    }
+
+    function initRobot() {
+      const canvas = document.getElementById('robotCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = 200;
+      canvas.height = 200;
+      let frame = 0;
+
+      function draw() {
+        ctx.clearRect(0, 0, 200, 200);
+        const floatY = Math.sin(frame * 0.05) * 5;
+        const centerX = 100;
+        const centerY = 100 + floatY;
+
+        const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 80);
+        gradient.addColorStop(0, 'rgba(88, 166, 255, 0.2)');
+        gradient.addColorStop(1, 'rgba(88, 166, 255, 0)');
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 80, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#21262d';
+        ctx.strokeStyle = '#58a6ff';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(centerX - 30, centerY - 20, 60, 70, 10);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.roundRect(centerX - 25, centerY - 60, 50, 45, 8);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#58a6ff';
+        ctx.beginPath();
+        ctx.arc(centerX - 10, centerY - 40, 5, 0, Math.PI * 2);
+        ctx.arc(centerX + 10, centerY - 40, 5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.shadowColor = '#58a6ff';
+        ctx.shadowBlur = 10;
+        ctx.beginPath();
+        ctx.arc(centerX - 10, centerY - 40, 3, 0, Math.PI * 2);
+        ctx.arc(centerX + 10, centerY - 40, 3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        const chestBrightness = (Math.sin(frame * 0.1) + 1) / 2;
+        ctx.fillStyle = `rgba(63, 185, 80, ${chestBrightness})`;
+        ctx.beginPath();
+        ctx.arc(centerX, centerY + 10, 8, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = '#58a6ff';
+        ctx.lineWidth = 4;
+        ctx.lineCap = 'round';
+        const armSwing = Math.sin(frame * 0.08) * 5;
+
+        ctx.beginPath();
+        ctx.moveTo(centerX - 30, centerY);
+        ctx.lineTo(centerX - 50, centerY + 20 + armSwing);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(centerX + 30, centerY);
+        ctx.lineTo(centerX + 50, centerY + 20 - armSwing);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(centerX - 15, centerY + 50);
+        ctx.lineTo(centerX - 20, centerY + 80);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(centerX + 15, centerY + 50);
+        ctx.lineTo(centerX + 20, centerY + 80);
+        ctx.stroke();
+
+        frame++;
+        requestAnimationFrame(draw);
+      }
+      draw();
+    }
+  </script>
+</body>
+</html>

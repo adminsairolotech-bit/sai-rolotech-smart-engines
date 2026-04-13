@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 /**
  * SAI Rolotech Engine - Interactive Command Box
- * Simple terminal interface for AI chat
+ * Powered by OpenRouter (Gemini + Claude)
  */
 
 import chalk from "chalk";
-import { Anthropic } from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 import * as readline from "readline";
+import { readFileSync } from "fs";
 
 const ASCII_LOGO = `
 ╔═══════════════════════════════════════════════════════════╗
@@ -17,7 +18,7 @@ const ASCII_LOGO = `
 ║  ╚██████╗╚██████╔╝██║ ╚═╝ ██║███████║██║╚██████╔╝         ║
 ║   ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝╚═╝ ╚═════╝          ║
 ║                                                           ║
-║  🤖 SMART ENGINE v1.0 - Interactive Command Box           ║
+║  🤖 SMART ENGINE v1.0 - OpenRouter Powered               ║
 ╚═══════════════════════════════════════════════════════════╝
 `;
 
@@ -67,27 +68,41 @@ async function main() {
   console.log(chalk.cyan(ASCII_LOGO));
 
   // Load environment
-  const fs = await import("fs");
-  if (fs.existsSync(".env")) {
-    const content = fs.readFileSync(".env", "utf8");
+  let envVars = {};
+  try {
+    const content = readFileSync(".env", "utf8");
     for (const line of content.split("\n")) {
       const [key, ...valueParts] = line.split("=");
       if (key && !key.startsWith("#") && valueParts.length > 0) {
-        process.env[key.trim()] = valueParts.join("=").trim();
+        envVars[key.trim()] = valueParts.join("=").trim();
       }
     }
+  } catch (e) {
+    // .env not found, try process.env
   }
 
-  // Initialize client
-  const apiKey = process.env.ANTHROPIC_API_KEY || process.env.CLAUDE_API_KEY;
+  // Get API key - check multiple sources
+  const apiKey =
+    process.env.OPENROUTER_API_KEY ||
+    envVars.OPENROUTER_API_KEY ||
+    process.env.ANTHROPIC_API_KEY ||
+    envVars.CLAUDE_API_KEY ||
+    process.env.ANTHROPIC_API_KEY;
+
   if (!apiKey) {
     console.log(chalk.red("\n❌ ERROR: No API key found!"));
     console.log(chalk.yellow("\nAdd to .env file:"));
-    console.log(chalk.gray("ANTHROPIC_API_KEY=sk-ant-...\n"));
+    console.log(chalk.gray("OPENROUTER_API_KEY=sk-or-v1-...\n"));
+    console.log(chalk.cyan("Get key from: https://openrouter.ai/keys\n"));
     process.exit(1);
   }
 
-  const client = new Anthropic({ apiKey });
+  // Initialize OpenRouter client
+  const client = new OpenAI({
+    apiKey: apiKey,
+    baseURL: "https://openrouter.ai/api/v1",
+    dangerouslyAllowBrowser: true,
+  });
 
   // System prompt with knowledge
   const systemPrompt = `You are SAI Rolotech Engine - an expert AI assistant specializing in:
@@ -103,7 +118,7 @@ Use Hindi/English mix (Hinglish) when appropriate.
 Format code properly with syntax highlighting.
 For CAD commands, include LISP examples when relevant.`;
 
-  console.log(chalk.green("\n✅ Connected to Claude AI\n"));
+  console.log(chalk.green("\n✅ Connected to OpenRouter AI\n"));
   console.log(chalk.gray("Type 'help' for commands, 'exit' to quit\n"));
 
   // Create readline interface
@@ -195,16 +210,16 @@ For CAD commands, include LISP examples when relevant.`;
     try {
       messages.push({ role: "user", content: prompt });
 
-      const response = await client.messages.create({
-        model: "claude-sonnet-4-5",
+      const response = await client.chat.completions.create({
+        model: "google/gemini-2.5-flash",
         max_tokens: 2048,
-        system: systemPrompt,
-        messages,
+        messages: [
+          { role: "system", content: systemPrompt },
+          ...messages,
+        ],
       });
 
-      const text = response.content[0].type === "text"
-        ? response.content[0].text
-        : "Response generated.";
+      const text = response.choices[0]?.message?.content || "Response generated.";
 
       messages.push({ role: "assistant", content: text });
 
