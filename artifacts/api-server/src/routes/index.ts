@@ -7,6 +7,7 @@ import rollToolingRouter from "./roll-tooling";
 import authRouter from "./auth";
 import projectsRouter from "./projects";
 import aiDiagnoseRouter from "./ai-diagnose";
+import openrouterRouter from "./openrouter";
 import systemInfoRouter from "./system-info";
 import aiChatRouter from "./ai-chat";
 import fileManagerRouter from "./file-manager";
@@ -74,6 +75,9 @@ router.use("/agents", agentRouter);
 // ── Ollama Local AI (PUBLIC - no auth) ─────────────────────────
 router.use("/ollama", ollamaRouter);
 
+// ── OpenRouter Unified AI (BEFORE auth middleware) ──────────────
+router.use("/openrouter", openrouterRouter);
+
 router.use(requireAuth as any);
 router.use(injectRbacUser as any);
 router.use(accuracyInterceptor as any);
@@ -85,6 +89,7 @@ router.use(gcodeRouter);
 router.use(rollToolingRouter);
 router.use(projectsRouter);
 router.use(aiDiagnoseRouter);
+router.use("/openrouter", openrouterRouter);  // OpenRouter unified AI API
 router.use(systemInfoRouter);
 router.use(aiChatRouter);
 router.use(fileManagerRouter);

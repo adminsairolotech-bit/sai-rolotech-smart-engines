@@ -83,6 +83,17 @@ async function copyFrontend(distDir: string) {
   } catch {
     console.warn("frontend dist not found at", frontendSrc, "— skipping copy (will use CWD-based path)");
   }
+
+  // Copy dashboard.html
+  const dashboardSrc = path.resolve(__dirname, "src/dashboard.html");
+  const dashboardDest = path.resolve(frontendDest, "dashboard.html");
+  try {
+    await access(dashboardSrc);
+    await cp(dashboardSrc, dashboardDest);
+    console.log("dashboard.html copied.");
+  } catch {
+    console.warn("dashboard.html not found, skipping.");
+  }
 }
 
 buildAll()

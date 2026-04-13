@@ -1,12 +1,39 @@
 import { Router, type IRouter, type Request, type Response } from "express";
 import { diagnose, optimizeParameters, type DiagnosisInput } from "../lib/offline-ai-engine";
-import { geminiRotator } from "@workspace/integrations-openai-ai-server";
+import { initGeminiRotator, getGeminiRotator, type GeminiKeyRotator } from "../lib/gemini-key-rotator";
 
 const router: IRouter = Router();
 
-const GEMINI_KEY = () => process.env["AI_INTEGRATIONS_GEMINI_API_KEY"];
 const GEMINI_BASE = () =>
   process.env["AI_INTEGRATIONS_GEMINI_BASE_URL"] ?? "https://generativelanguage.googleapis.com";
+
+// Initialize Gemini Rotator on startup
+function getGeminiRotatorInstance(): GeminiKeyRotator | null {
+  const rotator = getGeminiRotator();
+  if (rotator) return rotator;
+
+  // Collect all keys from environment
+  const keys: string[] = [];
+  for (let i = 1; i <= 11; i++) {
+    const key = process.env[`GEMINI_KEY_${i}`];
+    if (key && key.trim()) {
+      keys.push(key.trim());
+    }
+  }
+
+  // Also check primary key
+  const primaryKey = process.env["AI_INTEGRATIONS_GEMINI_API_KEY"];
+  if (primaryKey && primaryKey.trim() && !keys.includes(primaryKey.trim())) {
+    keys.unshift(primaryKey.trim());
+  }
+
+  if (keys.length === 0) {
+    console.log('[GeminiRotator] No Gemini keys found in environment!');
+    return null;
+  }
+
+  return initGeminiRotator(keys);
+}
 
 async function enhanceWithGemini(
   defectId: string,
@@ -27,21 +54,18 @@ As a senior roll forming expert, provide:
 4. Relevant DIN/ISO standard references
 Be concise and actionable. Use engineering terminology.`;
 
-  try {
-    const text = await geminiRotator.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
-      config: {
-        systemInstruction: "You are a senior roll forming engineer with 50 years of experience in defect diagnosis and process optimization.",
-        maxOutputTokens: 1024,
-        temperature: 0.2,
-      },
-    });
-    if (text && text.length > 50) return text;
-  } catch { /* fallback below */ }
+  const rotator = getGeminiRotatorInstance();
+  if (!rotator) {
+    console.log('[GeminiRotator] No rotator available, skipping Gemini');
+    return null;
+  }
 
-  const key = GEMINI_KEY();
-  if (!key) return null;
+  // Get next available key (auto-rotates)
+  const apiKey = rotator.getNextKey();
+  if (!apiKey) {
+    console.log('[GeminiRotator] All keys exhausted or rate limited');
+    return null;
+  }
 
   try {
     const body = {
@@ -49,13 +73,33 @@ Be concise and actionable. Use engineering terminology.`;
       generationConfig: { temperature: 0.2, maxOutputTokens: 1024 },
     };
     const res = await fetch(
-      `${GEMINI_BASE()}/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`,
+      `${GEMINI_BASE()}/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
       { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), signal: AbortSignal.timeout(15000) },
     );
-    if (!res.ok) return null;
+
+    if (!res.ok) {
+      const status = res.status;
+      if (status === 429 || status === 403) {
+        // Rate limit or quota exceeded - rotate to next key
+        console.log(`[GeminiRotator] Key rate limited (status ${status}), rotating...`);
+        rotator.reportError(apiKey);
+        return null;  // Will fallback to offline analysis
+      }
+      return null;
+    }
+
     const data = await res.json() as { candidates?: { content?: { parts?: { text?: string }[] } }[] };
+    rotator.reportSuccess(apiKey);
     return data.candidates?.[0]?.content?.parts?.[0]?.text ?? null;
-  } catch { return null; }
+  } catch (error) {
+    if (rotator.isRateLimitError(error)) {
+      console.log('[GeminiRotator] Rate limit error detected, rotating key');
+      rotator.reportError(apiKey);
+    } else {
+      console.log('[GeminiRotator] Error:', error);
+    }
+    return null;
+  }
 }
 
 router.post("/ai/diagnose", async (req: Request, res: Response) => {
@@ -80,7 +124,7 @@ router.post("/ai/diagnose", async (req: Request, res: Response) => {
       ...offlineResult,
       geminiEnhanced: !!geminiText,
       geminiAnalysis: geminiText ?? null,
-      source: geminiText ? "SAI-Codex-5.3 + Gemini 2.5 Flash" : "SAI-Codex-5.3 (offline)",
+      source: geminiText ? "SAI-Codex-5.3 + Gemini 2.5 Flash (Rotator)" : "SAI-Codex-5.3 (offline)",
     });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Diagnosis failed";
@@ -110,24 +154,29 @@ router.post("/ai/optimize", async (req: Request, res: Response) => {
 });
 
 router.get("/ai/status", (_req: Request, res: Response) => {
-  const geminiKey = GEMINI_KEY();
-  const geminiActive = !!geminiKey || geminiRotator.activeKeys > 0;
+  const rotator = getGeminiRotatorInstance();
+  const keyStatus = rotator ? rotator.getStatus() : [];
+  const activeKeys = keyStatus.filter(k => k.active).length;
+  const geminiActive = activeKeys > 0;
 
   res.json({
     online: true,
     offlineMode: false,
     engineVersion: "SAI_CODEX_v5.3",
     activeModel: geminiActive ? "gemini-2.5-flash" : "offline-only",
-    provider: geminiActive ? "Gemini 2.5 Flash (Replit AI Integrations)" : "SAI Codex 5.3 Local",
+    provider: geminiActive ? "Gemini 2.5 Flash (Auto-Rotating)" : "SAI Codex 5.3 Local",
     knowledgeBase: "SAI-KB-v2.0-500patterns",
     defectsSupported: 12,
     accuracyScore: geminiActive ? 99 : 94,
     geminiActive,
-    geminiKeys: geminiRotator.activeKeys,
+    geminiKeys: keyStatus.length,
+    activeKeys,
+    keyRotatorEnabled: true,
+    keyStatus,
     codex53Active: true,
     message: geminiActive
-      ? "SAI Codex 5.3 + Gemini 2.5 Flash — hybrid mode active"
-      : "SAI Codex 5.3 offline mode — add Gemini key for enhanced analysis",
+      ? `SAI Codex 5.3 + Gemini 2.5 Flash — ${activeKeys} keys active (auto-rotating)`
+      : "SAI Codex 5.3 offline mode — add Gemini keys for enhanced analysis",
   });
 });
 

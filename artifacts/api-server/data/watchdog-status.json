@@ -1,58 +1,803 @@
 {
-  "startedAt": "2026-04-10T00:14:14.902Z",
-  "lastHealthCheck": "2026-04-10T00:24:14.960Z",
+  "startedAt": "2026-04-12T19:35:37.282Z",
+  "lastHealthCheck": "2026-04-13T01:02:04.245Z",
   "lastGitPush": null,
   "lastGitPushResult": null,
   "lastGitPull": null,
   "lastGitPullResult": null,
   "gitPullCount": 0,
-  "healthChecksPassed": 0,
-  "healthChecksFailed": 5,
-  "consecutiveFailures": 5,
+  "healthChecksPassed": 155,
+  "healthChecksFailed": 0,
+  "consecutiveFailures": 0,
   "gitPushCount": 0,
   "gitPushErrors": 0,
-  "apiPort": 8080,
+  "apiPort": 3000,
   "isElectron": false,
   "logs": [
     {
-      "time": "05:44:14 am",
+      "time": "01:05:37 am",
       "type": "success",
       "message": "Watchdog SHURU — auto-push + health monitor active"
     },
     {
-      "time": "05:44:24 am",
+      "time": "01:05:47 am",
       "type": "info",
       "message": "Startup auto-push check kar raha hai..."
     },
     {
-      "time": "05:46:14 am",
-      "type": "warn",
-      "message": "Health: API FAIL (consecutive: 1/5)"
+      "time": "01:07:37 am",
+      "type": "info",
+      "message": "Health: API OK"
     },
     {
-      "time": "05:48:14 am",
-      "type": "warn",
-      "message": "Health: API FAIL (consecutive: 2/5)"
+      "time": "01:09:37 am",
+      "type": "info",
+      "message": "Health: API OK"
     },
     {
-      "time": "05:50:14 am",
-      "type": "warn",
-      "message": "Health: API FAIL (consecutive: 3/5)"
+      "time": "01:11:37 am",
+      "type": "info",
+      "message": "Health: API OK"
     },
     {
-      "time": "05:52:14 am",
-      "type": "warn",
-      "message": "Health: API FAIL (consecutive: 4/5)"
+      "time": "01:13:37 am",
+      "type": "info",
+      "message": "Health: API OK"
     },
     {
-      "time": "05:54:14 am",
-      "type": "warn",
-      "message": "Health: API FAIL (consecutive: 5/5)"
+      "time": "01:15:37 am",
+      "type": "info",
+      "message": "Health: API OK"
     },
     {
-      "time": "05:54:14 am",
-      "type": "error",
-      "message": "Bahut zyada failures — server restart ho raha hai (self-heal)"
+      "time": "01:17:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "01:19:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "01:21:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "01:23:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "01:25:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "01:27:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "01:29:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "01:31:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "01:33:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "01:35:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "01:37:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "01:39:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "01:41:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "01:43:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "01:45:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "01:47:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "01:49:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "01:51:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "01:53:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "01:55:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "01:57:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "01:59:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:01:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:03:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:05:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:07:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:09:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:11:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:13:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:15:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:17:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:19:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:21:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:23:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:25:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:27:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:29:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:31:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:33:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:35:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:37:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:39:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:41:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:43:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:45:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:47:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:49:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:51:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:53:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:55:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:57:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "02:59:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "03:01:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "03:03:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "03:05:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "03:07:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "03:09:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "03:11:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "03:13:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "03:15:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "03:17:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "03:19:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "03:21:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "03:23:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "03:25:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "03:27:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "03:29:37 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "03:41:13 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "03:50:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "03:52:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "03:54:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "03:56:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "03:58:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:00:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:02:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:04:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:06:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:08:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:10:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:12:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:14:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:16:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:18:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:20:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:22:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:24:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:26:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:28:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:30:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:32:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:34:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:36:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:38:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:40:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:42:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:44:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:46:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:48:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:50:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:52:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:54:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:56:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "04:58:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:00:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:02:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:04:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:06:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:08:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:10:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:12:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:14:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:16:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:18:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:20:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:22:03 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:24:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:26:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:28:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:30:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:32:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:34:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:36:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:38:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:40:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:42:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:44:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:46:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:48:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:50:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:52:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:54:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:56:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "05:58:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "06:00:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "06:02:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "06:04:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "06:06:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "06:08:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "06:10:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "06:12:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "06:14:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "06:16:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "06:18:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "06:20:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "06:22:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "06:24:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "06:26:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "06:28:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "06:30:04 am",
+      "type": "info",
+      "message": "Health: API OK"
+    },
+    {
+      "time": "06:32:04 am",
+      "type": "info",
+      "message": "Health: API OK"
     }
   ]
 }
