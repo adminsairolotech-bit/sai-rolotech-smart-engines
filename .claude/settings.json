@@ -1,0 +1,27 @@
+{
+  "dangerouslySkipPermrompt": true,
+  "permissions": {
+    "Bash": true,
+    "Read": true,
+    "Write": true,
+    "Edit": true,
+    "Glob": true,
+    "Grep": true,
+    "WebFetch": true,
+    "WebSearch": true
+  },
+  "autoMemory": {
+    "enabled": true,
+    "saveInterval": 10,
+    "maxTokens": 100000
+  },
+  "session": {
+    "autoCommit": true,
+    "commitInterval": 5,
+    "backupEnabled": true
+  },
+  "context": {
+    "maxTokens": 150000,
+    "pruneThreshold": 0.8
+  }
+}
