@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAI Rolotech - ToyCAD Style AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Nunito', sans-serif; background: #1a1a2e; overflow: hidden; }
+
+    /* Colorful Background */
+    .bg-blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      animation: blobFloat 10s ease-in-out infinite;
+    }
+    .blob-1 {
+      width: 500px; height: 500px;
+      background: linear-gradient(135deg, #ff6b6b, #feca57);
+      top: -150px; left: -150px;
+      opacity: 0.4;
+      animation-delay: 0s;
+    }
+    .blob-2 {
+      width: 400px; height: 400px;
+      background: linear-gradient(135deg, #48dbfb, #0abde3);
+      bottom: -100px; right: -100px;
+      opacity: 0.4;
+      animation-delay: -3s;
+    }
+    .blob-3 {
+      width: 350px; height: 350px;
+      background: linear-gradient(135deg, #ff9ff3, #f368e0);
+      top: 40%; left: 60%;
+      opacity: 0.3;
+      animation-delay: -6s;
+    }
+    .blob-4 {
+      width: 300px; height: 300px;
+      background: linear-gradient(135deg, #1dd1a1, #10ac84);
+      top: 20%; right: 10%;
+      opacity: 0.3;
+      animation-delay: -4s;
+    }
+    @keyframes blobFloat {
+      0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+      25% { transform: translate(50px, -30px) scale(1.1) rotate(5deg); }
+      50% { transform: translate(-20px, 50px) scale(0.95) rotate(-5deg); }
+      75% { transform: translate(-40px, -20px) scale(1.05) rotate(3deg); }
+    }
+
+    /* Main Layout */
+    .main-container {
+      position: relative;
+      z-index: 10;
+      height: 100vh;
+      display: flex;
+    }
+
+    /* Colorful Sidebar */
+    .sidebar {
+      width: 300px;
+      background: linear-gradient(180deg, #2d1b69 0%, #11998e 100%);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 10px 0 40px rgba(0,0,0,0.3);
+    }
+
+    /* Logo */
+    .logo {
+      font-family: 'Fredoka One', cursive;
+      background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: colorShift 4s ease infinite;
+    }
+    @keyframes colorShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    /* Fun Nav Buttons */
+    .nav-btn {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 20px;
+      margin: 4px 12px;
+    }
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .nav-btn:hover::before {
+      opacity: 1;
+    }
+    .nav-btn:hover {
+      transform: translateX(8px) scale(1.02);
+    }
+    .nav-btn.active {
+      background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+      box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+      transform: scale(1.05);
+    }
+
+    /* Floating 3D Shapes */
+    .floating-shape {
+      position: fixed;
+      animation: float3D 8s ease-in-out infinite;
+      opacity: 0.15;
+      font-size: 80px;
+      filter: drop-shadow(0 20px 40px rgba(0,0,0,0.3));
+    }
+    .shape-1 { top: 10%; right: 20%; animation-delay: 0s; }
+    .shape-2 { top: 60%; right: 15%; animation-delay: -2s; }
+    .shape-3 { bottom: 15%; right: 25%; animation-delay: -4s; }
+    .shape-4 { top: 30%; left: 40%; animation-delay: -6s; }
+    @keyframes float3D {
+      0%, 100% { transform: translateY(0) rotateY(0deg) rotateX(10deg); }
+      50% { transform: translateY(-40px) rotateY(180deg) rotateX(-10deg); }
+    }
+
+    /* Colorful Cards */
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 24px;
+      padding: 24px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+    .card:hover {
+      transform: translateY(-12px) scale(1.03);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+    }
+    .card-pink { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
+    .card-blue { background: linear-gradient(135deg, #48dbfb, #0abde3); }
+    .card-green { background: linear-gradient(135deg, #1dd1a1, #10ac84); }
+    .card-purple { background: linear-gradient(135deg, #ff9ff3, #f368e0); }
+    .card-yellow { background: linear-gradient(135deg, #feca57, #ff9f43); }
+
+    /* Chat Bubbles */
+    .bubble-user {
+      background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+      border-radius: 24px 24px 8px 24px;
+      padding: 18px 24px;
+      color: white;
+      max-width: 80%;
+      margin-left: auto;
+      box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+    }
+    .bubble-ai {
+      background: white;
+      border-radius: 24px 24px 24px 8px;
+      padding: 18px 24px;
+      max-width: 80%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    /* Fun Input */
+    .input-box {
+      background: white;
+      border-radius: 30px;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+    .input-box:focus-within {
+      box-shadow: 0 10px 50px rgba(255, 107, 107, 0.3);
+    }
+    .send-btn {
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, #ff6b6b, #f368e0);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .send-btn:hover {
+      transform: scale(1.1) rotate(10deg);
+      box-shadow: 0 10px 30px rgba(255, 107, 107, 0.5);
+    }
+
+    /* Typing Animation */
+    .typing {
+      display: flex;
+      gap: 6px;
+    }
+    .dot {
+      width: 12px; height: 12px;
+      background: linear-gradient(135deg, #ff6b6b, #f368e0);
+      border-radius: 50%;
+      animation: bounce 1.4s infinite;
+    }
+    .dot:nth-child(2) { animation-delay: -0.2s; }
+    .dot:nth-child(3) { animation-delay: -0.4s; }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+
+    /* Quick Buttons */
+    .quick-btn {
+      background: rgba(255,255,255,0.9);
+      border-radius: 20px;
+      padding: 12px 20px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .quick-btn:hover {
+      transform: scale(1.05) translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    /* Skill Pills */
+    .skill-pill {
+      background: linear-gradient(135deg, #48dbfb, #0abde3);
+      border-radius: 50px;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .skill-pill:nth-child(2) { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
+    .skill-pill:nth-child(3) { background: linear-gradient(135deg, #1dd1a1, #10ac84); }
+    .skill-pill:nth-child(4) { background: linear-gradient(135deg, #feca57, #ff9f43); }
+    .skill-pill:nth-child(5) { background: linear-gradient(135deg, #ff9ff3, #f368e0); }
+    .skill-pill:hover {
+      transform: scale(1.08) translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    }
+
+    /* Agent Cards */
+    .agent-card {
+      border-radius: 28px;
+      padding: 28px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+    .agent-card:hover {
+      transform: translateY(-15px) rotateX(5deg);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+    }
+
+    /* Status Badge */
+    .badge {
+      border-radius: 50px;
+      padding: 8px 16px;
+      font-weight: 600;
+    }
+    .badge-active { background: #1dd1a1; color: white; }
+    .badge-ready { background: #48dbfb; color: white; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #ff6b6b, #f368e0); border-radius: 4px; }
+
+    /* Tab Animation */
+    .tab-content {
+      animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Message Animation */
+    .message {
+      animation: popIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.8) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Effects -->
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div>
+  <div class="bg-blob blob-4"></div>
+
+  <!-- Floating 3D Shapes -->
+  <div class="floating-shape shape-1">🧊</div>
+  <div class="floating-shape shape-2">🎲</div>
+  <div class="floating-shape shape-3">🧩</div>
+  <div class="floating-shape shape-4">🔮</div>
+
+  <!-- Main App -->
+  <div class="main-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <!-- Logo -->
+      <div class="p-8 text-center border-b border-white/10">
+        <h1 class="logo text-4xl">SAI ROLOTECH</h1>
+        <p class="text-white/60 mt-2 text-sm">✨ AI Agent Studio</p>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="flex-1 p-4 space-y-2">
+        <button onclick="showTab('chat')" class="nav-btn active w-full flex items-center gap-4 px-6 py-5 text-left text-white" data-tab="chat">
+          <span class="text-3xl">⚡</span>
+          <div>
+            <span class="font-bold text-lg">Chat</span>
+            <p class="text-xs text-white/60">AI Assistant</p>
+          </div>
+        </button>
+        <button onclick="showTab('agents')" class="nav-btn w-full flex items-center gap-4 px-6 py-5 text-left text-white" data-tab="agents">
+          <span class="text-3xl">🤖</span>
+          <div>
+            <span class="font-bold text-lg">Agents</span>
+            <p class="text-xs text-white/60">4 Ready</p>
+          </div>
+        </button>
+        <button onclick="showTab('skills')" class="nav-btn w-full flex items-center gap-4 px-6 py-5 text-left text-white" data-tab="skills">
+          <span class="text-3xl">🎯</span>
+          <div>
+            <span class="font-bold text-lg">Skills</span>
+            <p class="text-xs text-white/60">12 Skills</p>
+          </div>
+        </button>
+        <button onclick="showTab('memory')" class="nav-btn w-full flex items-center gap-4 px-6 py-5 text-left text-white" data-tab="memory">
+          <span class="text-3xl">🧠</span>
+          <div>
+            <span class="font-bold text-lg">Memory</span>
+            <p class="text-xs text-white/60">Saved</p>
+          </div>
+        </button>
+        <button onclick="showTab('system')" class="nav-btn w-full flex items-center gap-4 px-6 py-5 text-left text-white" data-tab="system">
+          <span class="text-3xl">⚙️</span>
+          <div>
+            <span class="font-bold text-lg">System</span>
+            <p class="text-xs text-white/60">Stats</p>
+          </div>
+        </button>
+      </nav>
+
+      <!-- Status -->
+      <div class="p-6 border-t border-white/10">
+        <div class="flex items-center gap-3 text-white">
+          <span class="text-2xl">🌟</span>
+          <div>
+            <p class="font-bold">All Online</p>
+            <p class="text-xs text-white/60">16 API Keys</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col min-w-0 bg-transparent">
+      <!-- Header -->
+      <header class="bg-white/10 backdrop-blur-lg p-5 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <h2 id="tab-title" class="text-2xl font-bold text-white">Chat</h2>
+          <span class="badge badge-active">🎮 Live</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <select id="model-select" class="bg-white/20 text-white border-0 rounded-full px-5 py-3 font-semibold cursor-pointer">
+            <option value="gemini-2.5-flash">⚡ Gemini Flash</option>
+            <option value="gemini-2.5-pro">🧠 Gemini Pro</option>
+          </select>
+          <div class="flex items-center gap-2 bg-green-500/20 px-4 py-2 rounded-full">
+            <span class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></span>
+            <span class="text-green-400 font-semibold">Online</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <div id="content-area" class="flex-1 overflow-hidden flex flex-col p-6">
+
+        <!-- Chat Tab -->
+        <div id="tab-chat" class="tab-content flex-1 flex flex-col">
+          <div id="messages" class="flex-1 overflow-y-auto space-y-6 pb-4">
+            <!-- Welcome Card -->
+            <div class="message">
+              <div class="card">
+                <div class="flex items-center gap-4 mb-4">
+                  <span class="text-5xl">👋</span>
+                  <div>
+                    <h3 class="text-xl font-bold text-gray-800">Namaste! Welcome to SAI Rolotech AI</h3>
+                    <p class="text-gray-500">Your playful AI assistant</p>
+                  </div>
+                </div>
+                <p class="text-gray-600 leading-relaxed mb-4">
+                  I'm powered by <span class="text-pink-500 font-bold">Gemini 2.5 Flash</span>!
+                  Ask about Roll Forming, AutoCAD, Automation, or anything else.
+                </p>
+                <div class="flex flex-wrap gap-3">
+                  <span onclick="quickAsk('Roll forming kya hai?')" class="quick-btn text-pink-500">🏭 Roll Forming</span>
+                  <span onclick="quickAsk('AutoCAD mein circle command kya hai?')" class="quick-btn text-blue-500">📐 AutoCAD</span>
+                  <span onclick="quickAsk('PLC programming batao')" class="quick-btn text-green-500">⚡ PLC</span>
+                  <span onclick="quickAsk('Python mein code likho')" class="quick-btn text-purple-500">🐍 Python</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Input -->
+          <div class="mt-auto">
+            <div class="input-box">
+              <input
+                id="chat-input"
+                type="text"
+                placeholder="Ask anything... Type in Hindi/English! ✨"
+                class="flex-1 px-6 py-4 bg-transparent focus:outline-none text-gray-800 font-semibold text-lg"
+                onkeydown="handleKeyDown(event)"
+              >
+              <div onclick="sendMessage()" class="send-btn">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Agents Tab -->
+        <div id="tab-agents" class="tab-content hidden h-full overflow-y-auto">
+          <div class="grid grid-cols-2 gap-6">
+            <div class="agent-card card-pink text-white">
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-5xl">🎯</span>
+                <span class="badge badge-active">Active</span>
+              </div>
+              <h3 class="text-xl font-bold mb-2">General Agent</h3>
+              <p class="text-white/80 text-sm mb-4">Your default AI assistant. Expert in Roll Forming, AutoCAD, and more!</p>
+              <div class="flex gap-2">
+                <span class="px-3 py-1 bg-white/20 rounded-full text-xs">🏭</span>
+                <span class="px-3 py-1 bg-white/20 rounded-full text-xs">📐</span>
+              </div>
+            </div>
+            <div class="agent-card card-blue text-white">
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-5xl">💻</span>
+                <span class="badge badge-ready">Ready</span>
+              </div>
+              <h3 class="text-xl font-bold mb-2">Coder Agent</h3>
+              <p class="text-white/80 text-sm mb-4">Code generation, debugging, Python, JavaScript, TypeScript expert.</p>
+              <div class="flex gap-2">
+                <span class="px-3 py-1 bg-white/20 rounded-full text-xs">🐍</span>
+                <span class="px-3 py-1 bg-white/20 rounded-full text-xs">⚛️</span>
+              </div>
+            </div>
+            <div class="agent-card card-green text-white">
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-5xl">🔍</span>
+                <span class="badge badge-ready">Ready</span>
+              </div>
+              <h3 class="text-xl font-bold mb-2">Research Agent</h3>
+              <p class="text-white/80 text-sm mb-4">Web search, industry research, specs analysis, data gathering.</p>
+              <div class="flex gap-2">
+                <span class="px-3 py-1 bg-white/20 rounded-full text-xs">🌐</span>
+                <span class="px-3 py-1 bg-white/20 rounded-full text-xs">📊</span>
+              </div>
+            </div>
+            <div class="agent-card card-purple text-white">
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-5xl">🎨</span>
+                <span class="badge badge-ready">Ready</span>
+              </div>
+              <h3 class="text-xl font-bold mb-2">Design Agent</h3>
+              <p class="text-white/80 text-sm mb-4">UI/UX design, creative work, visual concepts, and prototyping.</p>
+              <div class="flex gap-2">
+                <span class="px-3 py-1 bg-white/20 rounded-full text-xs">🎭</span>
+                <span class="px-3 py-1 bg-white/20 rounded-full text-xs">🖼️</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Skills Tab -->
+        <div id="tab-skills" class="tab-content hidden h-full overflow-y-auto">
+          <div class="grid grid-cols-2 gap-4">
+            <div class="skill-pill text-white">
+              <span class="text-3xl">🏭</span>
+              <div>
+                <h4 class="font-bold">Roll Forming</h4>
+                <p class="text-xs text-white/70">C-Channel, Z-Purlin</p>
+              </div>
+            </div>
+            <div class="skill-pill text-white">
+              <span class="text-3xl">📐</span>
+              <div>
+                <h4 class="font-bold">AutoCAD</h4>
+                <p class="text-xs text-white/70">LISP, 3D, DXF</p>
+              </div>
+            </div>
+            <div class="skill-pill text-white">
+              <span class="text-3xl">🎬</span>
+              <div>
+                <h4 class="font-bold">Video Editing</h4>
+                <p class="text-xs text-white/70">Filmora, Transitions</p>
+              </div>
+            </div>
+            <div class="skill-pill text-white">
+              <span class="text-3xl">⚡</span>
+              <div>
+                <h4 class="font-bold">PLC Automation</h4>
+                <p class="text-xs text-white/70">Siemens, VFD</p>
+              </div>
+            </div>
+            <div class="skill-pill text-white">
+              <span class="text-3xl">🐍</span>
+              <div>
+                <h4 class="font-bold">Python</h4>
+                <p class="text-xs text-white/70">Django, FastAPI</p>
+              </div>
+            </div>
+            <div class="skill-pill text-white">
+              <span class="text-3xl">⚛️</span>
+              <div>
+                <h4 class="font-bold">JavaScript</h4>
+                <p class="text-xs text-white/70">React, Node.js</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Memory Tab -->
+        <div id="tab-memory" class="tab-content hidden h-full overflow-y-auto">
+          <div class="space-y-4">
+            <div class="card">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-pink-500 font-bold">🔑 API Keys</span>
+                <span class="text-xs text-gray-400">Active</span>
+              </div>
+              <p class="text-gray-600">16 Gemini API keys configured with auto-rotation</p>
+            </div>
+            <div class="card">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-blue-500 font-bold">📁 Projects</span>
+                <span class="text-xs text-gray-400">4 Active</span>
+              </div>
+              <p class="text-gray-600">sai-rolotech-engine, agents, workflows, n8n</p>
+            </div>
+            <div class="card">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-green-500 font-bold">🎯 Skills</span>
+                <span class="text-xs text-gray-400">12 Ready</span>
+              </div>
+              <p class="text-gray-600">Roll Forming, AutoCAD, PLC, Python, JS, Video Editing</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- System Tab -->
+        <div id="tab-system" class="tab-content hidden h-full overflow-y-auto">
+          <div class="grid grid-cols-2 gap-6">
+            <div class="card">
+              <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span class="w-3 h-3 bg-green-400 rounded-full"></span>
+                System Status
+              </h3>
+              <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                  <span class="text-gray-600 font-medium">Dashboard</span>
+                  <span class="badge badge-active text-sm">Online</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-gray-600 font-medium">Gemini API</span>
+                  <span class="badge badge-active text-sm">Connected</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-gray-600 font-medium">OpenClaw</span>
+                  <span class="badge badge-active text-sm">Running</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-gray-600 font-medium">n8n</span>
+                  <span class="badge badge-active text-sm">Active</span>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span class="w-3 h-3 bg-pink-400 rounded-full"></span>
+                Quick Stats
+              </h3>
+              <div class="space-y-4">
+                <div class="flex justify-between">
+                  <span class="text-gray-600 font-medium">Messages</span>
+                  <span id="msg-count" class="font-bold text-2xl text-pink-500">0</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-600 font-medium">API Keys</span>
+                  <span class="font-bold text-2xl text-blue-500">16</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-600 font-medium">Agents</span>
+                  <span class="font-bold text-2xl text-green-500">4</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-600 font-medium">Skills</span>
+                  <span class="font-bold text-2xl text-purple-500">9</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Gemini API
+    const GEMINI_KEYS = [
+      "AIzaSyCIoT8GOSCBgDJAVhsdCgGrIciFF8rFvwM",
+      "AIzaSyBHOM5z1ilVBRI3O0GKYUpWeiafYGuXIFs",
+      "AIzaSyBAwO893tS045H5fLZ_wj4oOLZfPLaHfDM",
+      "AIzaSyASiS8WrJLXwi7IyHkEErEbQPLM5VC82ow",
+      "AIzaSyDQ9dFgmCBxjxiR3H44FYbSnrsVXEoHtFY",
+      "AIzaSyBSOvHwVvV090ewQhDXr4x0M_eoVvoE99I",
+      "AIzaSyCmCtYXr65CkwszCzJ_y9N3R4UaHVQlCKE",
+      "AIzaSyCkMS3Bk3SIC5EXfHAoyzAMcuazhWe7T9s"
+    ];
+    let keyIndex = 0;
+    let msgCount = 0;
+
+    const SYSTEM_PROMPT = `You are SAI Rolotech AI Agent. Be friendly, playful, and helpful. Expert in:
+- Roll Forming (C-Channel, Z-Purlin, manufacturing)
+- AutoCAD & LISP Scripting
+- Video Editing (Filmora, DaVinci)
+- Industrial Automation (PLC, VFD, SCADA)
+- Python/JavaScript/TypeScript
+Use Hindi/English mix when helpful. Be concise and practical.`;
+
+    function showTab(tab) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById('tab-' + tab).classList.remove('hidden');
+      document.getElementById('tab-title').textContent = tab.charAt(0).toUpperCase() + tab.slice(1);
+
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`[data-tab="${tab}"]`)?.classList.add('active');
+    }
+
+    function quickAsk(text) {
+      document.getElementById('chat-input').value = text;
+      sendMessage();
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const messages = document.getElementById('messages');
+
+      // User message
+      messages.innerHTML += `
+        <div class="message">
+          <div class="bubble-user">
+            <p class="text-lg">${escapeHtml(text)}</p>
+          </div>
+        </div>
+      `;
+
+      input.value = '';
+      msgCount++;
+      document.getElementById('msg-count').textContent = msgCount;
+
+      // Typing
+      messages.innerHTML += `
+        <div id="typing" class="message">
+          <div class="card flex gap-3 items-center w-28">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+        </div>
+      `;
+      messages.scrollTop = messages.scrollHeight;
+
+      try {
+        const apiKey = GEMINI_KEYS[keyIndex % GEMINI_KEYS.length];
+        keyIndex++;
+
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: `${SYSTEM_PROMPT}\n\nUser: ${text}` }] }],
+            generationConfig: { temperature: 0.9, maxOutputTokens: 2048 }
+          })
+        });
+
+        const data = await response.json();
+        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response!';
+
+        document.getElementById('typing')?.remove();
+
+        messages.innerHTML += `
+          <div class="message">
+            <div class="bubble-ai">
+              <p class="text-gray-700 text-lg leading-relaxed whitespace-pre-wrap">${formatText(reply)}</p>
+            </div>
+          </div>
+        `;
+      } catch (e) {
+        document.getElementById('typing')?.remove();
+        messages.innerHTML += `
+          <div class="message">
+            <div class="bubble-ai border-2 border-red-200">
+              <p class="text-red-500">Error: ${escapeHtml(e.message)}</p>
+            </div>
+          </div>
+        `;
+      }
+
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function handleKeyDown(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        sendMessage();
+      }
+    }
+
+    function escapeHtml(text) {
+      return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function formatText(text) {
+      return escapeHtml(text)
+        .replace(/\n/g, '<br>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong class="text-pink-500 font-bold">$1</strong>')
+        .replace(/`(.*?)`/g, '<code class="bg-pink-100 px-2 py-1 rounded text-pink-600 font-mono">$1</code>');
+    }
+  </script>
+</body>
+</html>
