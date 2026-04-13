@@ -3,7 +3,8 @@
  * Routes tasks to specialized agents
  */
 
-import type { Anthropic } from "@anthropic-ai/sdk";
+import { GeminiAgent } from "../lib/gemini-agent.js";
+import chalk from "chalk";
 
 interface Agent {
   name: string;
@@ -13,10 +14,12 @@ interface Agent {
 
 export class MultiAgentOrchestrator {
   private agents: Map<string, Agent> = new Map();
-  private client: Anthropic;
+  private client: any; // Anthropic or similar
+  private gemini: GeminiAgent;
 
-  constructor(client: Anthropic) {
+  constructor(client: any) {
     this.client = client;
+    this.gemini = new GeminiAgent();
     this.registerDefaultAgents();
   }
 
@@ -90,16 +93,30 @@ export class MultiAgentOrchestrator {
       },
     });
 
-    // General Assistant
+    // Gemini Specialist (Rotated Keys)
+    this.register({
+      name: "gemini",
+      specialty: ["fast", "gemini", "google", "free", "volume"],
+      handle: async (task: string) => {
+        return await this.gemini.generate(task);
+      },
+    });
+
+    // General Assistant (with Gemini Fallback)
     this.register({
       name: "assistant",
       specialty: ["*"],
       handle: async (task: string) => {
-        return await this.client.messages.create({
-          model: "claude-sonnet-4-5",
-          max_tokens: 2048,
-          messages: [{ role: "user", content: task }],
-        });
+        try {
+          return await this.client.messages.create({
+            model: "claude-sonnet-4-5",
+            max_tokens: 2048,
+            messages: [{ role: "user", content: task }],
+          });
+        } catch (error) {
+          console.log(chalk.yellow("[WARN] Claude failed, falling back to Gemini..."));
+          return await this.gemini.generate(task);
+        }
       },
     });
   }
