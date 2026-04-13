@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAI Rolotech Engine - OpenClaw Style</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --border: #30363d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --text-muted: #6e7681;
+            --accent-cyan: #39d353;
+            --accent-green: #3fb950;
+            --accent-blue: #58a6ff;
+            --accent-purple: #a371f7;
+            --accent-orange: #f0883e;
+            --error: #f85149;
+        }
+
+        html, body {
+            height: 100%;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'SF Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow: hidden;
+        }
+
+        /* Main Layout */
+        .app-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 300px;
+            grid-template-rows: 50px 1fr 180px;
+            height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            grid-column: 1 / -1;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--accent-cyan);
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .logo-icon {
+            font-size: 20px;
+        }
+
+        .status-bar {
+            display: flex;
+            gap: 15px;
+            margin-left: auto;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Sidebar - Channels */
+        .sidebar {
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            margin-bottom: 20px;
+        }
+
+        .sidebar-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .channel-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+        }
+
+        .channel-item:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .channel-item.active {
+            background: rgba(57, 211, 83, 0.15);
+            color: var(--accent-cyan);
+        }
+
+        .channel-icon {
+            font-size: 18px;
+        }
+
+        .channel-name {
+            flex: 1;
+            font-size: 13px;
+        }
+
+        .channel-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .channel-status.online { background: var(--accent-green); }
+        .channel-status.offline { background: var(--text-muted); }
+
+        /* Main Chat Area */
+        .main-area {
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-primary);
+        }
+
+        .chat-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-title {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .chat-info {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .message {
+            max-width: 85%;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            align-self: flex-end;
+        }
+
+        .message.agent {
+            align-self: flex-start;
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            font-size: 12px;
+        }
+
+        .message-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            background: var(--bg-tertiary);
+        }
+
+        .message.user .message-avatar {
+            background: var(--accent-blue);
+        }
+
+        .message.agent .message-avatar {
+            background: var(--accent-green);
+        }
+
+        .message-name {
+            font-weight: 600;
+        }
+
+        .message-time {
+            color: var(--text-muted);
+        }
+
+        .message-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .message.user .message-content {
+            background: rgba(88, 166, 255, 0.1);
+            border-color: rgba(88, 166, 255, 0.3);
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.agent .message-content {
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-content pre {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 12px;
+            margin: 10px 0;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+
+        .message-content code {
+            background: var(--bg-tertiary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        /* Terminal Input */
+        .terminal-input {
+            border-top: 1px solid var(--border);
+            padding: 15px 20px;
+            background: var(--bg-secondary);
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 15px;
+            gap: 10px;
+        }
+
+        .input-prompt {
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        .input-field {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .input-field::placeholder {
+            color: var(--text-muted);
+        }
+
+        .input-send {
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .input-send:hover {
+            background: var(--accent-green);
+        }
+
+        /* Right Panel - Tools & Memory */
+        .right-panel {
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border);
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .panel-section {
+            margin-bottom: 20px;
+        }
+
+        .panel-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .tool-item {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tool-item:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(57, 211, 83, 0.1);
+        }
+
+        .tool-icon {
+            font-size: 24px;
+            margin-bottom: 6px;
+        }
+
+        .tool-name {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        /* Memory Panel */
+        .memory-item {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .memory-item:hover {
+            border-color: var(--accent-blue);
+        }
+
+        .memory-key {
+            color: var(--accent-purple);
+            font-weight: 600;
+        }
+
+        .memory-preview {
+            color: var(--text-muted);
+            font-size: 11px;
+            margin-top: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Knowledge Base */
+        .kb-section {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+
+        .kb-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .kb-icon {
+            font-size: 16px;
+        }
+
+        .kb-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .kb-count {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-left: auto;
+        }
+
+        .kb-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .kb-tag {
+            background: var(--bg-primary);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+
+        /* Footer - Command History */
+        .footer {
+            grid-column: 1 / -1;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 12px;
+        }
+
+        .footer-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-label {
+            color: var(--text-muted);
+        }
+
+        .footer-value {
+            color: var(--accent-cyan);
+        }
+
+        .quick-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 10px;
+        }
+
+        .quick-btn {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-btn:hover {
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+            border-color: var(--accent-cyan);
+        }
+
+        /* Typing indicator */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 10px 0;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            animation: typingBounce 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-4px); }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* ASCII Art Box */
+        .ascii-box {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            font-size: 11px;
+            color: var(--accent-green);
+            white-space: pre;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">⚙️</span>
+                <span>SAI ROLOTECH ENGINE</span>
+            </div>
+            <div class="status-bar">
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    <span>Online</span>
+                </div>
+                <div class="status-item">
+                    <span>v1.0.0</span>
+                </div>
+                <div class="status-item">
+                    <span>Model: Claude</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Channels</div>
+                <div class="channel-item active">
+                    <span class="channel-icon">🌐</span>
+                    <span class="channel-name">Web Chat</span>
+                    <div class="channel-status online"></div>
+                </div>
+                <div class="channel-item">
+                    <span class="channel-icon">✈️</span>
+                    <span class="channel-name">Telegram</span>
+                    <div class="channel-status online"></div>
+                </div>
+                <div class="channel-item">
+                    <span class="channel-icon">💬</span>
+                    <span class="channel-name">WhatsApp</span>
+                    <div class="channel-status offline"></div>
+                </div>
+                <div class="channel-item">
+                    <span class="channel-icon">🎮</span>
+                    <span class="channel-name">Discord</span>
+                    <div class="channel-status online"></div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Agents</div>
+                <div class="channel-item">
+                    <span class="channel-icon">🤖</span>
+                    <span class="channel-name">Main Agent</span>
+                    <div class="channel-status online"></div>
+                </div>
+                <div class="channel-item">
+                    <span class="channel-icon">📐</span>
+                    <span class="channel-name">AutoCAD</span>
+                    <div class="channel-status online"></div>
+                </div>
+                <div class="channel-item">
+                    <span class="channel-icon">🎬</span>
+                    <span class="channel-name">Video Editor</span>
+                    <div class="channel-status online"></div>
+                </div>
+                <div class="channel-item">
+                    <span class="channel-icon">🔍</span>
+                    <span class="channel-name">Researcher</span>
+                    <div class="channel-status online"></div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Sessions</div>
+                <div class="channel-item">
+                    <span class="channel-icon">📁</span>
+                    <span class="channel-name">current</span>
+                    <div class="channel-status online"></div>
+                </div>
+                <div class="channel-item">
+                    <span class="channel-icon">📁</span>
+                    <span class="channel-name">previous</span>
+                    <div class="channel-status offline"></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="main-area">
+            <div class="chat-header">
+                <div class="chat-title">#general</div>
+                <div class="chat-info">OpenClaw Gateway • Local</div>
+            </div>
+
+            <div class="messages-container" id="messages">
+                <!-- Welcome message -->
+                <div class="message agent">
+                    <div class="message-header">
+                        <div class="message-avatar">🤖</div>
+                        <span class="message-name">SAI Engine</span>
+                        <span class="message-time">now</span>
+                    </div>
+                    <div class="message-content">
+                        <div class="ascii-box">
+╔═══════════════════════════════════════════════════════════╗
+║                                                           ║
+║   ⚙️ SAI ROLOTECH ENGINE v1.0                            ║
+║   ═══════════════════════════════════════                  ║
+║   Status: READY                                          ║
+║   Model: Claude Sonnet 4.5                                ║
+║   Memory: 256 items loaded                                ║
+║                                                           ║
+╚═══════════════════════════════════════════════════════════╝
+                        </div>
+                        Welcome! I'm your AI assistant. Ask me anything or use these commands:<br><br>
+                        <code>cad [command]</code> - AutoCAD help<br>
+                        <code>code [task]</code> - Write code<br>
+                        <code>edit [task]</code> - Video editing<br>
+                        <code>search [query]</code> - Web search<br>
+                        <code>help</code> - Show all commands
+                    </div>
+                </div>
+            </div>
+
+            <div class="terminal-input">
+                <div class="input-container">
+                    <span class="input-prompt">❯</span>
+                    <input type="text" class="input-field" id="chat-input" placeholder="Type a command or message..." onkeypress="handleEnter(event)">
+                    <button class="input-send" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Panel -->
+        <aside class="right-panel">
+            <div class="panel-section">
+                <div class="panel-title">🔧 Tools</div>
+                <div class="tool-grid">
+                    <div class="tool-item" onclick="quickCommand('browser')">
+                        <div class="tool-icon">🌐</div>
+                        <div class="tool-name">Browser</div>
+                    </div>
+                    <div class="tool-item" onclick="quickCommand('search')">
+                        <div class="tool-icon">🔍</div>
+                        <div class="tool-name">Search</div>
+                    </div>
+                    <div class="tool-item" onclick="quickCommand('image')">
+                        <div class="tool-icon">🎨</div>
+                        <div class="tool-name">Image</div>
+                    </div>
+                    <div class="tool-item" onclick="quickCommand('code')">
+                        <div class="tool-icon">💻</div>
+                        <div class="tool-name">Code</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <div class="panel-title">📚 Knowledge Bases</div>
+                <div class="kb-section">
+                    <div class="kb-header">
+                        <span class="kb-icon">🏭</span>
+                        <span class="kb-name">Roll Forming</span>
+                        <span class="kb-count">8 topics</span>
+                    </div>
+                    <div class="kb-tags">
+                        <span class="kb-tag">C-Channel</span>
+                        <span class="kb-tag">Z-Purlin</span>
+                        <span class="kb-tag">Defects</span>
+                    </div>
+                </div>
+                <div class="kb-section">
+                    <div class="kb-header">
+                        <span class="kb-icon">📐</span>
+                        <span class="kb-name">AutoCAD</span>
+                        <span class="kb-count">50+ commands</span>
+                    </div>
+                    <div class="kb-tags">
+                        <span class="kb-tag">LISP</span>
+                        <span class="kb-tag">3D</span>
+                        <span class="kb-tag">Blocks</span>
+                    </div>
+                </div>
+                <div class="kb-section">
+                    <div class="kb-header">
+                        <span class="kb-icon">🎬</span>
+                        <span class="kb-name">Video Edit</span>
+                        <span class="kb-count">Filmora level</span>
+                    </div>
+                    <div class="kb-tags">
+                        <span class="kb-tag">Transitions</span>
+                        <span class="kb-tag">Effects</span>
+                        <span class="kb-tag">Export</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <div class="panel-title">🧠 Memory</div>
+                <div class="memory-item">
+                    <div class="memory-key">user_preferences</div>
+                    <div class="memory-preview">Roll forming engineering expert</div>
+                </div>
+                <div class="memory-item">
+                    <div class="memory-key">last_session</div>
+                    <div class="memory-preview">2026-04-13 07:30</div>
+                </div>
+                <div class="memory-item">
+                    <div class="memory-key">active_projects</div>
+                    <div class="memory-preview">Smart Engine v1.0</div>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <div class="panel-title">⏰ Scheduled Tasks</div>
+                <div class="memory-item">
+                    <div class="memory-key">daily_backup</div>
+                    <div class="memory-preview">Every day at 02:00</div>
+                </div>
+                <div class="memory-item">
+                    <div class="memory-key">health_check</div>
+                    <div class="memory-preview">Every 5 minutes</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-section">
+                <span class="footer-label">Session:</span>
+                <span class="footer-value">current</span>
+            </div>
+            <div class="footer-section">
+                <span class="footer-label">Messages:</span>
+                <span class="footer-value" id="msg-count">1</span>
+            </div>
+            <div class="footer-section">
+                <span class="footer-label">Tokens:</span>
+                <span class="footer-value">2.4k</span>
+            </div>
+            <div class="quick-actions">
+                <button class="quick-btn" onclick="clearChat()">Clear</button>
+                <button class="quick-btn" onclick="exportChat()">Export</button>
+                <button class="quick-btn" onclick="toggleFullscreen()">Fullscreen</button>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        let messageCount = 1;
+
+        function addMessage(content, isUser = false) {
+            const container = document.getElementById('messages');
+            messageCount++;
+            document.getElementById('msg-count').textContent = messageCount;
+
+            const msg = document.createElement('div');
+            msg.className = `message ${isUser ? 'user' : 'agent'}`;
+            msg.innerHTML = `
+                <div class="message-header">
+                    <div class="message-avatar">${isUser ? '👤' : '🤖'}</div>
+                    <span class="message-name">${isUser ? 'You' : 'SAI Engine'}</span>
+                    <span class="message-time">now</span>
+                </div>
+                <div class="message-content">${content}</div>
+            `;
+            container.appendChild(msg);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function showTyping() {
+            const container = document.getElementById('messages');
+            const typing = document.createElement('div');
+            typing.id = 'typing-indicator';
+            typing.className = 'message agent';
+            typing.innerHTML = `
+                <div class="message-header">
+                    <div class="message-avatar">🤖</div>
+                    <span class="message-name">SAI Engine</span>
+                </div>
+                <div class="message-content">
+                    <div class="typing-indicator">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(typing);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function hideTyping() {
+            const typing = document.getElementById('typing-indicator');
+            if (typing) typing.remove();
+        }
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            addMessage(text, true);
+            input.value = '';
+
+            showTyping();
+
+            setTimeout(() => {
+                hideTyping();
+                processCommand(text);
+            }, 800 + Math.random() * 700);
+        }
+
+        function processCommand(cmd) {
+            const lower = cmd.toLowerCase();
+            let response = '';
+
+            if (lower.includes('cad') || lower.includes('circle') || lower.includes('draw')) {
+                response = `AutoCAD Command Reference:<div class="ascii-box">
+┌─────────────────────────────────────────┐
+│ COMMAND: CIRCLE (C)                     │
+├─────────────────────────────────────────┤
+│ Type: DRAW                              │
+│ Alias: C                                │
+├─────────────────────────────────────────┤
+│ Steps:                                  │
+│ 1. Command: CIRCLE ↵                    │
+│ 2. Center point: [click]                │
+│ 3. Radius: [value] ↵                   │
+└─────────────────────────────────────────┘
+</div>LISP Example:
+<pre>(defun c:DRAWCIRCLE (/ pt r)
+  (setq pt (getpoint "Center: "))
+  (setq r (getdist pt "Radius: "))
+  (command "CIRCLE" pt r)
+)</pre>`;
+            } else if (lower.includes('code') || lower.includes('hello')) {
+                response = `Code Generated:<pre># Hello World - SAI Rolotech Engine
+def greet(name):
+    """Greet the user with style"""
+    return f"Namaste, {name}! ⚙️"
+
+if __name__ == "__main__":
+    print(greet("Engine"))
+    print("System: Online ✅")</pre>`;
+            } else if (lower.includes('edit') || lower.includes('video')) {
+                response = `Video Editing Guide - Filmora:<div class="ascii-box">
+┌─────────────────────────────────────────┐
+│ TRANSITION: FADE TO BLACK               │
+├─────────────────────────────────────────┤
+│ Category: Dissolve                      │
+│ Duration: 0.5s - 3s                    │
+├─────────────────────────────────────────┤
+│ Usage:                                  │
+│ • End of scenes                         │
+│ • Scene transitions                     │
+│ • Emotional pauses                      │
+└─────────────────────────────────────────┘
+</div>Shortcuts: C=Razor, V=Select, R=Roll`;
+            } else if (lower.includes('help')) {
+                response = `Available Commands:<div class="ascii-box">
+╔═══════════════════════════════════════════╗
+║  COMMAND          DESCRIPTION             ║
+╠═══════════════════════════════════════════╣
+║  cad [cmd]        AutoCAD help            ║
+║  code [task]      Write code              ║
+║  edit [task]      Video editing           ║
+║  search [q]       Web search              ║
+║  image [prompt]   Generate image          ║
+║  voice [text]     Text to speech          ║
+║  roll forming     Engineering help         ║
+║  lisp [task]      AutoLISP code          ║
+╚═══════════════════════════════════════════╝
+</div>Just type your question - no command needed!`;
+            } else {
+                response = `Processing: "${cmd}"<br><br>I can help with:<br>
+• <strong>Roll Forming</strong> - C-Channel, Z-Purlin, machine setup<br>
+• <strong>AutoCAD</strong> - All commands, LISP scripting<br>
+• <strong>Video Editing</strong> - Filmora techniques<br>
+• <strong>Coding</strong> - Python, JavaScript, TypeScript<br><br>
+Try: <code>cad circle</code> or <code>code hello</code>`;
+            }
+
+            addMessage(response);
+        }
+
+        function quickCommand(cmd) {
+            const input = document.getElementById('chat-input');
+            input.value = cmd + ' ';
+            input.focus();
+        }
+
+        function clearChat() {
+            const container = document.getElementById('messages');
+            container.innerHTML = `
+                <div class="message agent">
+                    <div class="message-header">
+                        <div class="message-avatar">🤖</div>
+                        <span class="message-name">SAI Engine</span>
+                        <span class="message-time">now</span>
+                    </div>
+                    <div class="message-content">Chat cleared. How can I help?</div>
+                </div>
+            `;
+            messageCount = 1;
+            document.getElementById('msg-count').textContent = '1';
+        }
+
+        function exportChat() {
+            alert('Export feature coming soon!');
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // Focus input on load
+        document.getElementById('chat-input').focus();
+    </script>
+</body>
+</html>
