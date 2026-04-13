@@ -1,154 +1,157 @@
 # SAI ROLO TECH - WORKING GUIDE
 
-## ⚠️ BEFORE EVERY TASK - READ THIS
+## 🚨 BEFORE ANY TASK - MUST READ 🚨
 
-### ✅ AUTOMATIC WORKFLOW
-
-```
-╔═══════════════════════════════════════════════════════════════════════╗
-║  STEP 1: READ .claude/memory.json (YEH YAAD RAKEGA!)                 ║
-║  STEP 2: READ RULES.md                                               ║
-║  STEP 3: DO TASK                                                    ║
-║  STEP 4: TEST                                                       ║
-║  STEP 5: COMMIT + UPDATE memory.json                                 ║
-╚═══════════════════════════════════════════════════════════════════════╝
-```
-
-### MY DISCIPLINE RULES (MUST FOLLOW)
+### ⚠️ CHECKPOINT VALIDATION (MANDATORY)
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════╗
-║  1. LOAD MEMORY → Read .claude/memory.json (YEH PEHLE!)              ║
 ║                                                                       ║
-║  2. READ RULES.md BEFORE STARTING                                    ║
-║     → cat RULES.md (mandatory)                                       ║
+║  ❌ AGAR YE ERROR AAYE:                                              ║
+║     "Checkpoint not loaded"                                           ║
+║     "Skills not found"                                                ║
+║     "memory.json not read"                                            ║
 ║                                                                       ║
-║  3. MODEL SWITCH (Cost Optimization)                                 ║
-║     → Gemini (free) > OpenRouter > Claude                            ║
-║     → Always try cheapest working model first                        ║
+║  TOH YE KARTE HAIN (ORDER MEIN):                                     ║
 ║                                                                       ║
-║  4. TOKEN LIMIT - Check every 50 messages                            ║
-║     ❌ Don't hit 20M tokens                                           ║
-║     ✅ Save work at 100K tokens                                      ║
+║     1. cat .claude/memory.json                                       ║
+║     2. cat RULES.md                                                  ║
+║     3. cat .claude/CHECKPOINT.md                                     ║
 ║                                                                       ║
-║  5. TEST BEFORE CLAIM - Never say "done" without test                 ║
-║     ❌ "Ho gaya" without testing                                      ║
-║     ✅ Run code, show output, then claim done                         ║
+║  PHIR KAAM SHURU KARNA!                                              ║
 ║                                                                       ║
-║  6. SMALL BATCHES - Max 5 steps, then commit                         ║
-║     ❌ All at once = incomplete                                       ║
-║     ✅ Batch → Save → Next                                           ║
-║                                                                       ║
-║  7. SKILL INTEGRATION - USE not KEEP                                  ║
-║     ❌ "Skills downloaded" → do nothing                               ║
-║     ✅ "Skills downloaded" → INTEGRATE into code                     ║
-║                                                                       ║
-║  8. UPDATE memory.json - After every task                           ║
-║     → Update skills status, last task, session count                 ║
 ╚═══════════════════════════════════════════════════════════════════════╝
 ```
 
 ---
 
-## 📋 SKILL PIPELINE (USE THESE)
+## ✅ AUTOMATIC WORKFLOW
 
-| Skill | When to Use | How |
-|-------|-------------|-----|
-| agent-orchestrator/CLAUDE.md | Multi-agent work | Read, copy patterns |
-| edict/ | 9 agents needed | Study structure |
-| graph-memory/ | Token overflow | Install, use |
-| clawtrol/ | Dashboard needed | Study, adapt |
-| mnemon/ | Cross-session memory | Study, implement |
+```
+╔═══════════════════════════════════════════════════════════════════════╗
+║                                                                       ║
+║  STEP 1: cat .claude/memory.json  ← YEH PEHLE!                     ║
+║  STEP 2: cat RULES.md               ← YEH DOOSRE!                   ║
+║  STEP 3: cat .claude/CHECKPOINT.md  ← YEH TEEJSRE!                  ║
+║  STEP 4: DO TASK                                                     ║
+║  STEP 5: TEST                                                        ║
+║  STEP 6: COMMIT + UPDATE memory.json                                 ║
+║                                                                       ║
+╚═══════════════════════════════════════════════════════════════════════╝
+```
 
-**RULE:** Downloaded skill = INTEGRATE it into engine code
+---
 
-**ACTION:** Check skill folder README, extract patterns, paste into our code
+## 📋 MY DISCIPLINE RULES
+
+```
+╔═══════════════════════════════════════════════════════════════════════╗
+║  1. ✅ LOAD MEMORY → .claude/memory.json (YEH PEHLE!)                ║
+║  2. ✅ READ RULES → RULES.md                                        ║
+║  3. ✅ CHECKPOINT → .claude/CHECKPOINT.md                           ║
+║  4. ✅ MODEL SWITCH → Gemini (free) > OpenRouter > Claude            ║
+║  5. ✅ TOKEN LIMIT → Check har 50 messages                          ║
+║  6. ✅ TEST FIRST → "Ho gaya" mat bol, test karo!                   ║
+║  7. ✅ SMALL BATCHES → 5 steps, commit                              ║
+║  8. ✅ SKILL INTEGRATE → USE not KEEP                               ║
+║  9. ✅ UPDATE memory.json → After every task                         ║
+╚═══════════════════════════════════════════════════════════════════════╝
+```
+
+---
+
+## 📊 PROJECT STATUS (From memory.json)
+
+### ✅ WORKING:
+| Component | Status | API |
+|-----------|--------|-----|
+| cmd.js | WORKING | Gemini Direct (FREE) |
+| index.html | WORKING | Gemini Direct (FREE) |
+| memory.json | CREATED | - |
+| CHECKPOINT.md | CREATED | - |
+
+### ❌ PENDING SKILLS:
+- graph-memory: NOT INSTALLED
+- mnemon: NOT INTEGRATED
+- agent-orchestrator: NOT USED
+- edict: NOT USED
+- clawtrol: PARTIALLY USED
+
+### 🔑 API Keys:
+- Gemini: ✅ WORKING (13 keys rotating)
+- OpenRouter: ❌ FAILING (401 error)
 
 ---
 
 ## 🚀 QUICK COMMANDS
 
 ```bash
-# Save work (MUST DO EVERY 5 STEPS)
+# CHECKPOINT VALIDATION (HAR CHECKPOINT PE):
+cat .claude/memory.json
+cat RULES.md
+cat .claude/CHECKPOINT.md
+
+# SAVE WORK (HAR 5 STEPS):
 git add . && git commit -m "checkpoint" && git push
 
-# Check token usage
-echo "Working on step X of 5"
-
-# Test before claim
+# TEST BEFORE CLAIM:
 npm run test 2>&1 || echo "FIX THIS FIRST"
 ```
 
 ---
 
-## 📊 PROJECT STATUS
+## 📁 IMPORTANT FILES
 
-### Memory File: .claude/memory.json (YEH YAAD RAKEGA!)
-```json
-{
-  "lastUpdated": "2026-04-13",
-  "sessionCount": 1,
-  "skills": { "clawtrol": true, others: false },
-  "api": { "gemini": "WORKING", "openrouter": "FAILING" },
-  "engine": { "cmd.js": "WORKING", "index.html": "WORKING" }
-}
+| File | Purpose |
+|------|---------|
+| `.claude/memory.json` | Skills & API status yaad rakhega |
+| `RULES.md` | Workflow rules & commands |
+| `.claude/CHECKPOINT.md` | Validation key - error aayega toh padhna |
+| `CLAUDE.md` | YEH FILE - har task se pehle |
+
+---
+
+## 🚨 ERROR MESSAGES & SOLUTIONS
+
+| Error | Solution |
+|-------|----------|
+| "memory.json not loaded" | `cat .claude/memory.json` |
+| "rules not found" | `cat RULES.md` |
+| "checkpoint failed" | `cat .claude/CHECKPOINT.md` |
+| "API key not working" | memory.json mein API status check karo |
+| "skill not integrated" | Skills list memory.json mein dekho |
+
+---
+
+## 💡 REMEMBER
+
+```
+╔═══════════════════════════════════════════════════════════════════════╗
+║                                                                       ║
+║  YE 3 FILES HAR CHECKPOINT PE PADHNI HAIN!                           ║
+║                                                                       ║
+║  1. .claude/memory.json    → Skills & API status                    ║
+║  2. RULES.md               → Workflow rules                          ║
+║  3. .claude/CHECKPOINT.md  → Validation key                          ║
+║                                                                       ║
+║  AGAR BHUL GAYE TOH ERROR AAYEGA - PHIR YE 3 PADHNA!                 ║
+║                                                                       ║
+╚═══════════════════════════════════════════════════════════════════════╝
 ```
 
-### API Keys (Working Order):
-| API | Status | Cost | Model |
-|-----|--------|------|-------|
-| Gemini Direct | ✅ WORKING | FREE | gemini-2.5-flash |
-| OpenRouter | ❌ FAILING | ~$0.001 | - |
+---
 
-**NOTE:** Use Gemini Direct API first (free, working) - 13 keys rotating
+## 📝 TASK TRACKER
 
-### SAI Rolotech Engine (PRIORITY)
-- Location: sai-rolotech-engine/
-- Status: ✅ WORKING - Gemini API connected
-- cmd.js: ✅ WORKING (tested)
-- index.html: ✅ WORKING (Gemini direct)
-- src/: ✅ READY
-
-### Skills (USE NOT KEEP)
-- agent-orchestrator/ → Multi-agent patterns
-- edict/ → Agent work division
-- graph-memory/ → Token reduction
-- clawtrol/ → ✅ Dashboard UI (used)
-- mnemon/ → Cross-session memory
+Last Updated: 2026-04-13
+Last Task: Memory system + Checkpoint validation created
+Session: 1
 
 ---
 
-## ⚡ OPTIMIZATION (40x FASTER)
+## ⚡ OPTIMIZATION
 
-**Goal:** Small files, fast load, better work
-
-**Methods:**
-1. Use Glob/Grep instead of Read (90% less tokens)
-2. Split large files into small modules
-3. Auto-commit every 5 steps
-4. Test before claim
-
----
-
-## 🔴 CURRENT REMINDER
-
-**This prompt appears every task. Read before starting.**
-
-**REMEMBER:**
-- Token limit = 20M per session
-- Every 5 steps = commit + push
-- Test code before claiming done
-- Use skills from pipeline, not just keep them
-
----
-
-## 📝 TASK: Build Skill Pipeline
-
-1. [x] Read agent-orchestrator/CLAUDE.md patterns ✅
-2. [x] Apply patterns to sai-rolotech-engine ✅
-3. [ ] Test with real API
-4. [ ] Commit working version
-
-**STATUS:** API server running on port 3000, dashboard updated to use local /api/chat
-
-**NEXT:** Test dashboard in browser
+- Small files = Fast load
+- Glob/Grep = 90% less tokens
+- Auto-commit har 5 steps
+- Test before claim
