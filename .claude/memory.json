@@ -1,7 +1,7 @@
 {
   "lastUpdated": "2026-04-13",
-  "sessionCount": 1,
-  "totalCommits": 8,
+  "sessionCount": 2,
+  "totalCommits": 9,
   "rulesRead": true,
   "checkpointKey": "CHECKPOINT.md",
   "skills": {
@@ -10,67 +10,55 @@
       "installed": true,
       "location": ".claude/skills/mnemon/",
       "hooks": ["prime.sh", "user_prompt.sh", "stop.sh"],
-      "status": "ACTIVE - 3 insights stored",
-      "commands": ["mnemon remember", "mnemon recall", "mnemon link"]
+      "status": "ACTIVE - 3 insights stored"
     },
     "graph-memory": {
       "used": false,
-      "installed": false,
-      "location": "graph-memory/",
-      "note": "1.7GB exe - needs OpenClaw, patterns used instead"
+      "note": "Patterns extracted, not installed (needs OpenClaw)"
     },
     "clawtrol": {
       "used": true,
-      "location": "clawtrol/",
-      "status": "APPLIED - Dark theme, grid layout"
+      "patterns": "Dark theme UI, grid layout"
     },
     "agent-orchestrator": {
       "used": true,
-      "location": "agent-orchestrator/",
-      "patternsApplied": ["Multi-agent routing", "Activity states"],
-      "file": "src/agents/multi-agent.ts"
-    },
-    "promptflow": {
-      "used": true,
-      "patterns": ["Flow definition", "Chain of thought", "Tool integration"]
-    },
-    "openclaw": {
-      "used": true,
-      "patterns": ["Channel architecture", "API fallback", "Streaming"]
+      "patterns": "Multi-agent routing, activity states"
     }
   },
-  "patternsLibrary": {
-    "file": "extracted-patterns.md",
-    "patterns": 10,
-    "categories": [
-      "Multi-agent routing",
-      "Memory system",
-      "Dashboard UI",
-      "Prompt flow",
-      "API design",
-      "Caching",
-      "Error handling",
-      "Session management",
-      "Token optimization",
-      "Monitoring"
-    ]
+  "openclaw": {
+    "installed": true,
+    "version": "2026.4.11",
+    "gateway": "port 18789",
+    "token": "52bbe429ae4d8d617d3529dc114b9edae57e9bdfe89ffb4b",
+    "models": ["gemini-2.0-flash-exp", "gemini-1.5-pro"]
   },
   "api": {
     "gemini": {
-      "working": true,
-      "keys": 13,
-      "model": "gemini-2.5-flash",
-      "cost": "FREE"
-    },
-    "openrouter": {
       "working": false,
-      "reason": "401 error"
+      "reason": "All keys leaked and blocked",
+      "keys": 13,
+      "allBlocked": true,
+      "solution": "Get new key from aistudio.google.com"
     }
   },
   "engine": {
-    "cmd.js": "WORKING",
-    "index.html": "WORKING",
+    "cmd.js": "UPDATED - OpenClaw integration + demo mode",
+    "index.html": "UPDATED - OpenClaw integration",
     "src/agents/multi-agent.ts": "WORKING"
+  },
+  "shortcuts": {
+    "desktop": [
+      "SAI Rolotech.lnk",
+      "SAI Rolotech AI Dashboard.url",
+      "Start Sai Rolotech AI.bat",
+      "SAI-Rolotech-Engine.lnk",
+      "Pinokio.lnk"
+    ],
+    "scripts": [
+      "start.bat - Main menu with all options",
+      "create-shortcuts.bat - Create all desktop shortcuts",
+      "setup-whatsapp.bat - WhatsApp configuration"
+    ]
   },
   "memoryFiles": [
     ".claude/memory.json",
@@ -79,6 +67,6 @@
     "CLAUDE.md"
   ],
   "mnemonInsights": 3,
-  "lastTask": "Extracted 10 patterns from 35 repos, stored in mnemon",
-  "nextTask": "Test recall, commit"
+  "lastTask": "Created desktop shortcuts, updated dashboard, WhatsApp setup ready",
+  "nextTask": "Test in browser, get new Gemini API key"
 }
