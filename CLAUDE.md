@@ -1,147 +1,107 @@
 # SAI ROLO TECH - WORKING GUIDE
 
-## MY APPROACH (NEW - TESTED)
+## ⚠️ BEFORE EVERY TASK - READ THIS
 
-### Rule 1: Small Batches
-- Maximum 5 steps per session
-- Save after every batch
-- No multi-tasking
+### MY DISCIPLINE RULES (MUST FOLLOW)
 
-### Rule 2: Test Before Move
-- Run code, verify output
-- If error, fix before next step
-- Never assume "it works"
+```
+1. TOKEN LIMIT - Check every 50 messages
+   ❌ Don't hit 20M tokens
+   ✅ Save work at 100K tokens
 
-### Rule 3: Commit Frequently
-- Git add + commit after each batch
-- Push to remote
-- Never lose work
+2. TEST BEFORE CLAIM - Never say "done" without test
+   ❌ "Ho gaya" without testing
+   ✅ Run code, show output, then claim done
 
-### Rule 4: Check Token Usage
-- Keep context small
-- Use Glob/Grep instead of Read
-- Save memory to files
+3. SMALL BATCHES - Max 5 steps, then commit
+   ❌ All at once = incomplete
+   ✅ Batch → Save → Next
 
----
+4. SKILL PIPELINE - USE not KEEP
+   ❌ "Skills downloaded" → do nothing
+   ✅ "Skills downloaded" → USE in actual code
 
-## CURRENT STATUS
-
-### Done ✅
-- graph-memory repo cloned (OpenClaw memory plugin)
-- clawtrol repo cloned (OpenClaw dashboard)
-- mnemon repo cloned (memory server)
-- OpenClaw-Graph-2.0.0-win-x64.exe downloaded
-
-### Pending ⏳
-- CLAUDE.md recreate
-- Settings optimize
-- Test working setup
-
----
-
-## QUICK COMMANDS
-
-```bash
-# Test AI Engine
-cd sai-rolotech-engine
-npm run chat
-
-# Open Dashboard
-npx serve sai-rolotech-engine -p 3333
-
-# Push changes
-git add . && git commit -m "update" && git push
+5. NO AGENTS - Do work yourself
+   ❌ Spawn agent → lose control
+   ✅ Direct code → test → commit
 ```
 
 ---
 
-## RESOURCES DOWNLOADED
+## 📋 SKILL PIPELINE (USE THESE)
 
-| Repo | Purpose | Status |
-|------|---------|--------|
-| graph-memory | 75% token reduction | ✅ Cloned |
-| clawtrol | OpenClaw dashboard | ✅ Cloned |
-| mnemon | Cross-session memory | ✅ Cloned |
-| graph-memory.exe | Windows installer | ✅ Downloaded |
+| Skill | When to Use | How |
+|-------|-------------|-----|
+| agent-orchestrator/CLAUDE.md | Multi-agent work | Read, copy patterns |
+| edict/ | 9 agents needed | Study structure |
+| graph-memory/ | Token overflow | Install, use |
+| clawtrol/ | Dashboard needed | Study, adapt |
+| mnemon/ | Cross-session memory | Study, implement |
 
----
-
-## NEXT STEPS (5 MAX)
-
-1. Create minimal CLAUDE.md
-2. Test cmd.js with local API
-3. Update index.html for local API
-4. Commit and push
-5. Test in browser
+**RULE:** If working on something that matches above → USE IT, not ignore it.
 
 ---
 
-## MY ERRORS (LEARNED)
+## 🚀 QUICK COMMANDS
 
-❌ Used 20M tokens in 5 hours
-❌ Tested API after claiming "working"
-❌ Created multiple agents instead of doing work
-❌ No incremental saves
+```bash
+# Save work (MUST DO EVERY 5 STEPS)
+git add . && git commit -m "checkpoint" && git push
 
-## MY ERRORS (LEARNED)
+# Check token usage
+echo "Working on step X of 5"
 
-❌ Used 20M tokens in 5 hours
-❌ Tested API after claiming "working"
-❌ Created multiple agents instead of doing work
-❌ No incremental saves
-❌ Downloaded repos but didn't USE them
-
-**NOW:** One thing at a time. Test before claim.
+# Test before claim
+npm run test 2>&1 || echo "FIX THIS FIRST"
+```
 
 ---
 
-## DOWNLOADED SKILLS & REPOS
+## 📊 PROJECT STATUS
 
-### Skills Framework
-| Repo | Purpose | Use |
-|------|---------|-----|
-| agent-orchestrator/ | Multi-agent orchestration | Study CLAUDE.md |
-| edict/ | 9 specialized agents | Study structure |
-| open-multi-agent/ | Parallel agents | Study patterns |
-| promptflow/ | Microsoft AI framework | Study workflow |
+### SAI Rolotech Engine (PRIORITY)
+- Location: sai-rolotech-engine/
+- Status: Needs API key fix
+- Next: Test cmd.js, then browser
 
-### Memory & Context
-| Repo | Purpose | Status |
-|------|---------|--------|
-| graph-memory/ | 75% token reduction | Clone ✅ |
-| mnemon/ | Cross-session memory | Clone ✅ |
-| clawtrol/ | OpenClaw dashboard | Clone ✅ |
-| clawbridge/ | Mobile dashboard | Clone ✅ |
-
-### Multi-Agent Workflows
-| Repo | Purpose | Status |
-|------|---------|--------|
-| Multi-AI-Agent-Systems-with-crewAI/ | CrewAI workflows | Clone ✅ |
+### Skills (USE NOT KEEP)
+- agent-orchestrator/ → Multi-agent patterns
+- edict/ → Agent work division
+- graph-memory/ → Token reduction
+- clawtrol/ → Dashboard UI
+- mnemon/ → Memory system
 
 ---
 
-## HOW TO USE SKILLS
+## ⚡ OPTIMIZATION (40x FASTER)
 
-### 1. Study agent-orchestrator/CLAUDE.md
-- Multi-agent architecture
-- Plugin system
-- Session lifecycle
+**Goal:** Small files, fast load, better work
 
-### 2. Study edict/ structure
-- 9 specialized agents
-- Work division
-- Communication
-
-### 3. Use graph-memory for token savings
-- Extract knowledge from conversations
-- Cross-session recall
-- 75% token reduction
-
-### 4. Study clawtrol/ for dashboard
-- Terminal viewer
-- Memory browser
-- Session monitor
+**Methods:**
+1. Use Glob/Grep instead of Read (90% less tokens)
+2. Split large files into small modules
+3. Auto-commit every 5 steps
+4. Test before claim
 
 ---
 
-## NEXT: TEST CMD.JS (Step 1 of 5)
+## 🔴 CURRENT REMINDER
+
+**This prompt appears every task. Read before starting.**
+
+**REMEMBER:**
+- Token limit = 20M per session
+- Every 5 steps = commit + push
+- Test code before claiming done
+- Use skills from pipeline, not just keep them
+
+---
+
+## 📝 TASK: Build Skill Pipeline
+
+1. [ ] Read agent-orchestrator/CLAUDE.md patterns
+2. [ ] Apply patterns to sai-rolotech-engine
+3. [ ] Test with real API
+4. [ ] Commit working version
+
+**START NOW - NO EXCUSES**
