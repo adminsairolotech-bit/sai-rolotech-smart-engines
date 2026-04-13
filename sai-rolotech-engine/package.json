@@ -3,21 +3,42 @@
   "version": "1.0.0",
   "description": "SAI Rolotech Smart Engines - Complete AI Agent System",
   "main": "dist/index.js",
+  "bin": {
+    "sairolotech": "./bin/cli.js"
+  },
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc && tsx build.ts",
     "start": "node dist/index.js",
+    "setup": "node setup.js",
+    "chat": "node bin/cli.js chat",
     "test": "vitest",
     "lint": "eslint src/**/*.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "postinstall": "echo '✅ SAI Rolotech Engine installed! Run: npm run setup'"
   },
-  "keywords": ["ai-agent", "roll-forming", "automation", "ai", "claude"],
+  "keywords": [
+    "ai-agent",
+    "roll-forming",
+    "automation",
+    "ai",
+    "claude",
+    "telegram-bot",
+    "discord-bot",
+    "whatsapp-bot",
+    "autocad",
+    "video-editing"
+  ],
   "author": "SAI Rolotech",
   "license": "MIT",
+  "homepage": "https://github.com/adminsairolotech-bit/sai-rolotech-engine",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adminsairolotech-bit/sai-rolotech-engine.git"
+  },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.52.0",
-    "@smithai/browser-use": "^1.0.0",
     "axios": "^1.7.9",
     "better-sqlite3": "^11.7.0",
     "cheerio": "^1.0.0",
@@ -29,7 +50,6 @@
     "playwright": "^1.49.1",
     "puppeteer": "^24.1.1",
     "telegraf": "^4.16.3",
-    "twilio": "^5.4.3",
     "whatsapp-web.js": "^1.26.0",
     "zod": "^3.24.1"
   },
@@ -40,5 +60,8 @@
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
