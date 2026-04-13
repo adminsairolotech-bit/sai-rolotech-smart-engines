@@ -62,28 +62,31 @@ const COMMANDS = `
     edit How to add fade transition?
 `;
 
-// OpenClaw Gateway Configuration
-const OPENCLAW_URL = "http://localhost:18789";
-const OPENCLAW_TOKEN = "52bbe429ae4d8d617d3529dc114b9edae57e9bdfe89ffb4b";
+// Gemini API Keys (16 paid tier keys - auto-rotating)
+const GEMINI_KEYS = [
+  "AIzaSyCIoT8GOSCBgDJAVhsdCgGrIciFF8rFvwM",
+  "AIzaSyBHOM5z1ilVBRI3O0GKYUpWeiafYGuXIFs",
+  "AIzaSyBAwO893tS045H5fLZ_wj4oOLZfPLaHfDM",
+  "AIzaSyASiS8WrJLXwi7IyHkEErEbQPLM5VC82ow",
+  "AIzaSyDQ9dFgmCBxjxiR3H44FYbSnrsVXEoHtFY",
+  "AIzaSyBSOvHwVvV090ewQhDXr4x0M_eoVvoE99I",
+  "AIzaSyCmCtYXr65CkwszCzJ_y9N3R4UaHVQlCKE",
+  "AIzaSyCkMS3Bk3SIC5EXfHAoyzAMcuazhWe7T9s",
+  "AIzaSyCQ-n5LvFZXNOeT4rgMyp02yc-FeUkYsJ4",
+  "AIzaSyB1Z4XLzGVI3Fs4WAXsCknkkQnl-xXATzs",
+  "AIzaSyBA9YbUJlXjOf5nMGbHpk4-lw2CQTWx5fk",
+  "AIzaSyDZkgUnz-l6iBnvxOJVK32RUixV6dX3T5Y",
+  "AIzaSyBO6RdVDYDmrvgqorUWL0P_9ZEpPDsaYb0",
+  "AIzaSyDob7hfneEmX36BlnUDBNB2N3wrcSSXIMw",
+  "AIzaSyBBXYbpAVLYyaPDmrDakMQ2aNIfONo8mgc",
+  "AIzaSyDqTDVsRGkumerwWGnkmQT-541ls5-58fs"
+];
+let currentKeyIndex = 0;
 
 async function main() {
   console.clear();
   console.log(chalk.cyan(ASCII_LOGO));
-
-  // Check OpenClaw status
-  let openClawAvailable = false;
-  try {
-    const response = await axios.get(`${OPENCLAW_URL}/api/v1/status`, {
-      headers: { Authorization: `Bearer ${OPENCLAW_TOKEN}` },
-      timeout: 3000,
-    });
-    openClawAvailable = response.status === 200;
-    console.log(chalk.green("\n✅ Connected to OpenClaw Gateway\n"));
-  } catch (e) {
-    console.log(chalk.yellow("\n⚠️  OpenClaw Gateway not detected"));
-    console.log(chalk.gray("   Start with: openclaw gateway\n"));
-    console.log(chalk.cyan("   Running in standalone mode with Gemini Direct\n"));
-  }
+  console.log(chalk.green(`\n✅ SAI Rolotech Engine - Gemini Direct (16 Keys)\n`));
 
   console.log(chalk.gray("Type 'help' for commands, 'exit' to quit\n"));
 
@@ -110,39 +113,35 @@ For CAD commands, include LISP examples when relevant.`;
   const question = (prompt) =>
     new Promise((resolve) => rl.question(prompt, resolve));
 
-  // Helper function to call OpenClaw Gateway
+  // Helper function to call Gemini Direct API
   async function sendToAI(prompt) {
-    if (openClawAvailable) {
-      try {
-        const response = await axios.post(
-          `${OPENCLAW_URL}/api/v1/chat`,
-          { prompt, system: systemPrompt },
-          { headers: { Authorization: `Bearer ${OPENCLAW_TOKEN}` }, timeout: 30000 }
-        );
-        return response.data?.text || "No response";
-      } catch (e) {
-        console.log(chalk.yellow(`OpenClaw error: ${e.message}`));
+    const apiKey = GEMINI_KEYS[currentKeyIndex];
+    try {
+      const response = await axios.post(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+        {
+          contents: [{ parts: [{ text: `${systemPrompt}\n\nUser: ${prompt}` }] }],
+          generationConfig: {
+            temperature: 0.9,
+            maxOutputTokens: 8192,
+          },
+        },
+        { timeout: 30000 }
+      );
+
+      // Rotate key for next request
+      currentKeyIndex = (currentKeyIndex + 1) % GEMINI_KEYS.length;
+
+      const text = response.data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      return text || "No response from AI";
+    } catch (e) {
+      // Try next key on error
+      currentKeyIndex = (currentKeyIndex + 1) % GEMINI_KEYS.length;
+      if (e.response?.status === 429 || e.response?.status === 503) {
+        return `⚠️ Key limit reached, rotating to next key...`;
       }
+      return `Error: ${e.message}`;
     }
-
-    // Demo mode when OpenClaw not running
-    return `🤖 SAI Rolotech Engine - Demo Mode
-
-Open OpenClaw Gateway for full AI:
-1. Open new terminal
-2. Run: openclaw gateway
-3. Come back here and try again
-
-Available Commands:
-- ask <question> - Ask anything
-- cad <task> - AutoCAD help
-- edit <task> - Video editing
-- code <task> - Programming help
-- lisp <task> - AutoLISP code
-
-Roll Forming: C-Channel, Z-Purlin, Machine Setup
-AutoCAD: Commands, LISP, 3D Modeling
-Video: Filmora, Transitions, Effects`;
   }
 
   // Main loop

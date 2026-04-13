@@ -51,10 +51,31 @@
 ║  3. ✅ CHECKPOINT → .claude/CHECKPOINT.md                           ║
 ║  4. ✅ MODEL SWITCH → Gemini (free) > OpenRouter > Claude            ║
 ║  5. ✅ TOKEN LIMIT → Check har 50 messages                          ║
-║  6. ✅ TEST FIRST → "Ho gaya" mat bol, test karo!                   ║
+║  6. ✅ TEST AFTER CODE → Browser/App mein LIVE test karo!             ║
 ║  7. ✅ SMALL BATCHES → 5 steps, commit                              ║
 ║  8. ✅ SKILL INTEGRATE → USE not KEEP                               ║
 ║  9. ✅ UPDATE memory.json → After every task                         ║
+╚═══════════════════════════════════════════════════════════════════════╝
+```
+
+### 🔴 LIVE TEST RULE (MANDATORY)
+
+```
+╔═══════════════════════════════════════════════════════════════════════╗
+║                                                                       ║
+║  HAR CODE CHANGE KE BAAD YE KARNA MUST!                              ║
+║                                                                       ║
+║  1. Code likho                                                         ║
+║  2. Browser/App open karo                                              ║
+║  3. Test karo - koi error ya behavior dekho                           ║
+║  4. Console/Network tab check karo                                    ║
+║  5. Sirf tab "Ho gaya" mat bol - PROOF dikhao!                       ║
+║                                                                       ║
+║  TEST COMMANDS:                                                        ║
+║  • curl -s http://localhost:3333/ (Dashboard check)                  ║
+║  • curl -s -X POST "https://generativelanguage..." (API check)       ║
+║  • Browser console F12 → Network tab dekho                            ║
+║                                                                       ║
 ╚═══════════════════════════════════════════════════════════════════════╝
 ```
 
