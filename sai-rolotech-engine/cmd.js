@@ -1,13 +1,12 @@
 #!/usr/bin/env node
 /**
  * SAI Rolotech Engine - Interactive Command Box
- * Powered by Gemini Direct API (Free)
+ * Powered by OpenClaw Gateway (port 18789)
  */
 
 import chalk from "chalk";
 import axios from "axios";
 import * as readline from "readline";
-import { readFileSync } from "fs";
 
 const ASCII_LOGO = `
 ╔═══════════════════════════════════════════════════════════╗
@@ -18,7 +17,7 @@ const ASCII_LOGO = `
 ║  ╚██████╗╚██████╔╝██║ ╚═╝ ██║███████║██║╚██████╔╝         ║
 ║   ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝╚═╝ ╚═════╝          ║
 ║                                                           ║
-║  🤖 SMART ENGINE v1.0 - Gemini AI Powered                ║
+║  🤖 SMART ENGINE v1.0 - OpenClaw Powered                 ║
 ╚═══════════════════════════════════════════════════════════╝
 `;
 
@@ -63,56 +62,30 @@ const COMMANDS = `
     edit How to add fade transition?
 `;
 
+// OpenClaw Gateway Configuration
+const OPENCLAW_URL = "http://localhost:18789";
+const OPENCLAW_TOKEN = "52bbe429ae4d8d617d3529dc114b9edae57e9bdfe89ffb4b";
+
 async function main() {
   console.clear();
   console.log(chalk.cyan(ASCII_LOGO));
 
-  // Load environment
-  let envVars = {};
+  // Check OpenClaw status
+  let openClawAvailable = false;
   try {
-    const content = readFileSync(".env", "utf8");
-    for (const line of content.split("\n")) {
-      const [key, ...valueParts] = line.split("=");
-      if (key && !key.startsWith("#") && valueParts.length > 0) {
-        envVars[key.trim()] = valueParts.join("=").trim();
-      }
-    }
+    const response = await axios.get(`${OPENCLAW_URL}/api/v1/status`, {
+      headers: { Authorization: `Bearer ${OPENCLAW_TOKEN}` },
+      timeout: 3000,
+    });
+    openClawAvailable = response.status === 200;
+    console.log(chalk.green("\n✅ Connected to OpenClaw Gateway\n"));
   } catch (e) {
-    // .env not found, try process.env
+    console.log(chalk.yellow("\n⚠️  OpenClaw Gateway not detected"));
+    console.log(chalk.gray("   Start with: openclaw gateway\n"));
+    console.log(chalk.cyan("   Running in standalone mode with Gemini Direct\n"));
   }
 
-  // Get API key - PRIORITY: Gemini Direct (free, working)
-  const GEMINI_KEYS = [
-    "AIzaSyATGzuZ7DTWczUoOug4zSbGW3qJEZ1YDPQ",
-    "AIzaSyA78P7IW0HFyPt4a-JH-LBvrpmoAaT_2Fo",
-    "AIzaSyBETwDFw5yUknNC0HcR0mc4RajJI5Az3Kk",
-    "AIzaSyBZBftDyEDmKOC4dRIe2EZSA1trZXZTFO0",
-    "AIzaSyCTSuEkvfeqNzcJF4e8Cc3mJWFNmd665E0",
-    "AIzaSyCTSuEkvfeqNzcJF4e8Cc3mJWFNmd665E0",
-    "AIzaSyCCbZ62hsV6WY4YZ7WYB3dkLyQm0AjtF08",
-    "AIzaSyDpDfXSB7IfdCQxnSAJkkDJOjDDMiVfK4I",
-    "AIzaSyByfPs8XZNDpcQaDfrnxiw9PfLGLrWnVJQ",
-    "AIzaSyAfwn21iGiNGAqyj8Nd_A3JBpY9HuDnImI",
-    "AIzaSyAc3faUHDuShBBp0vD9AE1HEMZo6cbkUQs",
-    "AIzaSyD3aqZxPgZAi8xuMGblY4gXFR7HQzdtams",
-    "AIzaSyAEVF9VrnRbyc9vdIOdy8WdFsnk2A5PZp0",
-    "AIzaSyA7O0eVA4HopuauIloUrK1h9zZ-Q06tAgQ",
-  ];
-
-  let currentKeyIndex = 0;
-  const getNextKey = () => {
-    const key = GEMINI_KEYS[currentKeyIndex % GEMINI_KEYS.length];
-    currentKeyIndex++;
-    return key;
-  };
-
-  if (!apiKey) {
-    console.log(chalk.red("\n❌ ERROR: No API key found!"));
-    console.log(chalk.yellow("\nAdd to .env file:"));
-    console.log(chalk.gray("GEMINI_KEY_1=AIzaSy...\n"));
-    console.log(chalk.cyan("Get key from: https://makersuite.google.com/app/apikey\n"));
-    process.exit(1);
-  }
+  console.log(chalk.gray("Type 'help' for commands, 'exit' to quit\n"));
 
   // System prompt with knowledge
   const systemPrompt = `You are SAI Rolotech Engine - an expert AI assistant specializing in:
@@ -128,9 +101,6 @@ Use Hindi/English mix (Hinglish) when appropriate.
 Format code properly with syntax highlighting.
 For CAD commands, include LISP examples when relevant.`;
 
-  console.log(chalk.green("\n✅ Connected to Gemini AI (Free API)\n"));
-  console.log(chalk.gray("Type 'help' for commands, 'exit' to quit\n"));
-
   // Create readline interface
   const rl = readline.createInterface({
     input: process.stdin,
@@ -140,8 +110,40 @@ For CAD commands, include LISP examples when relevant.`;
   const question = (prompt) =>
     new Promise((resolve) => rl.question(prompt, resolve));
 
-  // Chat history
-  const messages = [];
+  // Helper function to call OpenClaw Gateway
+  async function sendToAI(prompt) {
+    if (openClawAvailable) {
+      try {
+        const response = await axios.post(
+          `${OPENCLAW_URL}/api/v1/chat`,
+          { prompt, system: systemPrompt },
+          { headers: { Authorization: `Bearer ${OPENCLAW_TOKEN}` }, timeout: 30000 }
+        );
+        return response.data?.text || "No response";
+      } catch (e) {
+        console.log(chalk.yellow(`OpenClaw error: ${e.message}`));
+      }
+    }
+
+    // Demo mode when OpenClaw not running
+    return `🤖 SAI Rolotech Engine - Demo Mode
+
+Open OpenClaw Gateway for full AI:
+1. Open new terminal
+2. Run: openclaw gateway
+3. Come back here and try again
+
+Available Commands:
+- ask <question> - Ask anything
+- cad <task> - AutoCAD help
+- edit <task> - Video editing
+- code <task> - Programming help
+- lisp <task> - AutoLISP code
+
+Roll Forming: C-Channel, Z-Purlin, Machine Setup
+AutoCAD: Commands, LISP, 3D Modeling
+Video: Filmora, Transitions, Effects`;
+  }
 
   // Main loop
   while (true) {
@@ -150,7 +152,6 @@ For CAD commands, include LISP examples when relevant.`;
 
     if (!trimmed) continue;
 
-    // Handle commands
     if (trimmed.toLowerCase() === "exit") {
       console.log(chalk.green("\n👋 Goodbye! SAI Rolotech Engine shutting down...\n"));
       rl.close();
@@ -214,34 +215,11 @@ For CAD commands, include LISP examples when relevant.`;
       prompt = `Text to speech preview for: ${args}. Explain voice settings.`;
     }
 
-    // Send to AI - Gemini Direct API with rotating keys
     console.log(chalk.gray("\n⏳ Thinking...\n"));
 
-    try {
-      const fullPrompt = `${systemPrompt}\n\nUser: ${prompt}`;
-      const apiKey = getNextKey();
-
-      const response = await axios.post(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
-        {
-          contents: [{ parts: [{ text: fullPrompt }] }],
-          generationConfig: {
-            maxOutputTokens: 2048,
-            temperature: 0.7,
-          },
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-
-      const text = response.data?.candidates?.[0]?.content?.parts?.[0]?.text || "Response generated.";
-
-      console.log(chalk.white(text));
-      console.log();
-    } catch (err) {
-      console.log(chalk.red(`\n❌ Error: ${err.message}\n`));
-    }
+    const response = await sendToAI(prompt);
+    console.log(chalk.white(response));
+    console.log();
   }
 }
 

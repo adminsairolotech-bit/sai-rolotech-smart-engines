@@ -662,29 +662,11 @@
   <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
   <script>
-    // Configuration - Gemini Direct API (Free) with Rotating Keys
-    const GEMINI_KEYS = [
-      'AIzaSyATGzuZ7DTWczUoOug4zSbGW3qJEZ1YDPQ',
-      'AIzaSyA78P7IW0HFyPt4a-JH-LBvrpmoAaT_2Fo',
-      'AIzaSyBETwDFw5yUknNC0HcR0mc4RajJI5Az3Kk',
-      'AIzaSyBZBftDyEDmKOC4dRIe2EZSA1trZXZTFO0',
-      'AIzaSyCTSuEkvfeqNzcJF4e8Cc3mJWFNmd665E0',
-      'AIzaSyCCbZ62hsV6WY4YZ7WYB3dkLyQm0AjtF08',
-      'AIzaSyDpDfXSB7IfdCQxnSAJkkDJOjDDMiVfK4I',
-      'AIzaSyByfPs8XZNDpcQaDfrnxiw9PfLGLrWnVJQ',
-      'AIzaSyAfwn21iGiNGAqyj8Nd_A3JBpY9HuDnImI',
-      'AIzaSyAc3faUHDuShBBp0vD9AE1HEMZo6cbkUQs',
-      'AIzaSyD3aqZxPgZAi8xuMGblY4gXFR7HQzdtams',
-      'AIzaSyAEVF9VrnRbyc9vdIOdy8WdFsnk2A5PZp0',
-      'AIzaSyA7O0eVA4HopuauIloUrK1h9zZ-Q06tAgQ',
-    ];
-    let currentKeyIndex = 0;
-    const getNextKey = () => {
-      const key = GEMINI_KEYS[currentKeyIndex % GEMINI_KEYS.length];
-      currentKeyIndex++;
-      return key;
-    };
-    const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+    // Configuration - OpenClaw Gateway Integration
+    const OPENCLAW_URL = 'http://localhost:18789';
+    const OPENCLAW_TOKEN = '52bbe429ae4d8d617d3529dc114b9edae57e9bdfe89ffb4b';
+    let openClawConnected = false;
+
     const SYSTEM_PROMPT = `You are SAI Rolotech Engine - an expert AI assistant specializing in:
 1. ROLL FORMING ENGINEERING - C-Channel, Z-Purlin, machine setup, defects, quality control
 2. AUTOCAD - All commands, LISP scripting, 3D modeling, dimensions
@@ -829,44 +811,42 @@ Be concise, practical, expert-level. Use Hindi/English (Hinglish) when appropria
     }
 
     async function getAIResponse(text) {
-      const allMessages = [
-        { role: 'system', content: SYSTEM_PROMPT },
-        ...messages,
-        { role: 'user', content: text }
-      ];
-
-      // Build prompt from conversation history
-      const conversationContext = allMessages.map(m => {
-        if (m.role === 'system') return '';
-        return `${m.role === 'assistant' ? 'AI' : 'User'}: ${m.content}`;
-      }).filter(Boolean).join('\n');
-
-      const fullPrompt = `${SYSTEM_PROMPT}\n\n${conversationContext}\n\nUser: ${text}`;
-
+      // Try OpenClaw Gateway first
       try {
-        const apiKey = getNextKey();
-        const response = await fetch(`${GEMINI_URL}?key=${apiKey}`, {
+        const response = await fetch(`${OPENCLAW_URL}/api/v1/chat`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${OPENCLAW_TOKEN}`
           },
           body: JSON.stringify({
-            contents: [{ parts: [{ text: fullPrompt }] }],
-            generationConfig: {
-              maxOutputTokens: 2048,
-              temperature: 0.7,
-            }
-          })
+            prompt: text,
+            system: SYSTEM_PROMPT,
+            model: 'google/gemini-2.0-flash-exp'
+          }),
+          signal: AbortSignal.timeout(30000)
         });
 
-        if (!response.ok) {
-          const err = await response.json();
-          return `Error: ${err.error?.message || response.status}`;
+        if (response.ok) {
+          const data = await response.json();
+          openClawConnected = true;
+          updateConnectionStatus();
+          return data.text || 'Response received.';
         }
-        const data = await response.json();
-        return data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response.';
-      } catch (error) {
-        return `Error: ${error.message}`;
+      } catch (e) {
+        // Fallback to demo mode
+      }
+
+      // Demo mode (when OpenClaw not running)
+      return `[Demo Mode] SAI Rolotech Engine ready.\n\nOpen OpenClaw gateway for full AI:\n1. Open terminal\n2. Run: openclaw gateway\n3. Refresh this page\n\nAsk me anything about:\n- Roll Forming\n- AutoCAD\n- Video Editing`;
+    }
+
+    function updateConnectionStatus() {
+      const status = document.getElementById('connectionStatus');
+      if (status) {
+        status.innerHTML = openClawConnected ?
+          '<span style="color:green">●</span> OpenClaw' :
+          '<span style="color:yellow">●</span> Demo';
       }
     }
 
