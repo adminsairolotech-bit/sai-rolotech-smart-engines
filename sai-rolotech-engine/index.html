@@ -662,9 +662,9 @@
   <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
   <script>
-    // Configuration - Using local API server
-    const API_URL = 'http://localhost:3000/api';
-    const AUTH_TOKEN = localStorage.getItem('auth_token') || '';
+    // Configuration - Using OpenRouter API directly
+    const API_URL = 'https://openrouter.ai/api/v1';
+    const API_KEY = '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';
     const SYSTEM_PROMPT = `You are SAI Rolotech Engine - an expert AI assistant specializing in:
 1. ROLL FORMING ENGINEERING - C-Channel, Z-Purlin, machine setup, defects, quality control
 2. AUTOCAD - All commands, LISP scripting, 3D modeling, dimensions
@@ -810,28 +810,34 @@ Be concise, practical, expert-level. Use Hindi/English (Hinglish) when appropria
 
     async function getAIResponse(text) {
       const model = document.getElementById('modelSelect').value;
+      const allMessages = [
+        { role: 'system', content: SYSTEM_PROMPT },
+        ...messages,
+        { role: 'user', content: text }
+      ];
 
       try {
-        const response = await fetch(`${API_URL}/chat`, {
+        const response = await fetch(`${API_URL}/chat/completions`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${AUTH_TOKEN}`
+            'Authorization': `Bearer ${API_KEY}`,
+            'HTTP-Referer': 'https://sairolotech.com',
+            'X-Title': 'SAI Rolotech Engine'
           },
           body: JSON.stringify({
-            message: text,
             model: model,
-            system: SYSTEM_PROMPT,
-            history: messages
+            messages: allMessages,
+            max_tokens: 2048
           })
         });
 
         if (!response.ok) {
           const err = await response.json();
-          return `Error: ${err.message || response.status}`;
+          return `Error: ${err.error?.message || response.status}`;
         }
         const data = await response.json();
-        return data.reply || data.response || data.content || 'No response.';
+        return data.choices?.[0]?.message?.content || 'No response.';
       } catch (error) {
         return `Error: ${error.message}`;
       }
