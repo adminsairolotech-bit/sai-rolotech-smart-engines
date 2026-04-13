@@ -2,32 +2,49 @@
 
 ## ⚠️ BEFORE EVERY TASK - READ THIS
 
+### ✅ AUTOMATIC WORKFLOW
+
+```
+╔═══════════════════════════════════════════════════════════════════════╗
+║  STEP 1: READ .claude/memory.json (YEH YAAD RAKEGA!)                 ║
+║  STEP 2: READ RULES.md                                               ║
+║  STEP 3: DO TASK                                                    ║
+║  STEP 4: TEST                                                       ║
+║  STEP 5: COMMIT + UPDATE memory.json                                 ║
+╚═══════════════════════════════════════════════════════════════════════╝
+```
+
 ### MY DISCIPLINE RULES (MUST FOLLOW)
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════╗
-║  1. READ RULES.md BEFORE STARTING                                    ║
+║  1. LOAD MEMORY → Read .claude/memory.json (YEH PEHLE!)              ║
+║                                                                       ║
+║  2. READ RULES.md BEFORE STARTING                                    ║
 ║     → cat RULES.md (mandatory)                                       ║
 ║                                                                       ║
-║  2. MODEL SWITCH (Cost Optimization)                                 ║
+║  3. MODEL SWITCH (Cost Optimization)                                 ║
 ║     → Gemini (free) > OpenRouter > Claude                            ║
 ║     → Always try cheapest working model first                        ║
 ║                                                                       ║
-║  3. TOKEN LIMIT - Check every 50 messages                            ║
+║  4. TOKEN LIMIT - Check every 50 messages                            ║
 ║     ❌ Don't hit 20M tokens                                           ║
 ║     ✅ Save work at 100K tokens                                      ║
 ║                                                                       ║
-║  4. TEST BEFORE CLAIM - Never say "done" without test                 ║
+║  5. TEST BEFORE CLAIM - Never say "done" without test                 ║
 ║     ❌ "Ho gaya" without testing                                      ║
 ║     ✅ Run code, show output, then claim done                         ║
 ║                                                                       ║
-║  5. SMALL BATCHES - Max 5 steps, then commit                         ║
+║  6. SMALL BATCHES - Max 5 steps, then commit                         ║
 ║     ❌ All at once = incomplete                                       ║
 ║     ✅ Batch → Save → Next                                           ║
 ║                                                                       ║
-║  6. SKILL INTEGRATION - USE not KEEP                                  ║
+║  7. SKILL INTEGRATION - USE not KEEP                                  ║
 ║     ❌ "Skills downloaded" → do nothing                               ║
 ║     ✅ "Skills downloaded" → INTEGRATE into code                     ║
+║                                                                       ║
+║  8. UPDATE memory.json - After every task                           ║
+║     → Update skills status, last task, session count                 ║
 ╚═══════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -66,27 +83,38 @@ npm run test 2>&1 || echo "FIX THIS FIRST"
 
 ## 📊 PROJECT STATUS
 
+### Memory File: .claude/memory.json (YEH YAAD RAKEGA!)
+```json
+{
+  "lastUpdated": "2026-04-13",
+  "sessionCount": 1,
+  "skills": { "clawtrol": true, others: false },
+  "api": { "gemini": "WORKING", "openrouter": "FAILING" },
+  "engine": { "cmd.js": "WORKING", "index.html": "WORKING" }
+}
+```
+
 ### API Keys (Working Order):
 | API | Status | Cost | Model |
 |-----|--------|------|-------|
 | Gemini Direct | ✅ WORKING | FREE | gemini-2.5-flash |
 | OpenRouter | ❌ FAILING | ~$0.001 | - |
-| Gemini Fallback | ✅ Available | FREE | gemini-2.0-flash |
 
-**NOTE:** Use Gemini Direct API first (free, working)
+**NOTE:** Use Gemini Direct API first (free, working) - 13 keys rotating
 
 ### SAI Rolotech Engine (PRIORITY)
 - Location: sai-rolotech-engine/
-- Status: API fix needed - use Gemini direct
-- cmd.js: Needs Gemini API update
-- index.html: Needs Gemini API update
+- Status: ✅ WORKING - Gemini API connected
+- cmd.js: ✅ WORKING (tested)
+- index.html: ✅ WORKING (Gemini direct)
+- src/: ✅ READY
 
 ### Skills (USE NOT KEEP)
 - agent-orchestrator/ → Multi-agent patterns
 - edict/ → Agent work division
 - graph-memory/ → Token reduction
-- clawtrol/ → Dashboard UI
-- mnemon/ → Memory system
+- clawtrol/ → ✅ Dashboard UI (used)
+- mnemon/ → Cross-session memory
 
 ---
 
