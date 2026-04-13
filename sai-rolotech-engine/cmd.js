@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 /**
  * SAI Rolotech Engine - Interactive Command Box
- * Powered by OpenRouter (Gemini + Claude)
+ * Powered by Gemini Direct API (Free)
  */
 
 import chalk from "chalk";
-import OpenAI from "openai";
+import axios from "axios";
 import * as readline from "readline";
 import { readFileSync } from "fs";
 
@@ -18,7 +18,7 @@ const ASCII_LOGO = `
 ║  ╚██████╗╚██████╔╝██║ ╚═╝ ██║███████║██║╚██████╔╝         ║
 ║   ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝╚═╝ ╚═════╝          ║
 ║                                                           ║
-║  🤖 SMART ENGINE v1.0 - OpenRouter Powered               ║
+║  🤖 SMART ENGINE v1.0 - Gemini AI Powered                ║
 ╚═══════════════════════════════════════════════════════════╝
 `;
 
@@ -81,28 +81,38 @@ async function main() {
     // .env not found, try process.env
   }
 
-  // Get API key - check multiple sources
-  const apiKey =
-    process.env.OPENROUTER_API_KEY ||
-    envVars.OPENROUTER_API_KEY ||
-    process.env.ANTHROPIC_API_KEY ||
-    envVars.CLAUDE_API_KEY ||
-    process.env.ANTHROPIC_API_KEY;
+  // Get API key - PRIORITY: Gemini Direct (free, working)
+  const GEMINI_KEYS = [
+    "AIzaSyATGzuZ7DTWczUoOug4zSbGW3qJEZ1YDPQ",
+    "AIzaSyA78P7IW0HFyPt4a-JH-LBvrpmoAaT_2Fo",
+    "AIzaSyBETwDFw5yUknNC0HcR0mc4RajJI5Az3Kk",
+    "AIzaSyBZBftDyEDmKOC4dRIe2EZSA1trZXZTFO0",
+    "AIzaSyCTSuEkvfeqNzcJF4e8Cc3mJWFNmd665E0",
+    "AIzaSyCTSuEkvfeqNzcJF4e8Cc3mJWFNmd665E0",
+    "AIzaSyCCbZ62hsV6WY4YZ7WYB3dkLyQm0AjtF08",
+    "AIzaSyDpDfXSB7IfdCQxnSAJkkDJOjDDMiVfK4I",
+    "AIzaSyByfPs8XZNDpcQaDfrnxiw9PfLGLrWnVJQ",
+    "AIzaSyAfwn21iGiNGAqyj8Nd_A3JBpY9HuDnImI",
+    "AIzaSyAc3faUHDuShBBp0vD9AE1HEMZo6cbkUQs",
+    "AIzaSyD3aqZxPgZAi8xuMGblY4gXFR7HQzdtams",
+    "AIzaSyAEVF9VrnRbyc9vdIOdy8WdFsnk2A5PZp0",
+    "AIzaSyA7O0eVA4HopuauIloUrK1h9zZ-Q06tAgQ",
+  ];
+
+  let currentKeyIndex = 0;
+  const getNextKey = () => {
+    const key = GEMINI_KEYS[currentKeyIndex % GEMINI_KEYS.length];
+    currentKeyIndex++;
+    return key;
+  };
 
   if (!apiKey) {
     console.log(chalk.red("\n❌ ERROR: No API key found!"));
     console.log(chalk.yellow("\nAdd to .env file:"));
-    console.log(chalk.gray("OPENROUTER_API_KEY=sk-or-v1-...\n"));
-    console.log(chalk.cyan("Get key from: https://openrouter.ai/keys\n"));
+    console.log(chalk.gray("GEMINI_KEY_1=AIzaSy...\n"));
+    console.log(chalk.cyan("Get key from: https://makersuite.google.com/app/apikey\n"));
     process.exit(1);
   }
-
-  // Initialize OpenRouter client
-  const client = new OpenAI({
-    apiKey: apiKey,
-    baseURL: "https://openrouter.ai/api/v1",
-    dangerouslyAllowBrowser: true,
-  });
 
   // System prompt with knowledge
   const systemPrompt = `You are SAI Rolotech Engine - an expert AI assistant specializing in:
@@ -118,7 +128,7 @@ Use Hindi/English mix (Hinglish) when appropriate.
 Format code properly with syntax highlighting.
 For CAD commands, include LISP examples when relevant.`;
 
-  console.log(chalk.green("\n✅ Connected to OpenRouter AI\n"));
+  console.log(chalk.green("\n✅ Connected to Gemini AI (Free API)\n"));
   console.log(chalk.gray("Type 'help' for commands, 'exit' to quit\n"));
 
   // Create readline interface
@@ -204,30 +214,33 @@ For CAD commands, include LISP examples when relevant.`;
       prompt = `Text to speech preview for: ${args}. Explain voice settings.`;
     }
 
-    // Send to AI
+    // Send to AI - Gemini Direct API with rotating keys
     console.log(chalk.gray("\n⏳ Thinking...\n"));
 
     try {
-      messages.push({ role: "user", content: prompt });
+      const fullPrompt = `${systemPrompt}\n\nUser: ${prompt}`;
+      const apiKey = getNextKey();
 
-      const response = await client.chat.completions.create({
-        model: "google/gemini-2.5-flash",
-        max_tokens: 2048,
-        messages: [
-          { role: "system", content: systemPrompt },
-          ...messages,
-        ],
-      });
+      const response = await axios.post(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+        {
+          contents: [{ parts: [{ text: fullPrompt }] }],
+          generationConfig: {
+            maxOutputTokens: 2048,
+            temperature: 0.7,
+          },
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
 
-      const text = response.choices[0]?.message?.content || "Response generated.";
-
-      messages.push({ role: "assistant", content: text });
+      const text = response.data?.candidates?.[0]?.content?.parts?.[0]?.text || "Response generated.";
 
       console.log(chalk.white(text));
       console.log();
     } catch (err) {
       console.log(chalk.red(`\n❌ Error: ${err.message}\n`));
-      messages.pop(); // Remove failed message
     }
   }
 }

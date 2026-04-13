@@ -662,9 +662,29 @@
   <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
   <script>
-    // Configuration - Using OpenRouter API directly
-    const API_URL = 'https://openrouter.ai/api/v1';
-    const API_KEY = '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';
+    // Configuration - Gemini Direct API (Free) with Rotating Keys
+    const GEMINI_KEYS = [
+      'AIzaSyATGzuZ7DTWczUoOug4zSbGW3qJEZ1YDPQ',
+      'AIzaSyA78P7IW0HFyPt4a-JH-LBvrpmoAaT_2Fo',
+      'AIzaSyBETwDFw5yUknNC0HcR0mc4RajJI5Az3Kk',
+      'AIzaSyBZBftDyEDmKOC4dRIe2EZSA1trZXZTFO0',
+      'AIzaSyCTSuEkvfeqNzcJF4e8Cc3mJWFNmd665E0',
+      'AIzaSyCCbZ62hsV6WY4YZ7WYB3dkLyQm0AjtF08',
+      'AIzaSyDpDfXSB7IfdCQxnSAJkkDJOjDDMiVfK4I',
+      'AIzaSyByfPs8XZNDpcQaDfrnxiw9PfLGLrWnVJQ',
+      'AIzaSyAfwn21iGiNGAqyj8Nd_A3JBpY9HuDnImI',
+      'AIzaSyAc3faUHDuShBBp0vD9AE1HEMZo6cbkUQs',
+      'AIzaSyD3aqZxPgZAi8xuMGblY4gXFR7HQzdtams',
+      'AIzaSyAEVF9VrnRbyc9vdIOdy8WdFsnk2A5PZp0',
+      'AIzaSyA7O0eVA4HopuauIloUrK1h9zZ-Q06tAgQ',
+    ];
+    let currentKeyIndex = 0;
+    const getNextKey = () => {
+      const key = GEMINI_KEYS[currentKeyIndex % GEMINI_KEYS.length];
+      currentKeyIndex++;
+      return key;
+    };
+    const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
     const SYSTEM_PROMPT = `You are SAI Rolotech Engine - an expert AI assistant specializing in:
 1. ROLL FORMING ENGINEERING - C-Channel, Z-Purlin, machine setup, defects, quality control
 2. AUTOCAD - All commands, LISP scripting, 3D modeling, dimensions
@@ -809,26 +829,33 @@ Be concise, practical, expert-level. Use Hindi/English (Hinglish) when appropria
     }
 
     async function getAIResponse(text) {
-      const model = document.getElementById('modelSelect').value;
       const allMessages = [
         { role: 'system', content: SYSTEM_PROMPT },
         ...messages,
         { role: 'user', content: text }
       ];
 
+      // Build prompt from conversation history
+      const conversationContext = allMessages.map(m => {
+        if (m.role === 'system') return '';
+        return `${m.role === 'assistant' ? 'AI' : 'User'}: ${m.content}`;
+      }).filter(Boolean).join('\n');
+
+      const fullPrompt = `${SYSTEM_PROMPT}\n\n${conversationContext}\n\nUser: ${text}`;
+
       try {
-        const response = await fetch(`${API_URL}/chat/completions`, {
+        const apiKey = getNextKey();
+        const response = await fetch(`${GEMINI_URL}?key=${apiKey}`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${API_KEY}`,
-            'HTTP-Referer': 'https://sairolotech.com',
-            'X-Title': 'SAI Rolotech Engine'
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            model: model,
-            messages: allMessages,
-            max_tokens: 2048
+            contents: [{ parts: [{ text: fullPrompt }] }],
+            generationConfig: {
+              maxOutputTokens: 2048,
+              temperature: 0.7,
+            }
           })
         });
 
@@ -837,7 +864,7 @@ Be concise, practical, expert-level. Use Hindi/English (Hinglish) when appropria
           return `Error: ${err.error?.message || response.status}`;
         }
         const data = await response.json();
-        return data.choices?.[0]?.message?.content || 'No response.';
+        return data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response.';
       } catch (error) {
         return `Error: ${error.message}`;
       }

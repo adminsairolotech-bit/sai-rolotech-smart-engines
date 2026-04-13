@@ -5,25 +5,30 @@
 ### MY DISCIPLINE RULES (MUST FOLLOW)
 
 ```
-1. TOKEN LIMIT - Check every 50 messages
-   ❌ Don't hit 20M tokens
-   ✅ Save work at 100K tokens
-
-2. TEST BEFORE CLAIM - Never say "done" without test
-   ❌ "Ho gaya" without testing
-   ✅ Run code, show output, then claim done
-
-3. SMALL BATCHES - Max 5 steps, then commit
-   ❌ All at once = incomplete
-   ✅ Batch → Save → Next
-
-4. SKILL PIPELINE - USE not KEEP
-   ❌ "Skills downloaded" → do nothing
-   ✅ "Skills downloaded" → USE in actual code
-
-5. NO AGENTS - Do work yourself
-   ❌ Spawn agent → lose control
-   ✅ Direct code → test → commit
+╔═══════════════════════════════════════════════════════════════════════╗
+║  1. READ RULES.md BEFORE STARTING                                    ║
+║     → cat RULES.md (mandatory)                                       ║
+║                                                                       ║
+║  2. MODEL SWITCH (Cost Optimization)                                 ║
+║     → Gemini (free) > OpenRouter > Claude                            ║
+║     → Always try cheapest working model first                        ║
+║                                                                       ║
+║  3. TOKEN LIMIT - Check every 50 messages                            ║
+║     ❌ Don't hit 20M tokens                                           ║
+║     ✅ Save work at 100K tokens                                      ║
+║                                                                       ║
+║  4. TEST BEFORE CLAIM - Never say "done" without test                 ║
+║     ❌ "Ho gaya" without testing                                      ║
+║     ✅ Run code, show output, then claim done                         ║
+║                                                                       ║
+║  5. SMALL BATCHES - Max 5 steps, then commit                         ║
+║     ❌ All at once = incomplete                                       ║
+║     ✅ Batch → Save → Next                                           ║
+║                                                                       ║
+║  6. SKILL INTEGRATION - USE not KEEP                                  ║
+║     ❌ "Skills downloaded" → do nothing                               ║
+║     ✅ "Skills downloaded" → INTEGRATE into code                     ║
+╚═══════════════════════════════════════════════════════════════════════╝
 ```
 
 ---
@@ -38,7 +43,9 @@
 | clawtrol/ | Dashboard needed | Study, adapt |
 | mnemon/ | Cross-session memory | Study, implement |
 
-**RULE:** If working on something that matches above → USE IT, not ignore it.
+**RULE:** Downloaded skill = INTEGRATE it into engine code
+
+**ACTION:** Check skill folder README, extract patterns, paste into our code
 
 ---
 
@@ -59,10 +66,20 @@ npm run test 2>&1 || echo "FIX THIS FIRST"
 
 ## 📊 PROJECT STATUS
 
+### API Keys (Working Order):
+| API | Status | Cost | Model |
+|-----|--------|------|-------|
+| Gemini Direct | ✅ WORKING | FREE | gemini-2.5-flash |
+| OpenRouter | ❌ FAILING | ~$0.001 | - |
+| Gemini Fallback | ✅ Available | FREE | gemini-2.0-flash |
+
+**NOTE:** Use Gemini Direct API first (free, working)
+
 ### SAI Rolotech Engine (PRIORITY)
 - Location: sai-rolotech-engine/
-- Status: Needs API key fix
-- Next: Test cmd.js, then browser
+- Status: API fix needed - use Gemini direct
+- cmd.js: Needs Gemini API update
+- index.html: Needs Gemini API update
 
 ### Skills (USE NOT KEEP)
 - agent-orchestrator/ → Multi-agent patterns
