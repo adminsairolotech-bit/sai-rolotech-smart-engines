@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAI Rolotech Engine - Dashboard</title>
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-hover: #1a1a25;
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --accent: #22d3ee;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --text: #f1f5f9;
+            --text-muted: #64748b;
+            --border: #1e293b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 20% 80%, var(--primary-glow) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(34, 211, 238, 0.2) 0%, transparent 50%);
+            animation: bgPulse 15s ease-in-out infinite;
+        }
+
+        @keyframes bgPulse {
+            0%, 100% { transform: translate(-10%, -10%) rotate(0deg); }
+            50% { transform: translate(-15%, -15%) rotate(180deg); }
+        }
+
+        /* Header */
+        header {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+            background: rgba(10, 10, 15, 0.8);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            animation: logoGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes logoGlow {
+            0%, 100% { box-shadow: 0 0 20px var(--primary-glow); }
+            50% { box-shadow: 0 0 40px var(--primary-glow); }
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--text), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo span {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--success);
+            border-radius: 100px;
+            font-size: 0.875rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Main Container */
+        main {
+            padding: 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.2);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 1rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Channels Section */
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .channels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .channel-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .channel-card:hover {
+            border-color: var(--primary);
+        }
+
+        .channel-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .channel-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .channel-icon.telegram { background: linear-gradient(135deg, #0088cc, #00aced); }
+        .channel-icon.whatsapp { background: linear-gradient(135deg, #25d366, #128c7e); }
+        .channel-icon.discord { background: linear-gradient(135deg, #5865f2, #7289da); }
+        .channel-icon.web { background: linear-gradient(135deg, var(--primary), var(--accent)); }
+
+        .channel-info h3 {
+            font-size: 1.125rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .channel-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .channel-status.offline {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+        }
+
+        .channel-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .feature-tag {
+            padding: 0.375rem 0.75rem;
+            background: var(--bg-hover);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Tools Section */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .tool-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .tool-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .tool-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+        }
+
+        .tool-info h3 {
+            font-size: 1.125rem;
+        }
+
+        .tool-description {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        /* Chat Interface */
+        .chat-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 1rem 1.25rem;
+            border-radius: 16px;
+            animation: messageIn 0.3s ease;
+        }
+
+        @keyframes messageIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--primary), #818cf8);
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.assistant {
+            align-self: flex-start;
+            background: var(--bg-hover);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 0.625rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        .chat-input-container {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 1rem;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 0.875rem 1.25rem;
+            background: var(--bg-hover);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        .chat-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .send-btn {
+            padding: 0.875rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px var(--primary-glow);
+        }
+
+        /* Knowledge Base */
+        .kb-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .kb-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .kb-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+        }
+
+        .kb-icon {
+            font-size: 32px;
+            margin-bottom: 1rem;
+        }
+
+        .kb-card h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .kb-card p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            main {
+                padding: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .channels-grid, .tools-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <header>
+        <div class="logo">
+            <div class="logo-icon">⚙️</div>
+            <div>
+                <h1>SAI Rolotech Engine</h1>
+                <span>Smart AI Agent System</span>
+            </div>
+        </div>
+        <div class="status-badge">
+            <div class="status-dot"></div>
+            <span>System Online</span>
+        </div>
+    </header>
+
+    <main>
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">🤖</div>
+                <div class="stat-value" id="agents-count">5</div>
+                <div class="stat-label">Active Agents</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💬</div>
+                <div class="stat-value" id="channels-count">4</div>
+                <div class="stat-label">Channels</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔧</div>
+                <div class="stat-value" id="tools-count">15+</div>
+                <div class="stat-label">Tools</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📚</div>
+                <div class="stat-value" id="kb-entries">500+</div>
+                <div class="stat-label">Knowledge Entries</div>
+            </div>
+        </div>
+
+        <!-- Channels -->
+        <h2 class="section-title">📱 Communication Channels</h2>
+        <div class="channels-grid">
+            <div class="channel-card">
+                <div class="channel-header">
+                    <div class="channel-icon telegram">✈️</div>
+                    <div class="channel-info">
+                        <h3>Telegram Bot</h3>
+                        <span class="channel-status">
+                            <span>●</span> Online
+                        </span>
+                    </div>
+                </div>
+                <p class="tool-description">Chat with AI via Telegram. Use commands like /code, /cad, /search, /image.</p>
+                <div class="channel-features">
+                    <span class="feature-tag">AI Chat</span>
+                    <span class="feature-tag">Commands</span>
+                    <span class="feature-tag">Files</span>
+                </div>
+            </div>
+
+            <div class="channel-card">
+                <div class="channel-header">
+                    <div class="channel-icon whatsapp">📱</div>
+                    <div class="channel-info">
+                        <h3>WhatsApp Bot</h3>
+                        <span class="channel-status">
+                            <span>●</span> Online
+                        </span>
+                    </div>
+                </div>
+                <p class="tool-description">Access AI through WhatsApp. Use !code, !search, !image commands.</p>
+                <div class="channel-features">
+                    <span class="feature-tag">AI Chat</span>
+                    <span class="feature-tag">Voice Notes</span>
+                    <span class="feature-tag">Images</span>
+                </div>
+            </div>
+
+            <div class="channel-card">
+                <div class="channel-header">
+                    <div class="channel-icon discord">🎮</div>
+                    <div class="channel-info">
+                        <h3>Discord Bot</h3>
+                        <span class="channel-status">
+                            <span>●</span> Online
+                        </span>
+                    </div>
+                </div>
+                <p class="tool-description">AI assistant in Discord. Use !help, !code, !search, !status commands.</p>
+                <div class="channel-features">
+                    <span class="feature-tag">AI Chat</span>
+                    <span class="feature-tag">Commands</span>
+                    <span class="feature-tag">Slash Commands</span>
+                </div>
+            </div>
+
+            <div class="channel-card">
+                <div class="channel-header">
+                    <div class="channel-icon web">🌐</div>
+                    <div class="channel-info">
+                        <h3>Web Dashboard</h3>
+                        <span class="channel-status">
+                            <span>●</span> Online
+                        </span>
+                    </div>
+                </div>
+                <p class="tool-description">Full-featured web interface. Chat, file management, and system control.</p>
+                <div class="channel-features">
+                    <span class="feature-tag">Chat UI</span>
+                    <span class="feature-tag">Dashboard</span>
+                    <span class="feature-tag">File Manager</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tools -->
+        <h2 class="section-title">🔧 AI Tools & Capabilities</h2>
+        <div class="tools-grid">
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">🌐</div>
+                    <div class="tool-info">
+                        <h3>Browser Automation</h3>
+                    </div>
+                </div>
+                <p class="tool-description">AI-powered web browsing, form filling, data extraction, and screenshot capture.</p>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">🔍</div>
+                    <div class="tool-info">
+                        <h3>Web Search</h3>
+                    </div>
+                </div>
+                <p class="tool-description">Multi-provider search: Tavily, Brave, DuckDuckGo, Perplexity, Ollama.</p>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">🎨</div>
+                    <div class="tool-info">
+                        <h3>Image Generation</h3>
+                    </div>
+                </div>
+                <p class="tool-description">Generate images with DALL-E 3, DALL-E 2, and Stable Diffusion.</p>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">🎬</div>
+                    <div class="tool-info">
+                        <h3>Video Editing</h3>
+                    </div>
+                </div>
+                <p class="tool-description">Filmora-level editing: cuts, transitions, effects, audio, export all formats.</p>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">🎙️</div>
+                    <div class="tool-info">
+                        <h3>Voice & TTS</h3>
+                    </div>
+                </div>
+                <p class="tool-description">Text-to-speech, voice cloning, transcription with OpenAI & ElevenLabs.</p>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">📐</div>
+                    <div class="tool-info">
+                        <h3>AutoCAD Expert</h3>
+                    </div>
+                </div>
+                <p class="tool-description">Complete AutoCAD knowledge: all commands, LISP scripting, 3D modeling.</p>
+            </div>
+        </div>
+
+        <!-- Knowledge Base -->
+        <h2 class="section-title">📚 Knowledge Bases</h2>
+        <div class="kb-grid">
+            <div class="kb-card">
+                <div class="kb-icon">🏭</div>
+                <h3>Roll Forming Engineering</h3>
+                <p>C-Channel, Z-Purlin, machine setup, defects, quality control</p>
+            </div>
+            <div class="kb-card">
+                <div class="kb-icon">📐</div>
+                <h3>AutoCAD</h3>
+                <p>All commands, LISP, scripting, 3D, dimensions, blocks</p>
+            </div>
+            <div class="kb-card">
+                <div class="kb-icon">🎬</div>
+                <h3>Video Editing</h3>
+                <p>Filmora features, transitions, color grading, audio, export</p>
+            </div>
+            <div class="kb-card">
+                <div class="kb-icon">🔧</div>
+                <h3>Industrial Automation</h3>
+                <p>PLC, HMI, SCADA, VFD, Servo Motors, IoT</p>
+            </div>
+        </div>
+
+        <!-- Chat -->
+        <h2 class="section-title">💬 AI Chat</h2>
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="stat-icon">🤖</div>
+                <span>Chat with SAI Rolotech Engine</span>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <div class="message assistant">
+                    Hello! I'm SAI Rolotech Engine. How can I help you today?
+                    <div class="message-time">Just now</div>
+                </div>
+            </div>
+            <div class="chat-input-container">
+                <input type="text" class="chat-input" id="chat-input" placeholder="Ask me anything...">
+                <button class="send-btn" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>SAI Rolotech Smart Engines © 2026 | <a href="#">Documentation</a> | <a href="#">GitHub</a></p>
+    </footer>
+
+    <script>
+        // Chat functionality
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const messagesContainer = document.getElementById('chat-messages');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            // Add user message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message user';
+            userMsg.innerHTML = `${message}<div class="message-time">Just now</div>`;
+            messagesContainer.appendChild(userMsg);
+
+            input.value = '';
+
+            // Add typing indicator
+            const typing = document.createElement('div');
+            typing.className = 'message assistant';
+            typing.innerHTML = 'Thinking...<div class="message-time">Typing</div>';
+            messagesContainer.appendChild(typing);
+
+            try {
+                // Call API
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+
+                const data = await response.json();
+
+                typing.innerHTML = `${data.response || 'Processed!'}<div class="message-time">Just now</div>`;
+            } catch (error) {
+                typing.innerHTML = `Error: ${error.message}<div class="message-time">Error</div>`;
+            }
+
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Enter key to send
+        document.getElementById('chat-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // Animate stats on load
+        document.querySelectorAll('.stat-value').forEach((el, i) => {
+            el.style.opacity = '0';
+            setTimeout(() => {
+                el.style.transition = 'opacity 0.5s ease';
+                el.style.opacity = '1';
+            }, i * 100);
+        });
+    </script>
+</body>
+</html>
