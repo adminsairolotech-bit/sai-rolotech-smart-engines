@@ -83,4 +83,65 @@ git add . && git commit -m "update" && git push
 ❌ Created multiple agents instead of doing work
 ❌ No incremental saves
 
+## MY ERRORS (LEARNED)
+
+❌ Used 20M tokens in 5 hours
+❌ Tested API after claiming "working"
+❌ Created multiple agents instead of doing work
+❌ No incremental saves
+❌ Downloaded repos but didn't USE them
+
 **NOW:** One thing at a time. Test before claim.
+
+---
+
+## DOWNLOADED SKILLS & REPOS
+
+### Skills Framework
+| Repo | Purpose | Use |
+|------|---------|-----|
+| agent-orchestrator/ | Multi-agent orchestration | Study CLAUDE.md |
+| edict/ | 9 specialized agents | Study structure |
+| open-multi-agent/ | Parallel agents | Study patterns |
+| promptflow/ | Microsoft AI framework | Study workflow |
+
+### Memory & Context
+| Repo | Purpose | Status |
+|------|---------|--------|
+| graph-memory/ | 75% token reduction | Clone ✅ |
+| mnemon/ | Cross-session memory | Clone ✅ |
+| clawtrol/ | OpenClaw dashboard | Clone ✅ |
+| clawbridge/ | Mobile dashboard | Clone ✅ |
+
+### Multi-Agent Workflows
+| Repo | Purpose | Status |
+|------|---------|--------|
+| Multi-AI-Agent-Systems-with-crewAI/ | CrewAI workflows | Clone ✅ |
+
+---
+
+## HOW TO USE SKILLS
+
+### 1. Study agent-orchestrator/CLAUDE.md
+- Multi-agent architecture
+- Plugin system
+- Session lifecycle
+
+### 2. Study edict/ structure
+- 9 specialized agents
+- Work division
+- Communication
+
+### 3. Use graph-memory for token savings
+- Extract knowledge from conversations
+- Cross-session recall
+- 75% token reduction
+
+### 4. Study clawtrol/ for dashboard
+- Terminal viewer
+- Memory browser
+- Session monitor
+
+---
+
+## NEXT: TEST CMD.JS (Step 1 of 5)
