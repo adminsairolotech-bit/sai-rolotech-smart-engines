@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SAI Rolotech Engine - AI Agent</title>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
@@ -32,7 +33,7 @@
     }
     .app {
       display: grid;
-      grid-template-columns: 260px 1fr 300px;
+      grid-template-columns: 260px 1fr 320px;
       grid-template-rows: 60px 1fr;
       height: 100vh;
     }
@@ -87,6 +88,25 @@
       font-size: 13px;
       cursor: pointer;
     }
+    .view-toggle {
+      display: flex;
+      background: var(--bg-tertiary);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .view-btn {
+      padding: 6px 12px;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .view-btn.active {
+      background: var(--accent-blue);
+      color: white;
+    }
     .sidebar {
       background: var(--bg-secondary);
       border-right: 1px solid var(--border);
@@ -122,7 +142,7 @@
       letter-spacing: 0.5px;
       padding: 8px 10px;
     }
-    .channel-item, .agent-item {
+    .channel-item, .agent-item, .session-item {
       display: flex;
       align-items: center;
       gap: 10px;
@@ -131,11 +151,8 @@
       cursor: pointer;
       transition: background 0.15s;
     }
-    .channel-item:hover, .agent-item:hover { background: var(--bg-hover); }
-    .channel-item.active, .agent-item.active {
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border);
-    }
+    .channel-item:hover, .agent-item:hover, .session-item:hover { background: var(--bg-hover); }
+    .channel-item.active, .agent-item.active { background: var(--bg-tertiary); border: 1px solid var(--border); }
     .channel-icon {
       width: 32px;
       height: 32px;
@@ -149,20 +166,16 @@
     .channel-icon.whatsapp { background: #25d36622; color: #25d366; }
     .channel-icon.discord { background: #5865f222; color: #5865f2; }
     .channel-icon.web { background: var(--accent-blue); color: white; }
-    .channel-info { flex: 1; }
-    .channel-name { font-size: 13px; font-weight: 500; }
+    .channel-icon.session { background: var(--accent-purple); color: white; }
+    .channel-info { flex: 1; min-width: 0; }
+    .channel-name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .channel-status { font-size: 11px; color: var(--text-muted); }
-    .agent-badge {
-      padding: 2px 6px;
-      background: var(--accent-purple);
-      border-radius: 4px;
-      font-size: 10px;
-      font-weight: 600;
-    }
+    .agent-badge { padding: 2px 6px; background: var(--accent-purple); border-radius: 4px; font-size: 10px; font-weight: 600; }
     .main {
       display: flex;
       flex-direction: column;
       background: var(--bg-primary);
+      overflow: hidden;
     }
     .chat-header {
       padding: 15px 20px;
@@ -198,9 +211,7 @@
       font-size: 18px;
       flex-shrink: 0;
     }
-    .message.assistant .message-avatar {
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-    }
+    .message.assistant .message-avatar { background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); }
     .message.user .message-avatar { background: var(--accent-green); }
     .message-content { max-width: 70%; }
     .message.user .message-content { text-align: right; }
@@ -212,10 +223,7 @@
       font-size: 14px;
       line-height: 1.6;
     }
-    .message.user .message-text {
-      background: var(--accent-blue);
-      border-color: var(--accent-blue);
-    }
+    .message.user .message-text { background: var(--accent-blue); border-color: var(--accent-blue); }
     .message-time { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
     .message.user .message-time { text-align: right; }
     .code-block {
@@ -244,11 +252,7 @@
       cursor: pointer;
       transition: all 0.15s;
     }
-    .hint-btn:hover {
-      background: var(--bg-hover);
-      color: var(--text-primary);
-      border-color: var(--accent-blue);
-    }
+    .hint-btn:hover { background: var(--bg-hover); color: var(--text-primary); border-color: var(--accent-blue); }
     .input-wrapper { display: flex; gap: 10px; }
     .chat-input {
       flex: 1;
@@ -276,6 +280,19 @@
     }
     .send-btn:hover { background: #4393e6; }
     .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Terminal View */
+    .terminal-container {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      padding: 15px;
+      background: #000;
+    }
+    .terminal-container.active { display: flex; }
+    #terminal { flex: 1; background: #000; border-radius: 8px; overflow: hidden; }
+
+    /* Right Panel */
     .right-panel {
       background: var(--bg-secondary);
       border-left: 1px solid var(--border);
@@ -306,12 +323,40 @@
     .stat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
     .stat-label { font-size: 12px; color: var(--text-secondary); }
     .stat-value { font-size: 14px; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
-    .stat-bar { height: 4px; background: var(--bg-primary); border-radius: 2px; overflow: hidden; }
-    .stat-fill { height: 100%; border-radius: 2px; transition: width 0.3s; }
-    .stat-fill.cpu { background: var(--accent-blue); }
-    .stat-fill.memory { background: var(--accent-purple); }
-    .stat-fill.disk { background: var(--accent-orange); }
-    .stat-fill.network { background: var(--accent-green); }
+    .stat-bar { height: 6px; background: var(--bg-primary); border-radius: 3px; overflow: hidden; }
+    .stat-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+    .stat-fill.cpu { background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan)); }
+    .stat-fill.memory { background: linear-gradient(90deg, var(--accent-purple), #ff79c6); }
+    .stat-fill.disk { background: linear-gradient(90deg, var(--accent-orange), #f1fa8c); }
+    .stat-fill.network { background: linear-gradient(90deg, var(--accent-green), #50fa7b); }
+
+    /* Memory Editor */
+    .memory-editor {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .memory-editor-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .memory-editor textarea {
+      width: 100%;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 8px;
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      resize: vertical;
+      min-height: 80px;
+    }
+    .memory-editor textarea:focus { outline: none; border-color: var(--accent-blue); }
     .memory-item {
       display: flex;
       align-items: center;
@@ -322,25 +367,63 @@
       margin-bottom: 6px;
       font-size: 12px;
     }
-    .memory-type {
-      padding: 2px 6px;
-      background: var(--accent-blue);
-      border-radius: 3px;
-      font-size: 10px;
-      font-weight: 600;
-    }
+    .memory-type { padding: 2px 6px; background: var(--accent-blue); border-radius: 3px; font-size: 10px; font-weight: 600; }
     .memory-type.session { background: var(--accent-purple); }
     .memory-type.persistent { background: var(--accent-green); }
+    .memory-delete {
+      margin-left: auto;
+      background: none;
+      border: none;
+      color: var(--accent-red);
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .add-memory {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .add-memory input {
+      flex: 1;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 6px 10px;
+      color: var(--text-primary);
+      font-size: 12px;
+    }
+    .add-memory input:focus { outline: none; border-color: var(--accent-blue); }
+    .add-memory select {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 6px;
+      color: var(--text-primary);
+      font-size: 12px;
+    }
+    .add-btn {
+      padding: 6px 12px;
+      background: var(--accent-green);
+      border: none;
+      border-radius: 4px;
+      color: white;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    /* Robot */
     .robot-container {
       position: fixed;
       bottom: 20px;
-      right: 320px;
-      width: 200px;
-      height: 200px;
+      right: 340px;
+      width: 180px;
+      height: 180px;
       pointer-events: none;
       z-index: 100;
     }
     .robot-canvas { width: 100%; height: 100%; }
+
+    /* Typing */
     .typing-indicator { display: flex; gap: 4px; padding: 8px; }
     .typing-dot {
       width: 8px;
@@ -366,14 +449,14 @@
     <header class="header">
       <div class="header-left">
         <div class="logo">SAI Rolotech Engine</div>
-        <div class="status-badge">
-          <div class="status-dot"></div>
-          <span>Connected</span>
-        </div>
+        <div class="status-badge"><div class="status-dot"></div><span>Connected</span></div>
       </div>
       <div class="header-center">
-        <button class="chat-btn" onclick="clearChat()">New Chat</button>
-        <button class="chat-btn" onclick="downloadChat()">Export</button>
+        <div class="view-toggle">
+          <button class="view-btn active" onclick="switchView('chat')">💬 Chat</button>
+          <button class="view-btn" onclick="switchView('terminal')">⌨️ Terminal</button>
+        </div>
+        <button class="chat-btn" onclick="newSession()">+ New Session</button>
       </div>
       <div class="header-right">
         <select class="model-selector" id="modelSelect">
@@ -387,41 +470,27 @@
 
     <aside class="sidebar">
       <div class="sidebar-header">
-        <div class="search-box">
-          <span>🔍</span>
-          <input type="text" placeholder="Search...">
-        </div>
+        <div class="search-box"><span>🔍</span><input type="text" placeholder="Search sessions..." id="sessionSearch"></div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="section-title">Sessions</div>
+        <div id="sessionsList"></div>
       </div>
 
       <div class="sidebar-section">
         <div class="section-title">Channels</div>
         <div class="channel-item active">
           <div class="channel-icon web">💬</div>
-          <div class="channel-info">
-            <div class="channel-name">Web Chat</div>
-            <div class="channel-status">Active</div>
-          </div>
+          <div class="channel-info"><div class="channel-name">Web Chat</div><div class="channel-status">Active</div></div>
         </div>
         <div class="channel-item">
           <div class="channel-icon telegram">📱</div>
-          <div class="channel-info">
-            <div class="channel-name">Telegram</div>
-            <div class="channel-status">Connect bot</div>
-          </div>
+          <div class="channel-info"><div class="channel-name">Telegram</div><div class="channel-status">Setup required</div></div>
         </div>
         <div class="channel-item">
           <div class="channel-icon discord">🎮</div>
-          <div class="channel-info">
-            <div class="channel-name">Discord</div>
-            <div class="channel-status">Connect bot</div>
-          </div>
-        </div>
-        <div class="channel-item">
-          <div class="channel-icon whatsapp">💬</div>
-          <div class="channel-info">
-            <div class="channel-name">WhatsApp</div>
-            <div class="channel-status">Connect bot</div>
-          </div>
+          <div class="channel-info"><div class="channel-name">Discord</div><div class="channel-status">Setup required</div></div>
         </div>
       </div>
 
@@ -432,19 +501,19 @@
           <div class="channel-info"><div class="channel-name">Orchestrator</div></div>
           <span class="agent-badge">MAIN</span>
         </div>
-        <div class="agent-item">
+        <div class="agent-item" onclick="askAgent('coder')">
           <div class="channel-icon web">💻</div>
           <div class="channel-info"><div class="channel-name">Coder</div></div>
         </div>
-        <div class="agent-item">
+        <div class="agent-item" onclick="askAgent('rollforming')">
           <div class="channel-icon web">🏭</div>
           <div class="channel-info"><div class="channel-name">Roll Forming</div></div>
         </div>
-        <div class="agent-item">
+        <div class="agent-item" onclick="askAgent('autocad')">
           <div class="channel-icon web">📐</div>
           <div class="channel-info"><div class="channel-name">AutoCAD</div></div>
         </div>
-        <div class="agent-item">
+        <div class="agent-item" onclick="askAgent('video')">
           <div class="channel-icon web">🎬</div>
           <div class="channel-info"><div class="channel-name">Video Editor</div></div>
         </div>
@@ -452,45 +521,51 @@
     </aside>
 
     <main class="main">
-      <div class="chat-header">
-        <div class="chat-title">🤖 SAI Rolotech Assistant</div>
-        <div class="chat-actions">
-          <button class="chat-btn" onclick="downloadChat()">📥 Export</button>
-          <button class="chat-btn" onclick="showShortcuts()">⌨️ Shortcuts</button>
+      <div id="chatView">
+        <div class="chat-header">
+          <div class="chat-title" id="chatTitle">🤖 SAI Rolotech Assistant</div>
+          <div class="chat-actions">
+            <button class="chat-btn" onclick="exportSession()">📥 Export</button>
+            <button class="chat-btn" onclick="clearCurrentSession()">🗑️ Clear</button>
+          </div>
         </div>
-      </div>
 
-      <div class="chat-messages" id="chatMessages">
-        <div class="message assistant">
-          <div class="message-avatar">🤖</div>
-          <div class="message-content">
-            <div class="message-text">
-              <strong>Namaste! 🙏</strong><br><br>
-              I'm SAI Rolotech Engine - your AI assistant. I specialize in:<br><br>
-              • <strong>Roll Forming Engineering</strong> - C-Channel, Z-Purlin, machine setup<br>
-              • <strong>AutoCAD</strong> - Commands, LISP scripting, 3D modeling<br>
-              • <strong>Video Editing</strong> - Filmora techniques, transitions<br>
-              • <strong>Industrial Automation</strong> - PLC, HMI, SCADA, VFD<br>
-              • <strong>Programming</strong> - Python, JavaScript, TypeScript<br><br>
-              Type your question or use the command buttons below!
+        <div class="chat-messages" id="chatMessages">
+          <div class="message assistant">
+            <div class="message-avatar">🤖</div>
+            <div class="message-content">
+              <div class="message-text">
+                <strong>Namaste! 🙏</strong><br><br>
+                I'm SAI Rolotech Engine - your AI assistant.<br><br>
+                • <strong>Roll Forming Engineering</strong><br>
+                • <strong>AutoCAD</strong> - Commands, LISP scripting<br>
+                • <strong>Video Editing</strong> - Filmora techniques<br>
+                • <strong>Industrial Automation</strong><br>
+                • <strong>Programming</strong><br><br>
+                Type your question!
+              </div>
+              <div class="message-time">Just now</div>
             </div>
-            <div class="message-time">Just now</div>
+          </div>
+        </div>
+
+        <div class="chat-input-area">
+          <div class="command-hints">
+            <button class="hint-btn" onclick="insertCommand('code ')">💻 Code</button>
+            <button class="hint-btn" onclick="insertCommand('cad ')">📐 AutoCAD</button>
+            <button class="hint-btn" onclick="insertCommand('edit ')">🎬 Video</button>
+            <button class="hint-btn" onclick="insertCommand('ask ')">❓ Ask</button>
+            <button class="hint-btn" onclick="insertCommand('roll ')">🏭 Roll</button>
+          </div>
+          <div class="input-wrapper">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
+            <button class="send-btn" id="sendBtn" onclick="sendMessage()">Send</button>
           </div>
         </div>
       </div>
 
-      <div class="chat-input-area">
-        <div class="command-hints">
-          <button class="hint-btn" onclick="insertCommand('code ')">💻 Code</button>
-          <button class="hint-btn" onclick="insertCommand('cad ')">📐 AutoCAD</button>
-          <button class="hint-btn" onclick="insertCommand('edit ')">🎬 Video</button>
-          <button class="hint-btn" onclick="insertCommand('ask ')">❓ Ask</button>
-          <button class="hint-btn" onclick="insertCommand('search ')">🔍 Search</button>
-        </div>
-        <div class="input-wrapper">
-          <input type="text" class="chat-input" id="chatInput" placeholder="Type your message or command..." onkeypress="handleKeyPress(event)">
-          <button class="send-btn" id="sendBtn" onclick="sendMessage()">Send</button>
-        </div>
+      <div class="terminal-container" id="terminalView">
+        <div id="terminal"></div>
       </div>
     </main>
 
@@ -505,57 +580,48 @@
         <div id="statsTab">
           <div class="stat-card">
             <div class="stat-header">
-              <span class="stat-label">CPU</span>
+              <span class="stat-label">🖥️ CPU</span>
               <span class="stat-value" id="cpuValue">--</span>
             </div>
-            <div class="stat-bar">
-              <div class="stat-fill cpu" id="cpuBar" style="width: 0%"></div>
-            </div>
+            <div class="stat-bar"><div class="stat-fill cpu" id="cpuBar" style="width: 0%"></div></div>
           </div>
           <div class="stat-card">
             <div class="stat-header">
-              <span class="stat-label">Memory</span>
+              <span class="stat-label">🧠 Memory</span>
               <span class="stat-value" id="memValue">--</span>
             </div>
-            <div class="stat-bar">
-              <div class="stat-fill memory" id="memBar" style="width: 0%"></div>
-            </div>
+            <div class="stat-bar"><div class="stat-fill memory" id="memBar" style="width: 0%"></div></div>
           </div>
           <div class="stat-card">
             <div class="stat-header">
-              <span class="stat-label">Disk</span>
+              <span class="stat-label">💾 Disk</span>
               <span class="stat-value" id="diskValue">--</span>
             </div>
-            <div class="stat-bar">
-              <div class="stat-fill disk" id="diskBar" style="width: 0%"></div>
+            <div class="stat-bar"><div class="stat-fill disk" id="diskBar" style="width: 0%"></div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">📊 Session</span>
+              <span class="stat-value" id="msgCount">0 msgs</span>
             </div>
           </div>
           <div class="stat-card">
             <div class="stat-header">
-              <span class="stat-label">API Status</span>
-              <span class="stat-value" style="color: var(--accent-green)">✓ Online</span>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-header">
-              <span class="stat-label">Messages</span>
-              <span class="stat-value" id="msgCount">0</span>
+              <span class="stat-label">⏱️ Time</span>
+              <span class="stat-value" id="sessionTime">00:00</span>
             </div>
           </div>
         </div>
 
         <div id="memoryTab" style="display: none;">
-          <div class="memory-item">
-            <span class="memory-type">Session</span>
-            <span>Roll forming commands</span>
-          </div>
-          <div class="memory-item">
-            <span class="memory-type">Session</span>
-            <span>AutoCAD queries</span>
-          </div>
-          <div class="memory-item">
-            <span class="memory-type persistent">Persistent</span>
-            <span>User preferences</span>
+          <div id="memoryList"></div>
+          <div class="add-memory">
+            <input type="text" id="newMemoryText" placeholder="Add memory...">
+            <select id="newMemoryType">
+              <option value="session">Session</option>
+              <option value="persistent">Persistent</option>
+            </select>
+            <button class="add-btn" onclick="addMemory()">+</button>
           </div>
         </div>
 
@@ -578,6 +644,12 @@
               <span class="stat-value" style="color: var(--accent-green)">✓ Ready</span>
             </div>
           </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">🤖 AI Model</span>
+              <span class="stat-value" style="color: var(--accent-blue)" id="currentModel">gemini-2.5</span>
+            </div>
+          </div>
         </div>
       </div>
     </aside>
@@ -587,31 +659,131 @@
     <canvas class="robot-canvas" id="robotCanvas"></canvas>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
   <script>
-    const API_KEY = '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';
-    const API_URL = 'https://openrouter.ai/api/v1';
+    // Configuration - Using local API server
+    const API_URL = 'http://localhost:3000/api';
+    const AUTH_TOKEN = localStorage.getItem('auth_token') || '';
     const SYSTEM_PROMPT = `You are SAI Rolotech Engine - an expert AI assistant specializing in:
 1. ROLL FORMING ENGINEERING - C-Channel, Z-Purlin, machine setup, defects, quality control
 2. AUTOCAD - All commands, LISP scripting, 3D modeling, dimensions
-3. VIDEO EDITING - Filmora-level techniques, transitions, color grading, audio
+3. VIDEO EDITING - Filmora-level techniques, transitions, color grading
 4. INDUSTRIAL AUTOMATION - PLC, HMI, SCADA, VFD, Servo Motors
-5. GENERAL PROGRAMMING - Python, JavaScript, TypeScript, and more
-Be concise, practical, and domain-expert level in your responses.
-Use Hindi/English mix (Hinglish) when appropriate.
-Format code properly with syntax highlighting.
-For CAD commands, include LISP examples when relevant.`;
+5. GENERAL PROGRAMMING - Python, JavaScript, TypeScript
+Be concise, practical, expert-level. Use Hindi/English (Hinglish) when appropriate. Format code properly.`;
 
+    // State
+    let currentSessionId = Date.now();
+    let sessions = JSON.parse(localStorage.getItem('saiSessions') || '{}');
     let messages = [];
+    let memory = JSON.parse(localStorage.getItem('saiMemory') || '[]');
     let isTyping = false;
     let messageCount = 0;
+    let sessionStartTime = Date.now();
+    let term = null;
 
+    // Init
     document.addEventListener('DOMContentLoaded', () => {
       initRobot();
+      loadSessions();
+      loadMemory();
       updateStats();
-      setInterval(updateStats, 5000);
+      setInterval(updateStats, 3000);
+      setInterval(updateSessionTime, 1000);
+      initTerminal();
       document.getElementById('chatInput').focus();
+
+      // Model change listener
+      document.getElementById('modelSelect').addEventListener('change', (e) => {
+        document.getElementById('currentModel').textContent = e.target.value.split('/')[1];
+      });
     });
 
+    // Terminal
+    function initTerminal() {
+      term = new Terminal({
+        cursorBlink: true,
+        fontSize: 14,
+        fontFamily: 'JetBrains Mono, monospace',
+        theme: { background: '#000', foreground: '#0f0' },
+        rows: 20,
+      });
+      const fit = new FitAddon.FitAddon();
+      term.loadAddon(fit);
+      term.open(document.getElementById('terminal'));
+      fit.fit();
+
+      term.writeln('\x1b[36m╔════════════════════════════════════════╗\x1b[0m');
+      term.writeln('\x1b[36m║\x1b[0m  \x1b[1;32mSAI Rolotech Engine Terminal\x1b[0m         \x1b[36m║\x1b[0m');
+      term.writeln('\x1b[36m╚════════════════════════════════════════╝\x1b[0m');
+      term.writeln('');
+      term.writeln('\x1b[33mAvailable commands:\x1b[0m');
+      term.writeln('  \x1b[32mhelp\x1b[0m     - Show help');
+      term.writeln('  \x1b[32mclear\x1b[0m   - Clear terminal');
+      term.writeln('  \x1b[32mai <msg>\x1b[0m - Chat with AI');
+      term.writeln('  \x1b[32msessions\x1b[0m - List sessions');
+      term.writeln('  \x1b[32mmemory\x1b[0m   - Show memory');
+      term.writeln('  \x1b[32mstats\x1b[0m   - System stats');
+      term.writeln('');
+      term.write('\x1b[32m❯ \x1b[0m');
+
+      let cmdBuffer = '';
+      term.onData(data => {
+        if (data === '\r') {
+          processTerminalCommand(cmdBuffer.trim());
+          cmdBuffer = '';
+          term.write('\r\n\x1b[32m❯ \x1b[0m');
+        } else if (data === '\x7f') {
+          if (cmdBuffer.length > 0) {
+            cmdBuffer = cmdBuffer.slice(0, -1);
+            term.write('\b \b');
+          }
+        } else {
+          cmdBuffer += data;
+          term.write(data);
+        }
+      });
+    }
+
+    async function processTerminalCommand(cmd) {
+      if (!cmd) return;
+      const parts = cmd.split(' ');
+      const command = parts[0].toLowerCase();
+      const args = parts.slice(1).join(' ');
+
+      term.writeln('');
+
+      if (command === 'help') {
+        term.writeln('\x1b[33mCommands:\x1b[0m help, clear, ai, sessions, memory, stats');
+      } else if (command === 'clear') {
+        term.clear();
+      } else if (command === 'ai' || command === 'ask') {
+        if (!args) {
+          term.writeln('\x1b[31mUsage: ai <message>\x1b[0m');
+        } else {
+          term.writeln('\x1b[36mThinking...\x1b[0m');
+          const response = await getAIResponse(args);
+          term.writeln('\x1b[37m' + response.substring(0, 500) + (response.length > 500 ? '...' : '') + '\x1b[0m');
+        }
+      } else if (command === 'sessions') {
+        const sessionList = Object.values(sessions).slice(-5);
+        sessionList.forEach((s, i) => {
+          term.writeln(`  \x1b[32m${s.id}\x1b[0m - ${s.title || 'Untitled'} (${s.messages?.length || 0} msgs)`);
+        });
+      } else if (command === 'memory') {
+        memory.forEach((m, i) => {
+          term.writeln(`  \x1b[33m[${m.type}]\x1b[0m ${m.text}`);
+        });
+      } else if (command === 'stats') {
+        term.writeln(`  Messages: \x1b[32m${messageCount}\x1b[0m`);
+        term.writeln(`  Session: \x1b[32m${currentSessionId}\x1b[0m`);
+      } else {
+        term.writeln(`\x1b[31mUnknown command: ${command}\x1b[0m`);
+      }
+    }
+
+    // Chat
     async function sendMessage() {
       const input = document.getElementById('chatInput');
       const text = input.value.trim();
@@ -620,41 +792,49 @@ For CAD commands, include LISP examples when relevant.`;
       addMessage('user', text);
       input.value = '';
       messageCount++;
-      document.getElementById('msgCount').textContent = messageCount;
+      updateStats();
 
       showTyping();
       isTyping = true;
 
-      const apiMessages = [{ role: 'system', content: SYSTEM_PROMPT }, ...messages];
+      const reply = await getAIResponse(text);
+
+      hideTyping();
+      addMessage('assistant', reply);
+      messages.push({ role: 'user', content: text });
+      messages.push({ role: 'assistant', content: reply });
+      saveSession();
+
+      isTyping = false;
+    }
+
+    async function getAIResponse(text) {
       const model = document.getElementById('modelSelect').value;
 
       try {
-        const response = await fetch(`${API_URL}/chat/completions`, {
+        const response = await fetch(`${API_URL}/chat`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${API_KEY}`,
-            'HTTP-Referer': 'https://sairolotech.com',
-            'X-Title': 'SAI Rolotech Engine'
+            'Authorization': `Bearer ${AUTH_TOKEN}`
           },
-          body: JSON.stringify({ model: model, messages: apiMessages, max_tokens: 2048 })
+          body: JSON.stringify({
+            message: text,
+            model: model,
+            system: SYSTEM_PROMPT,
+            history: messages
+          })
         });
 
-        if (!response.ok) throw new Error(`API Error: ${response.status}`);
-
+        if (!response.ok) {
+          const err = await response.json();
+          return `Error: ${err.message || response.status}`;
+        }
         const data = await response.json();
-        const reply = data.choices?.[0]?.message?.content || 'No response received.';
-
-        hideTyping();
-        addMessage('assistant', reply);
-        messages.push({ role: 'user', content: text });
-        messages.push({ role: 'assistant', content: reply });
+        return data.reply || data.response || data.content || 'No response.';
       } catch (error) {
-        hideTyping();
-        addMessage('assistant', `Error: ${error.message}. Please try again.`);
+        return `Error: ${error.message}`;
       }
-
-      isTyping = false;
     }
 
     function addMessage(role, content) {
@@ -716,6 +896,19 @@ For CAD commands, include LISP examples when relevant.`;
       document.getElementById('chatInput').focus();
     }
 
+    // Views
+    function switchView(view) {
+      document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('chatView').style.display = view === 'chat' ? 'flex' : 'none';
+      document.getElementById('chatView').style.flexDirection = 'column';
+      document.getElementById('terminalView').classList.toggle('active', view === 'terminal');
+      if (view === 'terminal' && term) {
+        setTimeout(() => new FitAddon.FitAddon().fit(), 0);
+      }
+    }
+
+    // Tabs
     function switchTab(tab) {
       document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'));
       event.target.classList.add('active');
@@ -724,7 +917,91 @@ For CAD commands, include LISP examples when relevant.`;
       document.getElementById('toolsTab').style.display = tab === 'tools' ? 'block' : 'none';
     }
 
-    function clearChat() {
+    // Sessions
+    function loadSessions() {
+      const list = document.getElementById('sessionsList');
+      const sessionArray = Object.values(sessions).slice(-10).reverse();
+
+      if (sessionArray.length === 0) {
+        list.innerHTML = '<div class="session-item"><div class="channel-icon session">📝</div><div class="channel-info"><div class="channel-name">New Session</div></div></div>';
+        return;
+      }
+
+      list.innerHTML = sessionArray.map(s => `
+        <div class="session-item ${s.id === currentSessionId ? 'active' : ''}" onclick="loadSession(${s.id})">
+          <div class="channel-icon session">📝</div>
+          <div class="channel-info">
+            <div class="channel-name">${s.title || 'Session ' + s.id}</div>
+            <div class="channel-status">${s.messages?.length || 0} messages</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function newSession() {
+      saveSession();
+      currentSessionId = Date.now();
+      messages = [];
+      messageCount = 0;
+      sessionStartTime = Date.now();
+      document.getElementById('chatMessages').innerHTML = `
+        <div class="message assistant">
+          <div class="message-avatar">🤖</div>
+          <div class="message-content">
+            <div class="message-text">New session started! How can I help you?</div>
+            <div class="message-time">Just now</div>
+          </div>
+        </div>
+      `;
+      loadSessions();
+    }
+
+    function loadSession(id) {
+      saveSession();
+      currentSessionId = id;
+      const session = sessions[id];
+      if (session) {
+        messages = session.messages || [];
+        messageCount = messages.filter(m => m.role === 'user').length;
+        renderMessages();
+      }
+      loadSessions();
+    }
+
+    function saveSession() {
+      const title = messages[0]?.content?.substring(0, 30) || 'Session';
+      sessions[currentSessionId] = { id: currentSessionId, title, messages, created: Date.now() };
+      localStorage.setItem('saiSessions', JSON.stringify(sessions));
+    }
+
+    function renderMessages() {
+      const container = document.getElementById('chatMessages');
+      container.innerHTML = messages.map(m => `
+        <div class="message ${m.role}">
+          <div class="message-avatar">${m.role === 'assistant' ? '🤖' : '👤'}</div>
+          <div class="message-content">
+            <div class="message-text">${formatCodeBlocks(m.content)}</div>
+            <div class="message-time">Previous</div>
+          </div>
+        </div>
+      `).join('');
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function exportSession() {
+      const text = messages.map(m => `${m.role.toUpperCase()}:\n${m.content}`).join('\n\n');
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `session-${currentSessionId}.txt`;
+      a.click();
+    }
+
+    function clearCurrentSession() {
+      messages = [];
+      messageCount = 0;
+      sessionStartTime = Date.now();
       document.getElementById('chatMessages').innerHTML = `
         <div class="message assistant">
           <div class="message-avatar">🤖</div>
@@ -734,112 +1011,149 @@ For CAD commands, include LISP examples when relevant.`;
           </div>
         </div>
       `;
-      messages = [];
+      saveSession();
     }
 
+    // Memory
+    function loadMemory() {
+      const list = document.getElementById('memoryList');
+      list.innerHTML = memory.map((m, i) => `
+        <div class="memory-item">
+          <span class="memory-type ${m.type}">${m.type}</span>
+          <span>${m.text}</span>
+          <button class="memory-delete" onclick="deleteMemory(${i})">×</button>
+        </div>
+      `).join('') || '<div class="memory-item"><span>No memories yet</span></div>';
+    }
+
+    function addMemory() {
+      const text = document.getElementById('newMemoryText').value.trim();
+      const type = document.getElementById('newMemoryType').value;
+      if (text) {
+        memory.push({ text, type, created: Date.now() });
+        localStorage.setItem('saiMemory', JSON.stringify(memory));
+        document.getElementById('newMemoryText').value = '';
+        loadMemory();
+      }
+    }
+
+    function deleteMemory(index) {
+      memory.splice(index, 1);
+      localStorage.setItem('saiMemory', JSON.stringify(memory));
+      loadMemory();
+    }
+
+    // Stats
     function updateStats() {
-      const cpu = Math.floor(Math.random() * 40) + 20;
-      const mem = Math.floor(Math.random() * 30) + 40;
-      const disk = Math.floor(Math.random() * 20) + 60;
+      // Simulated real stats
+      const cpu = Math.floor(Math.random() * 30) + 15;
+      const mem = Math.floor(Math.random() * 25) + 35;
+      const disk = Math.floor(Math.random() * 15) + 55;
+
       document.getElementById('cpuValue').textContent = `${cpu}%`;
       document.getElementById('cpuBar').style.width = `${cpu}%`;
       document.getElementById('memValue').textContent = `${mem}%`;
       document.getElementById('memBar').style.width = `${mem}%`;
       document.getElementById('diskValue').textContent = `${disk}%`;
       document.getElementById('diskBar').style.width = `${disk}%`;
+      document.getElementById('msgCount').textContent = `${messageCount} msgs`;
     }
 
-    function downloadChat() {
-      const text = messages.map(m => `${m.role.toUpperCase()}: ${m.content}`).join('\n\n');
-      const blob = new Blob([text], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'chat-history.txt';
-      a.click();
+    function updateSessionTime() {
+      const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
+      const mins = Math.floor(elapsed / 60).toString().padStart(2, '0');
+      const secs = (elapsed % 60).toString().padStart(2, '0');
+      document.getElementById('sessionTime').textContent = `${mins}:${secs}`;
     }
 
-    function showShortcuts() {
-      alert('Keyboard Shortcuts:\n\nEnter - Send message\nShift+Enter - New line');
+    // Agents
+    function askAgent(agent) {
+      const prompts = {
+        coder: 'I need help with coding. What language and task?',
+        rollforming: 'Roll Forming Expert ready. Ask about C-Channel, Z-Purlin, machine setup, defects.',
+        autocad: 'AutoCAD Expert ready. Ask about commands, LISP scripts, 3D modeling.',
+        video: 'Video Editor ready. Ask about Filmora techniques, transitions, color grading.'
+      };
+      addMessage('assistant', prompts[agent] || 'Agent selected.');
     }
 
+    // Robot
     function initRobot() {
       const canvas = document.getElementById('robotCanvas');
       const ctx = canvas.getContext('2d');
-      canvas.width = 200;
-      canvas.height = 200;
+      canvas.width = 180;
+      canvas.height = 180;
       let frame = 0;
 
       function draw() {
-        ctx.clearRect(0, 0, 200, 200);
+        ctx.clearRect(0, 0, 180, 180);
         const floatY = Math.sin(frame * 0.05) * 5;
-        const centerX = 100;
-        const centerY = 100 + floatY;
+        const cx = 90, cy = 90 + floatY;
 
-        const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 80);
+        const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, 70);
         gradient.addColorStop(0, 'rgba(88, 166, 255, 0.2)');
         gradient.addColorStop(1, 'rgba(88, 166, 255, 0)');
         ctx.fillStyle = gradient;
         ctx.beginPath();
-        ctx.arc(centerX, centerY, 80, 0, Math.PI * 2);
+        ctx.arc(cx, cy, 70, 0, Math.PI * 2);
         ctx.fill();
 
         ctx.fillStyle = '#21262d';
         ctx.strokeStyle = '#58a6ff';
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.roundRect(centerX - 30, centerY - 20, 60, 70, 10);
+        ctx.roundRect(cx - 25, cy - 15, 50, 55, 8);
         ctx.fill();
         ctx.stroke();
 
         ctx.beginPath();
-        ctx.roundRect(centerX - 25, centerY - 60, 50, 45, 8);
+        ctx.roundRect(cx - 20, cy - 50, 40, 38, 6);
         ctx.fill();
         ctx.stroke();
 
         ctx.fillStyle = '#58a6ff';
         ctx.beginPath();
-        ctx.arc(centerX - 10, centerY - 40, 5, 0, Math.PI * 2);
-        ctx.arc(centerX + 10, centerY - 40, 5, 0, Math.PI * 2);
+        ctx.arc(cx - 8, cy - 32, 4, 0, Math.PI * 2);
+        ctx.arc(cx + 8, cy - 32, 4, 0, Math.PI * 2);
         ctx.fill();
 
         ctx.shadowColor = '#58a6ff';
         ctx.shadowBlur = 10;
         ctx.beginPath();
-        ctx.arc(centerX - 10, centerY - 40, 3, 0, Math.PI * 2);
-        ctx.arc(centerX + 10, centerY - 40, 3, 0, Math.PI * 2);
+        ctx.arc(cx - 8, cy - 32, 2, 0, Math.PI * 2);
+        ctx.arc(cx + 8, cy - 32, 2, 0, Math.PI * 2);
         ctx.fill();
         ctx.shadowBlur = 0;
 
         const chestBrightness = (Math.sin(frame * 0.1) + 1) / 2;
         ctx.fillStyle = `rgba(63, 185, 80, ${chestBrightness})`;
         ctx.beginPath();
-        ctx.arc(centerX, centerY + 10, 8, 0, Math.PI * 2);
+        ctx.arc(cx, cy + 8, 6, 0, Math.PI * 2);
         ctx.fill();
 
         ctx.strokeStyle = '#58a6ff';
-        ctx.lineWidth = 4;
+        ctx.lineWidth = 3;
         ctx.lineCap = 'round';
-        const armSwing = Math.sin(frame * 0.08) * 5;
+        const armSwing = Math.sin(frame * 0.08) * 4;
 
         ctx.beginPath();
-        ctx.moveTo(centerX - 30, centerY);
-        ctx.lineTo(centerX - 50, centerY + 20 + armSwing);
+        ctx.moveTo(cx - 25, cy);
+        ctx.lineTo(cx - 42, cy + 15 + armSwing);
         ctx.stroke();
 
         ctx.beginPath();
-        ctx.moveTo(centerX + 30, centerY);
-        ctx.lineTo(centerX + 50, centerY + 20 - armSwing);
+        ctx.moveTo(cx + 25, cy);
+        ctx.lineTo(cx + 42, cy + 15 - armSwing);
         ctx.stroke();
 
         ctx.beginPath();
-        ctx.moveTo(centerX - 15, centerY + 50);
-        ctx.lineTo(centerX - 20, centerY + 80);
+        ctx.moveTo(cx - 12, cy + 40);
+        ctx.lineTo(cx - 15, cy + 65);
         ctx.stroke();
 
         ctx.beginPath();
-        ctx.moveTo(centerX + 15, centerY + 50);
-        ctx.lineTo(centerX + 20, centerY + 80);
+        ctx.moveTo(cx + 12, cy + 40);
+        ctx.lineTo(cx + 15, cy + 65);
         ctx.stroke();
 
         frame++;
