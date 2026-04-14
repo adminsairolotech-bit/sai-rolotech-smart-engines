@@ -9,10 +9,13 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
-// Working keys (tested and verified)
+// Working keys (tested and verified 2026-04-14)
 const WORKING_KEYS = [
   'AIzaSyBK_go4g-7n1ZQRRJDSGctNdA3wEOuJ19g', // ✅ Working
   'AIzaSyBvBTpVYS-Gqz_8UmyA0WbpPxNJY6Jkrss', // ✅ Working
+  'AIzaSyDbs-S8KhoPRin-zXJcaLjLL3B6gWAzLG8', // ✅ Working
+  'AIzaSyDd1jFhcEgB651oPyI-DyxqV7012qKwpXE', // ✅ Working
+  'AIzaSyC7hCqTDqTlkxBUI1eTSx4WVguBVjulkb8', // ✅ Working
 ];
 
 // Keys with quota issues (will retry after cooldown)
