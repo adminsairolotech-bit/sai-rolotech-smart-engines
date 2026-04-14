@@ -161,25 +161,50 @@ project/
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════╗
-║                    PLAY STORE UPDATE - STATUS                        ║
+║                    ESSENTIAL SERVICES CHECK                         ║
 ╠═══════════════════════════════════════════════════════════════════════╣
 ║                                                                       ║
-║  ✅ AAB FILE: crm-official/android-release.aab (35MB)              ║
-║  ✅ EAS CLI: Installed                                               ║
-║  ✅ Expo Token: Provided (vipu1164)                                  ║
-║                                                                       ║
+║  📱 PLAY STORE:                                                       ║
+║  ✅ AAB File: crm-official/android-release.aab (35MB)              ║
 ║  ⚠️  EAS Account: vipu1164 - Wrong (need correct owner account)    ║
-║  ⚠️  New Build: NOT DONE - Need EAS login with correct account      ║
 ║                                                                       ║
-║  📱 MOBILE LOGIN:                                                    ║
-║  - API URL: https://api.sairolotech.com (NOT REACHABLE)            ║
-║  - Login Flow: Mobile → API → Backend Server → Database             ║
-║  - SecureStore: Session saved locally                                ║
+║  🤖 GEMINI API:                                                       ║
+║  ❌ GEMINI_API_KEY: BLOCKED (403 - Leaked key reported)           ║
+║  ❌ AI_INTEGRATIONS_GEMINI_API_KEY: BLOCKED (403)                  ║
 ║                                                                       ║
-║  📋 TASKS PENDING:                                                   ║
-║  1. Upload android-release.aab to Play Console (BETA)             ║
-║  2. Fix EAS login with correct Expo account                          ║
-║  3. Build new AAB with latest code                                   ║
+║  🖥️  BACKEND SERVER:                                                ║
+║  ✅ Port 5000: Running (mock mode - no Gemini)                    ║
+║  ⚠️  API URL: https://api.sairolotech.com (NOT REACHABLE)        ║
+║                                                                       ║
+║  📋 PENDING FIXES:                                                    ║
+║  1. GEMINI API KEY CHANGE - OLD KEY BLOCKED                        ║
+║  2. EAS login with correct Expo account                             ║
+║  3. Upload AAB to Play Console                                       ║
+║                                                                       ║
+╚═══════════════════════════════════════════════════════════════════════╝
+```
+
+### BEFORE ANY TASK - MUST VERIFY:
+
+```
+╔═══════════════════════════════════════════════════════════════════════╗
+║                    PRE-TASK VERIFICATION                            ║
+╠═══════════════════════════════════════════════════════════════════════╣
+║                                                                       ║
+║  1. ✅ GEMINI API TEST:                                            ║
+║     curl -X POST "https://generativelanguage.googleapis.com/..."    ║
+║     If 403 → API Key Blocked → Get NEW KEY first                   ║
+║                                                                       ║
+║  2. ✅ BACKEND SERVER TEST:                                        ║
+║     curl http://localhost:5000/api/health                           ║
+║     If fail → Start server first                                    ║
+║                                                                       ║
+║  3. ✅ MOBILE BUILD TEST:                                           ║
+║     eas build --platform android --profile preview                   ║
+║     If fail → Check EAS login + expo token                          ║
+║                                                                       ║
+║  4. ✅ VERIFY BEFORE CLAIM:                                        ║
+║     Run test → Show output → Then say "DONE"                        ║
 ║                                                                       ║
 ╚═══════════════════════════════════════════════════════════════════════╝
 ```
