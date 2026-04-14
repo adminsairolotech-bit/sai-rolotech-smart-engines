@@ -84,7 +84,7 @@ eas submit --platform all
 cd mobile
 eas build --platform android --profile preview
 ```
-Yeh ek APK file banayega jo aap seedha phone mein install kar sakte hain — 
+Yeh ek APK file banayega jo aap seedha phone mein install kar sakte hain —
 Play Store ke bina bhi test kar sakte hain!
 
 ---

@@ -1,4 +1,4 @@
-*set path to e:\empresas\msl; e:\sistemas\msllib60; 
+*set path to e:\empresas\msl; e:\sistemas\msllib60;
 close data
 set path to
 set path to n:\sait\cia003

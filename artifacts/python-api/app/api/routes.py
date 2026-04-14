@@ -2210,4 +2210,3 @@ def endpoint_fea_run_solver(body: dict):
     except Exception as exc:
         logger.error("fea-run-solver error: %s", exc, exc_info=True)
         return {"status": "fail", "reason": str(exc)}
-

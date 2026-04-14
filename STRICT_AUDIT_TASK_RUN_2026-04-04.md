@@ -1,7 +1,7 @@
 # Strict Audit Task Run Log
 
-Date: 2026-04-04  
-Mode: Strict no-fake verification  
+Date: 2026-04-04
+Mode: Strict no-fake verification
 Acceptance gate: FAILED / PARTIAL / NOT VERIFIED
 
 ## Task 1: Demo-videos React #300 root-cause + live proof

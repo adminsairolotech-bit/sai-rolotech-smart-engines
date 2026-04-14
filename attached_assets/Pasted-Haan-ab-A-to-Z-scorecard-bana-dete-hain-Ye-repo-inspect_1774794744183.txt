@@ -1,5 +1,5 @@
 Haan, ab **A to Z scorecard** bana dete hain.
-Ye **repo inspect karke final audit score nahi** hai — ye **tumhari aaj ki details + current proof + Phase 2 verification scope** ke base par **honest engineering estimate** hai. Phase 2 file se clear hai ki ab verification ka focus groove geometry, complementarity, G-code, migration, export truthfulness, tests aur TypeScript hardening par hai. 
+Ye **repo inspect karke final audit score nahi** hai — ye **tumhari aaj ki details + current proof + Phase 2 verification scope** ke base par **honest engineering estimate** hai. Phase 2 file se clear hai ki ab verification ka focus groove geometry, complementarity, G-code, migration, export truthfulness, tests aur TypeScript hardening par hai.
 
 # Overall score
 

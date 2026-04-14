@@ -84,7 +84,7 @@ Ab audit me jo fail tha, wo aur clear ho gaya:
 
 ## VMID/logs se jo support milta hai
 
-Tumhare machine-definition logs me machine simulation, machine preview, arc behavior, controller/machine definition evolution ka evidence hai. Iska matlab machine-aware output aur simulation banana sahi direction hai.  
+Tumhare machine-definition logs me machine simulation, machine preview, arc behavior, controller/machine definition evolution ka evidence hai. Iska matlab machine-aware output aur simulation banana sahi direction hai.
 
 # Ab exact kya change karna hai
 

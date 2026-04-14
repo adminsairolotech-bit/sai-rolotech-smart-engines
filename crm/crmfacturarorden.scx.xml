@@ -316,10 +316,10 @@ For nLinea=1 to MemLines(cInfo)
 			Replace OBS with Upper(cLinea)
 			cLinea = ''
 		Endif
-	Enddo	
+	Enddo
 Next
 
-* Copiar datos del temporal al clipboard interno de SAIT	
+* Copiar datos del temporal al clipboard interno de SAIT
 Select Temp
 CopyToAClip('NUMART,CANT,PRECIO,0,IMPUESTO1,0,UNIDAD,"",OBS,0,0,0,{},"" ')
 
@@ -329,9 +329,9 @@ cNumVend = ThisForm.LeeVend.GetValue()
 * Activar la ventana de ventas y pegar los datos
 With ThisForm.FormaVentas
 	.NumCli.Value = Allt(cNumCli)
-	.NumCli.Valid()	
+	.NumCli.Valid()
 	.LeeVend1.SetValue(cNumVend)
-	.bPegar.Click()	
+	.bPegar.Click()
 EndWith
 
 

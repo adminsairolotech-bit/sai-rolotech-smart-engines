@@ -1,7 +1,7 @@
 /**
  * AI Response Validator — Production Safety Layer
  * AI → Validation → Confidence Gate → Safe Response
- * 
+ *
  * Prevents: fake promises, wrong prices, competitor mentions,
  * inappropriate content, over-commitments, hallucinations, harmful content
  */

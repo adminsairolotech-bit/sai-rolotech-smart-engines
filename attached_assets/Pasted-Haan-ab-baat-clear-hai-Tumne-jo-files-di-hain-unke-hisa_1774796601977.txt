@@ -1,7 +1,7 @@
 Haan, ab baat clear hai.
 
 **Tumne jo files di hain, unke hisaab se G-code aur machine simulation ko tune karna chahiye — generic lathe output se kaam nahi chalega.**
-Aur jo 2 `.log` files mili hain, unse ye confirm hota hai ki ye SolidCAM/VMID machine-definition ecosystem ki files hain, jahan machine simulation definitions aur post-related updates already tracked hain.  
+Aur jo 2 `.log` files mili hain, unse ye confirm hota hai ki ye SolidCAM/VMID machine-definition ecosystem ki files hain, jahan machine simulation definitions aur post-related updates already tracked hain.
 
 ## Tumhari files se kya samajh aaya
 
@@ -51,7 +51,7 @@ Logs se clear hai ki VMID ecosystem me:
 
 * machine simulation definition support add hui
 * machine preview/simulation geometries ki capability hai
-* turning/drilling/threading-related feature evolution hui hai  
+* turning/drilling/threading-related feature evolution hui hai
 
 ---
 

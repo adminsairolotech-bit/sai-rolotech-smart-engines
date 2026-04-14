@@ -1,0 +1,12 @@
+{
+  "session_id": "SESSION-1776149702",
+  "session_started_at": "2026-04-14 12:25:02",
+  "session_status": "ACTIVE",
+  "enforcement_level": "V2",
+  "task_execution_allowed": true,
+  "rules_loaded": true,
+  "memory_loaded": true,
+  "checkpoint_loaded": true,
+  "project_control_loaded": true,
+  "project_fingerprint_loaded": true
+}

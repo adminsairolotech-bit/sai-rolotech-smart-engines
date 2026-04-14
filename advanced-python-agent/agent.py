@@ -147,7 +147,7 @@ class ExplorerAgent:
         self._system_prompt = skill_prompt if skill_prompt else _DEFAULT_PLANNER_SYSTEM
         self._fill_overrides = get_fill_overrides(self._active_skills)
         self._priority_elements = get_priority_elements(self._active_skills)
-        
+
         # Infinite Memory & Persistence
         self.memory = get_memory()
         self.db = Database()
@@ -185,7 +185,7 @@ class ExplorerAgent:
         session = self.db.get_explorer_session(session_id)
         if not session:
             return False
-            
+
         self.session_id = session_id
         try:
             state = json.loads(session.get("config_json", "{}"))
@@ -277,7 +277,7 @@ class ExplorerAgent:
 
                     # Infinite Memory Update
                     self.memory.add_snapshot(snapshot, self.session_id)
-                    
+
                     # Periodic Persistence (every 3 steps)
                     if self._step_counter % 3 == 0:
                         await self.persist()
@@ -412,7 +412,7 @@ class ExplorerAgent:
 
         # Infinite Memory Context
         memory_context = self.memory.get_context_for_page(snapshot.url)
-        
+
         prompt = _PLANNER_PROMPT.format(
             url=snapshot.url,
             title=snapshot.title,

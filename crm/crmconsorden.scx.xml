@@ -65,7 +65,7 @@ Width = 800
 DoCreate = .T.
 Caption = "Consultar Ordenes"
 KeyPreview = .T.
-cnumuser =  
+cnumuser =
 Name = "Formamsl1"
 Marco.Visible = .F.
 Marco.ZOrderSet = 2
@@ -99,19 +99,19 @@ Create Cursor Temp(;
 	PRIORIDAD	N(1))
 
 With ThisForm
-	
+
 	.Grid1.GridLineColor = .BackColor
-	
+
 	* Deshabilitar los botones
 	.Modificar.Enabled = .F.
 	.Verificar.Enabled = .F.
 	.ReAbrir.Enabled = .F.
-	
+
 	* Poner las fechas finales
 	.FechaFin.SetValue(Date())
 	.LeeCliente.Clave.Value = Space(5)
 	.LeeCliente.SetFocus()
-	
+
 EndWith
 
 ENDPROC
@@ -611,7 +611,7 @@ Name = "consultar"
 		<protected/>
 		<methods>PROCEDURE Click
 With ThisForm
-	
+
 	* Crear variables
 	cNumUser = ''
 	cNumCli = ''
@@ -628,8 +628,8 @@ With ThisForm
 		Aviso('Debe seleccionar al menos un status: pendientes o terminadas')
 		Return
 	Endif
-	
-	
+
+
 	If Not Empty(.LeeContacto.Nombre.Value)
 		cNumCont = .LeeContacto.Clave.Value
 	Endif
@@ -639,11 +639,11 @@ With ThisForm
 	Else
 		cNumUser = .cNumUser
 	Endif
-	
+
 	* Borra el temporal
 	Select Temp
 	Zap
-	
+
 	.Grid1.RecordSource = ''
 
 	* Ordenes.PROBLEMA As Problema, '+;
@@ -651,7 +651,7 @@ With ThisForm
 	cSql = ;
 		'Select '+;
 			'Ordenes.NUMORDEN,Ordenes.CREADA,Ordenes.TERMINADA, '+;
-			'Contactos.NOMCONT,Contactos.EMPRESA,Ordenes.TIPO,'+;			
+			'Contactos.NOMCONT,Contactos.EMPRESA,Ordenes.TIPO,'+;
 			'PadR(StrTran(StrTran(Strtran(Ordenes.PROBLEMA,Chr(13),""),Chr(10)," "),Chr(9)," "),250) as Problema, '+;
 			'IIF(Not Empty(Ordenes.CERRADA),"OK2 ",IIF(Empty(Ordenes.TERMINADA),"PEND","OK  ")) As STATUS,Ordenes.NUMUSER, ' +;
 			'IIF(Empty(Ordenes.TERMINADA),(Date()-SToD(DToS(Ordenes.CREADA))),SToD(DToS(Ordenes.TERMINADA))-SToD(DToS(Ordenes.CREADA))) As DIAS, '+;
@@ -661,7 +661,7 @@ With ThisForm
 		'Where '+;
 			iif(.TipoFecha.Value==1,;
 				'Between(DToS(Ordenes.CREADA),m.Val1,m.Val2)',;
-				'Between(DToS(Ordenes.TERMINADA),m.Val1,m.Val2)') +;				
+				'Between(DToS(Ordenes.TERMINADA),m.Val1,m.Val2)') +;
 			iif(Empty(cNumUser), 	'', ' and Ordenes.NUMUSER == m.Val3' ) +;
 			iif(Empty(cNumCli), 	'', ' and Contactos.NUMCLI == m.Val4' )+;
 			iif(Empty(cNumCont), 	'', ' and Ordenes.NUMCONT == m.Val5' ) +;
@@ -669,15 +669,15 @@ With ThisForm
 			iif( lPendientes and (not lTerminadas), ' and empty(Ordenes.TERMINADA)', '')+;
 			iif( lTerminadas and (not lPendientes), ' and (not Empty(Ordenes.TERMINADA))', '') + ' ' +;
 		'Order by Ordenes.NUMORDEN '
-		
-		
-	If not SqlMsl('Temp', cSql , dtos(.fechaini.dvalue),dtos(.fechafin.dvalue),cNumUser,cNumCli,cNumCont,cNumProy)			
+
+
+	If not SqlMsl('Temp', cSql , dtos(.fechaini.dvalue),dtos(.fechafin.dvalue),cNumUser,cNumCli,cNumCont,cNumProy)
 Return
 	Endif
 
 	Select Temp
 	Set Relation To NUMUSER Into Usuarios
-	
+
 	* Muestra los datos de TEMP
 	.LockScreen = .T.
 	With ThisForm.Grid1
@@ -695,7 +695,7 @@ Return
 		.Column8.ControlSource = 'Usuarios.NOMUSER'
 		.Column9.ControlSource = 'Temp.DIAS'
 		.Column10.ControlSource = 'Temp.HRSSERV'
-				
+
 		Replace HRSSERV with iif(val(HRSSERV)==0,'',htoc(val(HRSSERV))) All
 		Go Bott
 		.SetFocus
@@ -715,7 +715,7 @@ Return
 
 	Endif
 
-	
+
 EndWith
 
 ENDPROC
@@ -883,23 +883,23 @@ Name = "buscar"
 		<protected/>
 		<methods>PROCEDURE Click
 With ThisForm
-	
+
 	* Validar que se haya capturado algo en los textos a buscar
 	If Empty(.Busqueda1.Value) And Empty(.Busqueda2.Value) And Empty(.Busqueda3.Value)
 		Aviso('Debe capturar el texto a buscar')
 		.Busqueda1.SetFocus()
 		Return .f.
 	EndIf
-	
+
 	* Crear variables
 	cBusqueda1 = Allt(Upper(.Busqueda1.Value))
 	cBusqueda2 = Allt(Upper(.Busqueda2.Value))
 	cBusqueda3 = Allt(Upper(.Busqueda3.Value))
-		
+
 	* Borra el temporal
 	Select Temp
 	Zap
-	
+
 	.Grid1.RecordSource = ''
 
 	* Busca en CRM las tareas que cumplan con las restricciones
@@ -920,7 +920,7 @@ Return
 
 	Select Temp
 	Set Relation To NUMUSER Into Usuarios
-	
+
 	* Muestra los datos de TEMP
 	.LockScreen = .T.
 	With ThisForm.Grid1
@@ -941,7 +941,7 @@ Return
 		.Column8.ControlSource = 'Usuarios.NOMUSER'
 		.Column9.ControlSource = 'Temp.DIAS'
 		.Column10.ControlSource = 'Temp.HRSSERV'
-				
+
 		Go Bott
 		.SetFocus
 
@@ -960,7 +960,7 @@ Return
 
 	Endif
 
-	
+
 EndWith
 
 ENDPROC
@@ -1000,7 +1000,7 @@ Name = "excel"
 		<protected/>
 		<methods>PROCEDURE Click
 With Thisform
-	* Mada a Excel la consulta	
+	* Mada a Excel la consulta
 	ThisForm.Grid1.SetFocus()
 	cNomcia = Allt(Cia.NOMCIA)
 	cTitulo = .Caption

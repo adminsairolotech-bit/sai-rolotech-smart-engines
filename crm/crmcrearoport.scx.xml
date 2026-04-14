@@ -98,15 +98,15 @@ PROCEDURE tiposdeoport
 *
 With ThisForm
 	Local i,cTipos,cTipoOport
-	
+
 	* Obtener los tipos de oportunidades desde el Config.msl
 	cTipos = GetMsl('CrmTiposOport')
 	cTipoOport = ''
-	
+
 	* Crear el temporal donde se van a almacenar los tipos
 	Create Cursor TipoOpor(TIPO C(15))
 	Index On Upper(TIPO) Tag Tipo
-	
+
 	* Agregarlos al temporal
 	i = 1
 	Do While .T.
@@ -117,10 +117,10 @@ With ThisForm
 		Insert Into TipoOpor Values (cTipoOport)
 		i=i+1
 	EndDo
-	
+
 	.Tipo.RowSourceType = 6
 	.Tipo.RowSource = 'TipoOpor.TIPO'
-	
+
 EndWith
 
 ENDPROC
@@ -130,7 +130,7 @@ ENDPROC
 		<ole2/>
 		<reserved1/>
 		<reserved2/>
-		<reserved3>*tiposdeoport 
+		<reserved3>*tiposdeoport
 </reserved3>
 		<reserved4/>
 		<reserved5/>
@@ -309,21 +309,21 @@ Name = "crear"
 * Crea el registro de la oportunidad
 *
 With ThisForm
-	
+
 	* Validar que no se omita el asunto
 	If Empty(.Asunto.Value)
 		Alerta('No se puede omitir el asunto')
 		.Asunto.SetFocus()
 		Return .F.
 	EndIf
-	
+
 	* Validar que no se omitan las observaciones
 	If Empty(.Obs.Value)
 		Alerta('No se puede omitir la observación')
 		.Obs.SetFocus()
 		Return .F.
 	EndIf
-	
+
 	With ThisForm.oContacto
 		* Llenar la informacion del contacto
 		.NumCont = ThisForm.InfoCont.LeeContacto.Clave.Value
@@ -332,7 +332,7 @@ With ThisForm
 		.Telefono = ThisForm.InfoCont.Telefono.Value
 		.Mail = ThisForm.InfoCont.Mail.Value
 		.NumCli = ThisForm.InfoCont.LeeCliente.Clave.Value
-		
+
 		* Manda llamar el metodo para validar la informacion para grabar el contacto
 		If Not .ValidAgregar()
 			Alerta(.cError)
@@ -340,9 +340,9 @@ With ThisForm
 			ThisForm.InfoCont.SetFocus()
 			Return .F.
 		EndIf
-		
+
 	EndWith
-	
+
 	With ThisForm.oActividad
 		* Llenar la informacion de la actividad
 		.Id = ''
@@ -358,7 +358,7 @@ With ThisForm
 		.Refer = ''
 		.NumOrden = ''
 		.OrdenPost = ''
-		
+
 		* Manda llamar el metodo para validar la informacion para grabar la actividad
 		If Not .ValidAgregar()
 			Alerta(.cError)
@@ -367,22 +367,22 @@ With ThisForm
 			Return .F.
 		EndIf
 	EndWith
-	
+
 	* Grabar al contacto
 	If Not .oContacto.Agregar()
 		Alerta(.oContacto.cError)
 		Return .F.
 	EndIf
-	
+
 	* Asigna el numero de contacto despues de haberlo grabado
 	.oActividad.NumCont = .oContacto.NumCont
-	
+
 	* Agregar una nueva actividad
 	If Not .oActividad.Agregar()
 		Alerta(.oActividad.cError)
 		Return .F.
 	EndIf
-	
+
 	* Agregar la oportunidad
 	Select Oport
 	Go Bott
@@ -397,10 +397,10 @@ With ThisForm
 			CONOCIOEN	With	Allt(.ConocioEn.Value),;
 			STATUS		With	0,;
 			CREADA		With	Date()
-	
+
 	* Cerrar la ventana
 	.Release
-	
+
 EndWith
 
 ENDPROC

@@ -13,8 +13,7 @@
 
   ### Features
   - Roll Forming Design
-  - CNC G-Code Generator  
+  - CNC G-Code Generator
   - DXF Import/Export
   - AI Diagnostics
   - 3D Visualization
-  

@@ -9,12 +9,12 @@
 * Se agrego ventana de consulta de ordenes pendientes.
 *
 * AASO Ene2015 Se agrego control de oportunidades para ventas
-	
+
 	* Agregar el menu principal
 	Define Pad PadCrm of _MSysMenu Prompt "C\<RM"  Key ALT-R
 	On Pad PadCrm of _MSysMenu Activate PopUp Crm
-	
-	Define PopUp Crm Margin Relative Shadow 
+
+	Define PopUp Crm Margin Relative Shadow
 	AddBar('Crm','Agregar \<Actividad', 				'Do DoForm	With "CrmAddActiv"		In Crm','CTRL+D')
 	AddBar('Crm','Consultar Actividad',					'Do DoForm	With "CrmConsActiv"		In Crm')
 	AddBar('Crm','Seguimiento de Actividades',			'Do DoForm	With "CrmSeguimActiv"	In Crm')
@@ -35,18 +35,18 @@
 	AddBar('Crm','Catálogo de Contactos',				'Do DoForm with "CrmCatContactos" 	In Crm')
 	AddBar('Crm','\-','')
 	AddBar('Crm','\<Configurar',						'Activate Popup CrmConfig')
-	
+
 	* Definir submenu de configuracion
 	DefineMenuConfig()
-	
+
 	* Definir submenu de reportes
 	DefineMenuReportes()
-	
+
 	Set Procedure To Crm Additive
-	
+
 	* Manda llamar el metodo para crear las bases de datos
 	CrearTablas()
-	
+
 Return
 
 
@@ -57,20 +57,20 @@ Return
 * Muestra en el menu de configuracion del modulo
 *
 Procedure DefineMenuConfig
-	
+
 	* Crear el submenu
 	Define Popup CrmConfig MARGIN RELATIVE SHADOW COLOR SCHEME 4
 	AddBar('CrmConfig','Categorías', 							'Do DoForm with "CrmConfCat2"		In Crm')
 	AddBar('CrmConfig','Tipos de Oportunidad', 					'Do DoForm with "CrmTiposOport"		In Crm')
 	AddBar('CrmConfig','Probabilidad de Cierre de Oportunidades','Do DoForm with "CrmProbCierre"		In Crm')
-	
+
 	* Evaluar si tiene definidos los tipos de probabilidad de cierre de oportunidades
 	Local cTiposProb
 	cTiposProb = GetMsl('CrmProbCierre')
 	If Empty(cTiposProb)
 		PutMsl('CrmProbCierre','Sin interes^Indeciso^Interesado^Aprobado')
 	EndIf
-	
+
 Return
 
 
@@ -81,7 +81,7 @@ Return
 * Muestra en el menu los reportes del modulo
 *
 Procedure DefineMenuReportes
-	Use Reportes 
+	Use Reportes
 
 	* Crear el menu para los reportes de CRM
 	Define Popup CrmReportes MARGIN RELATIVE SHADOW COLOR SCHEME 4
@@ -92,7 +92,7 @@ Procedure DefineMenuReportes
 	EndScan
 	AddBar('CrmReportes','\-','')
 	AddBar('CrmReportes','Configurar reportes de CRM', 'Do Form "ConfRep" With "CRM"  ')
-	
+
 	* Crear el menu para los reportes de ordenes
 	Define PopUp CrmRepOrdenes Margin Relative Shadow Color Scheme 4
 	Scan
@@ -103,9 +103,9 @@ Procedure DefineMenuReportes
 	AddBar('CrmRepOrdenes','\-','')
 	AddBar('CrmRepOrdenes','Configurar reportes de Ordenes', 'Do Form "ConfRep" With "REPORDENES" ')
 	AddBar('CrmRepOrdenes','Configurar formatos de Ordenes', 'Do Form "ConfRep" With "ORDEN" ')
-	
+
 	Use
-	
+
 Return
 
 
@@ -116,7 +116,7 @@ Return
 * Crea las tablas y campos especiales
 *
 Procedure CrearTablas
-	
+
 	* Crear la tabla de Contactos.DBF
 	If Not File('Contactos.dbf')
 		Create Table Contactos(;
@@ -141,7 +141,7 @@ Procedure CrearTablas
 		Alerta('No existe Contactos.DBF')
 		QuitIt()
 	EndIf
-	
+
 	* Crear la tabla de Crm.DBF
 	If Not File('Crm.dbf')
 		Create Table Crm(;
@@ -155,7 +155,7 @@ Procedure CrearTablas
 			NUMUSER		C(5),;
 			NUMUSERGEN	C(5),;
 			NUMORDEN	C(10),;
-			NUMCOTIZA	C(10),;	
+			NUMCOTIZA	C(10),;
 			ACTIVIDAD	L(1),;
 			TERMINADA	L(1),;
 			REFER		C(10),;
@@ -179,7 +179,7 @@ Procedure CrearTablas
 		Alerta('No existe Crm.DBF')
 		QuitIt()
 	EndIf
-	
+
 	* Crear Crm.NUMOPORT
 	If Not ExisteCampo('Crm.NUMOPORT')
 		Alter Table Crm Add NUMOPORT	C(10)
@@ -189,7 +189,7 @@ Procedure CrearTablas
 		Alerta('No existe Crm.NUMOPORT')
 		QuitIt()
 	EndIf
-	
+
 	* Crear la tabla de Ordenes.DBF
 	If Not File('Ordenes.dbf')
 		Create Table Ordenes(;
@@ -232,7 +232,7 @@ Procedure CrearTablas
 		Alerta('No existe Ordenes.DBF')
 		QuitIt()
 	EndIf
-	
+
 	* Crear la tabla de Proy.DBF
 	If Not File('Proy.dbf')
 		Create Table Proy(;
@@ -260,7 +260,7 @@ Procedure CrearTablas
 		Alerta('No existe Proy.DBF')
 		QuitIt()
 	EndIf
-	
+
 	* Crear la tabla de Oport.DBF
 	If Not File('Oport.dbf')
 		Create Table Oport(;
@@ -285,7 +285,7 @@ Procedure CrearTablas
 			NUMFACT		C(10),;
 			CAUSAPERD	M(10),;
 			OBSMEJORAR	M(10))
-			
+
 		Select Oport
 		Index On NUMOPORT Tag NUMOPORT
 		Use
@@ -299,7 +299,7 @@ Procedure CrearTablas
 		Alerta('No existe Oport.DBF')
 		QuitIt()
 	EndIf
-	
+
 Return
 
 Function BuscarContacto
@@ -339,22 +339,22 @@ Procedure Dumy
 Return
 
 * Manda llamar las formas
-*** Ejecuta una forma 
+*** Ejecuta una forma
 Function DoForm
 Parameters FormName,Par1,Par2,Par3,Par4,Par5,Par6,Par7,Par8,Par9
 	Do Case
 	Case Parameters()=1
-		Do Form (Formname) 
+		Do Form (Formname)
 	Case Parameters()=2
-		Do Form (FormName) with m.Par1 
+		Do Form (FormName) with m.Par1
 	Case Parameters()=3
-		Do Form (FormName) with m.Par1,m.Par2 
+		Do Form (FormName) with m.Par1,m.Par2
 	Case Parameters()=4
-		Do Form (FormName) with m.Par1,m.Par2,m.Par3 
+		Do Form (FormName) with m.Par1,m.Par2,m.Par3
 	Case Parameters()=5
-		Do Form (FormName) with m.Par1,m.Par2,m.Par3,m.Par4 
+		Do Form (FormName) with m.Par1,m.Par2,m.Par3,m.Par4
 	Case Parameters()=6
-		Do Form (FormName) with m.Par1,m.Par2,m.Par3,m.Par4,m.Par5 
+		Do Form (FormName) with m.Par1,m.Par2,m.Par3,m.Par4,m.Par5
 	Case Parameters()=7
 		Do Form (FormName) with m.Par1,m.Par2,m.Par3,m.Par4,m.Par5,Par6
 	Case Parameters()=8

@@ -96,19 +96,19 @@ Create Cursor Temp(;
 	HRSSERV		N(6,2),;
 	NOMUSER		C(30),;
 	AVANCE		N(3,0))
-	
+
 With ThisForm
-	
+
 	* Manda llamar como agregar si no especifico el modo
 	If PCount()==0
 		nModo=1
 	EndIf
-	
+
 	* Almacena el modo
 	.nModo = nModo
-	
+
 	.Grid1.GridLineColor = ThisForm.BackColor
-	
+
 	* Posicionarme en el registro en caso de modificar o eliminar
 	Select Proy
 	If (.nModo==2 or .nModo==3)
@@ -118,10 +118,10 @@ With ThisForm
 		EndIf
 		GoTo nRec
 	EndIf
-	
+
 	* Mostrar las ordenes incompletas
 	.Ver.Value = 2
-	
+
 	Do Case
 	Case .nModo == 1
 		.Caption = 'Agregar Proyecto'
@@ -129,13 +129,13 @@ With ThisForm
 		.NumProy.Value = Padl(Allt(SigDoc(NUMPROY)),10)
 		.Usuario.Value = m.NomUser
 		.cNumUser = m.NumUser
-		
+
 	Case .nModo == 2
 		.Caption = 'Modificar Proyecto'
 		.NumProy.Enabled = .F.
 		* Manda llamar el metodo para mostar la informacion del proyecto
 		.CargarInfo()
-		
+
 	Case .nModo == 3
 		.Caption = 'Eliminar Proyecto'
 		* Manda llamar el metodo para mostar la informacion del proyecto
@@ -144,9 +144,9 @@ With ThisForm
 		.Save.Enabled = .t.
 		.Cerrar.Enabled = .t.
 
-	Endcase	
-	
-EndWith	
+	Endcase
+
+EndWith
 
 ENDPROC
 PROCEDURE KeyPress
@@ -157,23 +157,23 @@ With ThisForm
 	If nKeyCode=-7
 		Keyboard '{ALT-P}'
 		NoDefault
-	Endif	
+	Endif
 
 	* Presion ESC
 	If nKeyCode == 27
-	
+
 		* No hacer nada, estoy agregando un proyecto
 		If .nModo == 1
 			NoDefault
 			Return
 		Else
-			
+
 			* Dejar salir con [Esc]
 			DoDefault(nKeyCode, nShiftAltCtrl)
 			Return
 
 		Endif
-		
+
 	EndIf
 
 EndWith
@@ -188,21 +188,21 @@ PROCEDURE cargarinfo
 * Metodo para cargar la informacion
 With ThisForm
 	.NumProy.Value = Proy.NUMPROY
-	
+
 	.LeeCliente.Clave.Value = Proy.NUMCLI
 	.LeeCliente.Clave.Valid()
-	
+
 	.Nombre.Value = Proy.NOMBRE
 	.LeeFechaIni.SetValue(Proy.INICIO)
 	.LeeFechaMeta.SetValue(Proy.META)
 	.Completo.Value = Proy.COMPLETO
-	
+
 	* Mostrar el nombre del usuario
 	.cNumUser = Proy.NUMUSER
 	If Seek(.cNumUser,'Usuarios')
 		.Usuario.Value = Usuarios.NOMUSER
 	EndIf
-	
+
 	* Obtener la informacion del contacto
 	cNumCont = Proy.NUMCONT
 	If Seek(cNumCont,'Contactos')
@@ -210,10 +210,10 @@ With ThisForm
 		.LeeContacto.Nombre.Value = Contactos.NOMCONT
 		.LeeContacto.LostFocus()
 	EndIf
-	
+
 	* Manda llamar el metodo para cargar las ordenes generadas del proyecto
 	.CargarOrdenes()
-	
+
 EndWith
 
 ENDPROC
@@ -223,12 +223,12 @@ With ThisForm
 	* Borra el temporal
 	Select Temp
 	Zap
-	
+
 	.Grid1.RecordSource = ''
-	
+
 	cNumProy = .NumProy.Value
 	nVer = .Ver.Value
-	
+
 	Do Case
 		Case nVer == 1
 			* Buscar todas las ordenes
@@ -242,7 +242,7 @@ With ThisForm
 				cNumProy)
 		        Return
 			Endif
-		
+
 		Case nVer == 2
 			* Buscar las ordenes pendientes (incompletas)
 			If Not SqlMsl('Temp','Select Ordenes.NUMORDEN,Ordenes.TIPO,Contactos.NOMCONT,Ordenes.PROBLEMA, '+;
@@ -256,7 +256,7 @@ With ThisForm
 				cNumProy)
 		        Return
 			Endif
-		
+
 		Case nVer == 3
 			* Buscar las ordenes completas
 			If Not SqlMsl('Temp','Select Ordenes.NUMORDEN,Ordenes.TIPO,Contactos.NOMCONT,Ordenes.PROBLEMA, '+;
@@ -270,9 +270,9 @@ With ThisForm
 				cNumProy)
 		        Return
 			Endif
-			
+
 	EndCase
-	
+
 	Select Temp
 	Scan
 		cPrioridad = ''
@@ -280,36 +280,36 @@ With ThisForm
 		Do Case
 			Case Temp.PRI == 1
 				cPrioridad = 'Baja'
-			
+
 			Case Temp.PRI == 2
 				cPrioridad = 'Normal'
-			
+
 			Case Temp.PRI == 3
 				cPrioridad = 'Urgente'
-		
+
 		EndCase
-		
+
 		* Mostrar la prioridad de la orden
 		Replace	PRIORIDAD	With	cPrioridad
-						
+
 	EndScan
-	
+
 	* Crea la relacion del temporal hacia usuarios
 	Select Temp
 	Set Relation To NUMUSER Into Usuarios
-		
+
 	* Muestra los datos de TEMP
 	.LockScreen = .T.
 	With ThisForm.Grid1
 		.RecordSourceType = 1
-		
-		* Crea el indice	
+
+		* Crea el indice
 		Select Temp
 		Index On NOMCONT+PRIORIDAD+DTOS(CREADA) Tag ContPriFec
 		Set Order To ContPriFec
-		
+
 		.RecordSource = 'Temp'
-		
+
 		.Column1.ControlSource = 'Temp.NUMORDEN'
 		.Column2.ControlSource = 'Temp.TIPO'
 		.Column3.ControlSource = 'Temp.NOMCONT'
@@ -320,8 +320,8 @@ With ThisForm
 		.Column8.ControlSource = 'Temp.HRSSERV'
 		.Column9.ControlSource = 'Proper(Usuarios.NOMUSER)'
 		.Column10.ControlSource = 'Temp.AVANCE'
-		
-		
+
+
 		Go Bott
 		.SetFocus
 
@@ -331,7 +331,7 @@ With ThisForm
 	* Muestra mensaje si no se encontro informacion
 	If Reccount('Temp')==0
 		Alerta('No se encontraron ordenes del proyecto')
-		Return 		
+		Return
 	Endif
 
 	* Mostrar la suma de las horas
@@ -344,13 +344,13 @@ ENDPROC
 PROCEDURE saveinfo
 * Metodo para grabar la informacion
 With ThisForm
-	
+
 	* Si no esta vacio el nombre del contacto, almacenar en una variable su clave
 	cNumCont = ''
 	If Not Empty(.LeeContacto.Nombre.Value)
 		cNumCont = .LeeContacto.Clave.Value
 	EndIf
-	
+
 	Select Proy
 	Replace	NUMPROY		With	.NumProy.Value,;
 			NUMCLI		With	.LeeCliente.Clave.Value,;
@@ -360,15 +360,15 @@ With ThisForm
 			COMPLETO	With	.Completo.Value,;
 			NUMUSER		With	.cNumUser,;
 			NUMCONT		With	cNumCont
-	
+
 EndWith
 
 ENDPROC
 PROCEDURE validainfo
 * Valida la informacion
 With This
-	
-	* Validar que no se repita la clave	
+
+	* Validar que no se repita la clave
 	If .nModo == 1
 		If Seek(.NumProy.Value,'Proy')
 			Alerta('Esa clave de proyecto ya existe')
@@ -376,7 +376,7 @@ With This
 			Return .f.
 		Endif
 	Endif
-	
+
 	* No omitir la clave
 	If Empty(.NumProy.Value)
 		Alerta('No se puede omitir la clave del proyecto')
@@ -389,14 +389,14 @@ With This
 		Alerta('No se puede omitir el nombre del proyecto')
 		.Nombre.SetFocus
 		Return .f.
-	EndIf	
-	
+	EndIf
+
 	* No omitir la fecha de inicio
 	If Empty(.LeeFechaIni.Value)
 		Alerta('No se puede omitir la fecha inicial')
 		.LeeFechaIni.SetFocus
 		Return .f.
-	EndIf	
+	EndIf
 
 	Return .t.
 EndWith
@@ -409,10 +409,10 @@ ENDPROC
 		<reserved2/>
 		<reserved3>nmodo
 cnumuser
-*saveinfo 
-*cargarinfo 
-*cargarordenes 
-*validainfo 
+*saveinfo
+*cargarinfo
+*cargarordenes
+*validainfo
 </reserved3>
 		<reserved4/>
 		<reserved5/>
@@ -1754,12 +1754,12 @@ With ThisForm
 		* Agregar un registro en blanco
 		.SaveInfo()
 		.Release
-		
+
 	Case .nModo == 2
 		* Manda llamar el metodo para grabar la informacion
 		.SaveInfo()
 		.Release
-		
+
 	Case .nModo == 3
 		If GetNY('¿Seguro que desea borrar el proyecto?')
 			Select Proy
@@ -1769,7 +1769,7 @@ With ThisForm
 
 	EndCase
 
-EndWith	
+EndWith
 
 ENDPROC
 </methods>

@@ -65,7 +65,7 @@ Width = 615
 DoCreate = .T.
 Caption = "Servicio Telefónico"
 KeyPreview = .T.
-cnumuser =  
+cnumuser =
 Name = "Formamsl1"
 Marco.Name = "Marco"
 </properties>
@@ -80,24 +80,24 @@ If Not OpenDbf('Contactos','NUMCONT') Or;
 EndIf
 
 With ThisForm
-	
+
 	* Manda llamar el metodo para cargar los tipos de actividades
 	.TiposDeActividades()
-	
-	* Muestra la fecha y hora	
+
+	* Muestra la fecha y hora
 	.LeeFecha.SetValue(Date())
 	.HoraIni.Value = Left(Time(),5)
 	.HoraFin.Value = Time()
 	.Timer1.Enabled = .T.
 	.lContar = .T.
-	
+
 	.Usuario.Enabled = .F.
 	.Usuario.Value = m.NomUser
 	.cNumUser = m.NumUser
 
 	.InfoCont.SetFocus()
-	
-EndWith	
+
+EndWith
 
 ENDPROC
 PROCEDURE KeyPress
@@ -108,7 +108,7 @@ With ThisForm
 	If nKeyCode=-7
 		Keyboard '{ALT-P}'
 		NoDefault
-	Endif	
+	Endif
 
 	* Presion ESC
 	If nKeyCode == 27
@@ -126,43 +126,43 @@ With ThisForm
 	* Manda el Focus al contacto
 	If .oContacto.nError = 1
 		.InfoCont.LeeContacto.SetFocus
-	EndIf	
-	
+	EndIf
+
 	* Manda el focus a la empresa del contacto
 	If .oContacto.nError = 2
 		.InfoCont.Empresa.SetFocus
-	EndIf	
-	
+	EndIf
+
 	* Manda el focus al telefono del contacto
 	If .oContacto.nError = 3
 		.InfoCont.Telefono.SetFocus
-	EndIf	
-	
+	EndIf
+
 	* Manda el focus a la fecha
 	If .oActividad.nError = 1
 		.LeeFecha.SetFocus
 	EndIf
-	
+
 	* Manda el focus a la fecha
 	If .oActividad.nError = 2
 		.HoraFin.SetFocus
 	EndIf
-	
+
 	* Manda el focus al tipo de actividad
 	If .oActividad.nError = 3
 		.Tipo.SetFocus
 	EndIf
-	
+
 	* Manda el focus a la descripcion de la actividad
 	If .oActividad.nError = 4
 		.Servicio.SetFocus
 	EndIf
-	
+
 	* Manda el focus la prioridad
 	If .oOrden.nError = 1
 		.Prioridad.SetFocus
 	EndIf
-		
+
 	* Manda el focus a el usuario
 	If .oOrden.nError = 2
 		.Usuario.SetFocus
@@ -172,22 +172,22 @@ With ThisForm
 	If .oOrden.nError = 3
 		.Tipo.SetFocus
 	EndIf
-	
+
 	* Manda el focus al problema a resolver
 	If .oOrden.nError = 4
 		.Problema.SetFocus
 	EndIf
-	
+
 	* Manda el focus al avance
 	If .oOrden.nError = 5
 		.Avance.SetFocus
 	EndIf
-		
+
 	* Manda el focus a las causas por las que queda pendiente el servicio
 	If .oOrden.nError = 6
 		.PendPor.SetFocus
 	EndIf
-	
+
 EndWith
 
 ENDPROC
@@ -203,10 +203,10 @@ With ThisForm
 	Create Cursor CrmActiv(;
 		NUMACTIV C(5),;
 		NOMACTIV C(20))
-		
+
 	Index on NUMACTIV Tag NumActiv
 	Index on UPPER(NOMACTIV) Tag NomActiv
-	
+
 	* Crear temporal con los tipos
 	i = 1
 	Do While .t.
@@ -229,8 +229,8 @@ ENDPROC
 		<reserved2/>
 		<reserved3>lcontar
 cnumuser
-*tiposdeactividades 
-*enviarfocus 
+*tiposdeactividades
+*enviarfocus
 </reserved3>
 		<reserved4/>
 		<reserved5/>
@@ -361,7 +361,7 @@ ZOrderSet = 4
 calias = CrmActiv
 ccampoclave = CrmActiv.NUMACTIV
 ccamponombre = CrmActiv.NOMACTIV
-cformabusqueda = 
+cformabusqueda =
 ctagclave = NumActiv
 ctagnombre = NomActiv
 nanchoclave = 5
@@ -1106,19 +1106,19 @@ With ThisForm
 	* Crear la relacion de ordenes y contactos
 	Select Contactos
 	Set Order To NumCont
-	
+
 	Select Ordenes
 	Set Relation To NumCont Into Contactos
-	
+
 	* Validar que no se omita el E-Mail del contacto
 	If Empty(.InfoCont.Mail.Value)
 		Alerta('No se puede omitir el e-mail')
 		.InfoCont.Mail.SetFocus
 		Return .F.
 	EndIf
-	
+
 	With ThisForm.oContacto
-		* Llenar la informacion del contacto	
+		* Llenar la informacion del contacto
 		.NumCont = ThisForm.InfoCont.LeeContacto.Clave.Value
 		.NomCont = ThisForm.InfoCont.LeeContacto.Nombre.Value
 		.Empresa = ThisForm.InfoCont.Empresa.Value
@@ -1133,7 +1133,7 @@ With ThisForm
 			ThisForm.EnviarFocus()
 			Return .F.
 		EndIf
-	
+
 	EndWith
 
 	* Manda llamar la funcion ValHora() para
@@ -1158,12 +1158,12 @@ With ThisForm
 		.Prioridad = 2
 		.nError = 0
 		.HrsServ = (dFechaFin-dFechaIni)/3600
-		
+
 		* Actualizar fecha final si el servicio se termino
 		If .Avance == 100
 			.Terminada = dFechaFin
 		EndIf
-		
+
 		* Manda llamar el metodo para validar la informacion para grabar la orden
 		If Not .ValidAgregar()
 			Alerta(.cError)
@@ -1171,7 +1171,7 @@ With ThisForm
 			ThisForm.EnviarFocus()
 			Return .F.
 		EndIf
-	
+
 		* Manda llamar el metodo para validar la informacion para grabar la orden
 		If Not .ValidServTerminado()
 			Alerta(.cError)
@@ -1179,11 +1179,11 @@ With ThisForm
 			ThisForm.EnviarFocus()
 			Return .F.
 		EndIf
-	
+
 	EndWith
 
 	* Agrega una actividad
-	With ThisForm.oActividad	
+	With ThisForm.oActividad
 		* Llenar la informacion de la actividad
 		.Id = ''
 		.Tipo = ThisForm.Tipo.Nombre.Value
@@ -1194,7 +1194,7 @@ With ThisForm
 		.NumUserGen = m.NumUser
 		.Actividad = .T.
 		.nError = 0
-		
+
 		* Manda llamar el metodo para validar la informacion para grabar la actividad
 		If Not .ValidAgregar()
 			Alerta(.cError)
@@ -1204,7 +1204,7 @@ With ThisForm
 		EndIf
 
 	EndWith
-	
+
 	* Manda llamar el metodo para grabar al contacto
 	If Not .oContacto.Agregar()
 		Alerta(.oContacto.cError)
@@ -1213,7 +1213,7 @@ With ThisForm
 
 	* Asigna el numero de contacto despues de haberlo grabado
 	.oOrden.NumCont = .oContacto.NumCont
-	
+
 	* Manda llamar el metodo para agregar una nueva orden
 	If Not .oOrden.Agregar()
 		Alerta(.oOrden.cError)
@@ -1223,27 +1223,27 @@ With ThisForm
 	* Asigna el numero de contacto despues de haberlo grabado
 	.oActividad.NumCont = .oContacto.NumCont
 	.oActividad.NumOrden = .oOrden.NumOrden
-	
+
 	* Manda llamar el metodo para agregar una nueva actividad
 	If Not .oActividad.Agregar()
 		Alerta(.cError)
 		Return .F.
 	EndIf
-	
+
 	* Manda llamar el metodo para agregar una nueva orden
 	If Not .oOrden.ServicioRealizado()
 		Alerta(.oOrden.cError)
 		Return .F.
 	EndIf
-	
+
 	* Manda imprimir la orden de servicio
 	If Seek(.oOrden.NumOrden,'Ordenes')
 		SendFto('ORDEN')
 	EndIf
-	
+
 	* Cerrar la ventana
 	.Release
-	
+
 EndWith
 
 ENDPROC

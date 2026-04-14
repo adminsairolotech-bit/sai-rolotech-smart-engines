@@ -69,7 +69,7 @@ Width = 617
 DoCreate = .T.
 Caption = "Seguimiento a Cotización"
 KeyPreview = .T.
-cnumuser =  
+cnumuser =
 Name = "Formamsl1"
 Marco.Name = "Marco"
 </properties>
@@ -97,28 +97,28 @@ With ThisForm
 
 	* Almacena el numero de tarea
 	.IdTarea.Value = cIdTarea
-	
+
 	* Muestra los datos de la cotizacion
 	.NumCotiza.Value = cNumCotiza
 	If Seek(' Q'+.NumCotiza.Value,'Docum')
 		.Importe.Value = Docum.IMPORTE-Docum.DESCUENTO+Docum.IMPUESTO1+Docum.IMPUESTO2
 		.FechaCot.SetValue(Docum.FECHA)
 		.Antiguedad.Value = Date()-Docum.FECHA
-		
+
 		If Docum.DIVISA == 'P'
 			.LabelDivisa.Caption = 'Pesos'
 		Else
 			.LabelDivisa.Caption = 'Dólares'
 		EndIf
 	EndIf
-	
+
 	* Manda llamar el metodo para mostrar el historial de actividades de esa tarea
 	.CargarHistorial()
-	
+
 	.Usuario.Enabled = .F.
 	.Usuario.Value = m.NomUser
 	.cNumUser = m.NumUser
-	
+
 	.LeeFecha.SetValue(Date())
 	.HoraIni.Value = Left(Time(),5)
 	.HoraFin.Value = Time()
@@ -126,13 +126,13 @@ With ThisForm
 
 	* Manda llamar el metodo para cargar los tipos de actividades
 	.TiposDeActividades()
-	
+
 	* Manda llamar el metodo para actualizar los controles
 	.ActControles()
-	
+
 	.InfoCont.SetFocus()
-	
-EndWith	
+
+EndWith
 
 ENDPROC
 PROCEDURE KeyPress
@@ -143,7 +143,7 @@ With ThisForm
 	If nKeyCode=-7
 		Keyboard '{ALT-P}'
 		NoDefault
-	Endif	
+	Endif
 
 	* Presion ESC
 	If nKeyCode == 27
@@ -163,7 +163,7 @@ DoDefault()
 ENDPROC
 PROCEDURE actcontroles
 With ThisForm
-	
+
 	Do Case
 
 		Case .Resultado.Value == 0 Or .Resultado.Value == 2
@@ -174,7 +174,7 @@ With ThisForm
 			.HoraProxCont.Visible = .F.
 			.LabelCausa.Visible = .F.
 			.Causa.Visible = .F.
-			
+
 			.Height = 355
 			.LabelHistorial.Top = 295
 			.HContacto.Top = 312
@@ -182,7 +182,7 @@ With ThisForm
 			.Cerrar.Top = 312
 			.Cotizacion.Top = 312
 			.Procesar.Top = 312
-		
+
 		Case .Resultado.Value == 1
 			* El resultado del seguimiento es Volver a Contactar
 			* Mostrar la fecha y hora del proximo contacto
@@ -199,20 +199,20 @@ With ThisForm
 			.Cerrar.Top = 312
 			.Cotizacion.Top = 312
 			.Procesar.Top = 312
-			
+
 		Case .Resultado.Value == 3
 			* El resultado del seguimiento es Venta perdida
 			* Capturar la causa
 			.LabelProxContacto.Visible = .F.
 			.FechaProxCont.Visible = .F.
 			.HoraProxCont.Visible = .F.
-			
+
 			.LabelCausa.Visible = .T.
 			.LabelCausa.Top = 285
 			.Causa.Visible = .T.
 			.Causa.Top = 300
 			.Causa.Height = 75
-			
+
 			.Height = 420
 			.LabelHistorial.Top = 365
 			.HContacto.Top = 382
@@ -220,22 +220,22 @@ With ThisForm
 			.Cerrar.Top = 382
 			.Cotizacion.Top = 382
 			.Procesar.Top = 382
-			
+
 	EndCase
-		
-	
-	
+
+
+
 EndWith
 ENDPROC
 PROCEDURE cargarhistorial
 * Metodo para cargar el historial de actividades
 * relacionadas con la tarea
 With ThisForm
-	
+
 	.Historial.Value = ''
-	
+
 	cIdTarea = .IdTarea.Value
-		
+
 	If not SqlMsl('Temp','Select Crm.FECHA,Crm.FECHAFIN,Crm.NUMCONT,Crm.NUMUSER,Crm.TIPO,Crm.OBS ' +;
 		'From Crm '+;
 		'Where '+;
@@ -244,11 +244,11 @@ With ThisForm
 		cIdTarea)
 Return
 	Endif
-	
+
 	Select Temp
 	Set Relation To NUMCONT	Into Contactos,;
 					NUMUSER Into Usuarios
-	
+
 	Select Temp
 	Scan
 		.Historial.Value = .Historial.Value+MexDate2(SToD(DToS(Temp.FECHA)))+' '+;
@@ -257,7 +257,7 @@ Return
 			Allt(Temp.TIPO)+Chr(13)+Temp.OBS+Chr(13)+'--------------------'+Chr(13)+Chr(13)
 
 	EndScan
-	
+
 EndWith
 ENDPROC
 PROCEDURE enviarfocus
@@ -265,33 +265,33 @@ With ThisForm
 	* Manda el Focus al contacto
 	If .oContacto.nError = 1
 		.InfoCont.LeeContacto.SetFocus
-	EndIf	
-	
+	EndIf
+
 	* Manda el focus a la empresa del contacto
 	If .oContacto.nError = 2
 		.InfoCont.Empresa.SetFocus
-	EndIf	
-	
+	EndIf
+
 	* Manda el focus al telefono del contacto
 	If .oContacto.nError = 3
 		.InfoCont.Telefono.SetFocus
-	EndIf	
-	
+	EndIf
+
 	* Manda el focus a la fecha
 	If .oActividad.nError = 1
 		.LeeFecha.SetFocus
 	EndIf
-	
+
 	* Manda el focus al tipo de actividad
 	If .oActividad.nError = 2
 		.Tipo.SetFocus
 	EndIf
-	
+
 	* Manda el focus a la descripcion de la actividad
 	If .oActividad.nError = 3
 		.Obs.SetFocus
 	EndIf
-	
+
 EndWith
 
 ENDPROC
@@ -307,10 +307,10 @@ With ThisForm
 	Create Cursor CrmActiv(;
 		NUMACTIV C(5),;
 		NOMACTIV C(20))
-		
+
 	Index on NUMACTIV Tag NumActiv
 	Index on UPPER(NOMACTIV) Tag NomActiv
-	
+
 	* Crear temporal con los tipos
 	i = 1
 	Do While .t.
@@ -327,18 +327,18 @@ EndWith
 ENDPROC
 PROCEDURE validainfo
 With ThisForm
-	
+
 	Do Case
-		
+
 		Case .Resultado.Value == 1
 			* Volver a contactar
 			* Validar que no omita la fecha del proximo contacto
 			If Empty(.FechaProxCont.Value)
 				Alerta('No se puede omitir la fecha del proximo contacto')
 				.FechaProxCont.SetFocus
-				Return .F.				
+				Return .F.
 			EndIf
-			
+
 			* Pregunta si la fecha del proximo contacto es correcta
 			* si es mayor a 1 mes respecto a la fecha de la actividad
 			nMeses = .FechaProxCont.Value-.LeeFecha.Value
@@ -347,14 +347,14 @@ With ThisForm
 					Return .F.
 				EndIf
 			EndIf
-			
+
 		Case .Resultado.Value == 2
 			* Preguntar si desea cerrar la venta
 			If Not GetNY('¿Seguro que desea cerrar la venta?')
 				.Resultado.SetFocus
 				Return .F.
 			EndIf
-		
+
 		Case .Resultado.Value == 3
 			* La venta de cancelo
 			* No se debe omitir la causa
@@ -363,9 +363,9 @@ With ThisForm
 				.Causa.SetFocus
 				Return .F.
 			EndIf
-		
+
 	EndCase
-	
+
 EndWith
 ENDPROC
 </methods>
@@ -377,11 +377,11 @@ ENDPROC
 		<reserved3>nrec
 lcontar
 cnumuser
-*cargarhistorial 
-*tiposdeactividades 
-*enviarfocus 
-*actcontroles 
-*validainfo 
+*cargarhistorial
+*tiposdeactividades
+*enviarfocus
+*actcontroles
+*validainfo
 </reserved3>
 		<reserved4/>
 		<reserved5/>
@@ -508,7 +508,7 @@ ZOrderSet = 4
 calias = CrmActiv
 ccampoclave = CrmActiv.NUMACTIV
 ccamponombre = CrmActiv.NOMACTIV
-cformabusqueda = 
+cformabusqueda =
 ctagclave = NumActiv
 ctagnombre = NomActiv
 nanchoclave = 5
@@ -1200,14 +1200,14 @@ Name = "procesar"
 		<methods>PROCEDURE Click
 * Grabar la informacion
 With ThisForm
-	
+
 	* Validar la informacion
 	If not .ValidaInfo()
 		Return
 	Endif
-			
+
 	With ThisForm.oContacto
-		* Llenar la informacion del contacto	
+		* Llenar la informacion del contacto
 		.NumCont = ThisForm.InfoCont.LeeContacto.Clave.Value
 		.NomCont = ThisForm.InfoCont.LeeContacto.Nombre.Value
 		.Empresa = ThisForm.InfoCont.Empresa.Value
@@ -1222,7 +1222,7 @@ With ThisForm
 			ThisForm.EnviarFocus()
 			Return .F.
 		EndIf
-	
+
 	EndWith
 
 	* Manda llamar la funcion ValHora() para
@@ -1233,8 +1233,8 @@ With ThisForm
 	cHoraFin = .HoraFin.Value
 	dFechaIni = ValHora2(dFecha,cHoraIni)
 	dFechaFin = ValHora2(dFecha,cHoraFin)
-	
-	With ThisForm.oActividad	
+
+	With ThisForm.oActividad
 		* Llenar la informacion de la actividad
 		.Id = ''
 		.Tipo = ThisForm.Tipo.Nombre.Value
@@ -1246,23 +1246,23 @@ With ThisForm
 		.Refer = ThisForm.IdTarea.Value
 		.Actividad = .T.
 		.NumCotiza = ThisForm.NumCotiza.Value
-		
+
 		* Almacenar el status que tiene la cotizacion al agregar la actividad
 		Do Case
 			Case ThisForm.Resultado.Value == 1
 				* Volver a contactarlo
 				.StatusCot = 0
-			
+
 			Case ThisForm.Resultado.Value == 2
 				* La venta se cerro
 				.StatusCot = 1
-			
+
 			Case ThisForm.Resultado.Value == 3
 				* La venta se cancelo
 				.StatusCot = 2
-			
+
 		EndCase
-		
+
 		* Manda llamar el metodo para validar la informacion para grabar la actividad
 		If Not .ValidAgregar()
 			Alerta(.cError)
@@ -1270,9 +1270,9 @@ With ThisForm
 			ThisForm.EnviarFocus()
 			Return .F.
 		EndIf
-	
+
 	EndWith
-	
+
 	* Manda llamar el metodo para grabar al contacto
 	If Not .oContacto.Agregar()
 		Alerta(.oContacto.cError)
@@ -1290,46 +1290,46 @@ With ThisForm
 
 	With ThisForm.oTarea
 		.Id = ThisForm.IdTarea.Value
-		
+
 		* La tarea se termino
 		Do Case
 			Case ThisForm.Resultado.Value == 1
 				* Volver a contactarlo
 				.StatusCot = 0
-				
+
 				* Manda llamar el metodo para actualizar el status de la cotizacion
 				If Not .SeguimCotiza()
 					Alerta(.cError)
 					Return .F.
 				EndIf
-				
+
 				* Actualizar la fecha de la tarea para volverla a repetir
 				dFechaProx = ThisForm.FechaProxCont.Value
 				cHoraProx = ThisForm.HoraProxCont.Value
-						
+
 				dFechaProx = ValHora2(dFechaProx,cHoraProx)
 				.Fecha = dFechaProx
-				
+
 				* Manda llamar el metodo para actualizar la fecha para que se repita la tarea
 				If Not .ActRepetir()
 					Alerta(.cError)
 					Return .F.
 				EndIf
-				
+
 			Case ThisForm.Resultado.Value == 2
 				* La venta se cerro
 				.StatusCot = 1
-				
+
 				* Manda llamar el metodo para actualizar el status de la cotizacion
 				If Not .SeguimCotiza()
 					Alerta(.cError)
 					Return .F.
 				EndIf
-				
+
 				* Actualizar la fecha de terminacion de la actividad
 				.FechaFin = dFechaFin
 				.Terminada = .T.
-				
+
 				* Manda llamar el metodo Terminar
 				If Not .Terminar()
 					Alerta(.cError)
@@ -1339,47 +1339,47 @@ With ThisForm
 			Case ThisForm.Resultado.Value == 3
 				* La venta se cancelo
 				.StatusCot = 2
-				
+
 				* Manda llamar el metodo para actualizar el status de la cotizacion
 				If Not .SeguimCotiza()
 					Alerta(.cError)
 					Return .F.
 				EndIf
-				
+
 				* Actualizar la fecha de terminacion de la actividad
 				.FechaFin = dFechaFin
 				.Terminada = .T.
-				
+
 				* Manda llamar el metodo Terminar
 				If Not .Terminar()
 					Alerta(.cError)
 					Return .F.
 				EndIf
-	
-				* Agregar una actividad de cancelacion de cotizacion			
-				With ThisForm.oActividad	
+
+				* Agregar una actividad de cancelacion de cotizacion
+				With ThisForm.oActividad
 					* Llenar la informacion de la actividad
 					.Id = ''
 					.Tipo = 'CancCot'
 					.Fecha = dFechaIni
 					.FechaFin = dFechaFin
 					.Obs = ThisForm.Causa.Value
-				
+
 					* Manda llamar el metodo para agregar una nueva actividad
 					If Not .Agregar()
 						Alerta(.cError)
 						Return .F.
 					EndIf
-				
+
 				EndWith
-				
+
 		EndCase
-		
+
 	EndWith
-	
+
 	* Cerrar la ventana
 	.Release
-	
+
 EndWith
 
 ENDPROC
@@ -1653,7 +1653,7 @@ Name = "cotizacion"
 		<methods>PROCEDURE Click
 With ThisForm
 
-EndWith	
+EndWith
 
 ENDPROC
 </methods>

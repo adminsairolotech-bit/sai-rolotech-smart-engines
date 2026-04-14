@@ -174,14 +174,14 @@ SolidCAM me ye setup karo:
 # ⚡ FINAL WORKFLOW (REMEMBER THIS)
 
 ```text
-AI → Plan banata hai  
-↓  
-SolidCAM → Toolpath banata hai  
-↓  
-Post Processor → G-code banata hai  
-↓  
-Simulation → Risk check karta hai  
-↓  
+AI → Plan banata hai
+↓
+SolidCAM → Toolpath banata hai
+↓
+Post Processor → G-code banata hai
+↓
+Simulation → Risk check karta hai
+↓
 Machine → Production
 ```
 

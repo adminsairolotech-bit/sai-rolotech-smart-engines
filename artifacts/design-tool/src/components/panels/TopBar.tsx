@@ -1,6 +1,6 @@
 import React from 'react';
-import { 
-  Undo2, Redo2, ZoomIn, ZoomOut, Maximize, 
+import {
+  Undo2, Redo2, ZoomIn, ZoomOut, Maximize,
   Download, Save, Upload, Menu, Palette
 } from 'lucide-react';
 import { useDesignStore } from '../../store/useDesignStore';
@@ -33,7 +33,7 @@ export function TopBar({ stageRef }: TopBarProps) {
     if (stageRef.current) {
       // Deselect all before exporting to hide transformer
       useDesignStore.getState().clearSelection();
-      
+
       setTimeout(() => {
         const dataURL = stageRef.current.toDataURL({ pixelRatio: 2 });
         saveAs(dataURL, `design.${format}`);
@@ -66,9 +66,9 @@ export function TopBar({ stageRef }: TopBarProps) {
           </div>
           <span className="font-semibold text-foreground tracking-tight hidden md:block">StudioFlow</span>
         </div>
-        
+
         <div className="h-6 w-px bg-border mx-2"></div>
-        
+
         <div className="flex items-center space-x-1">
           <Tooltip>
             <TooltipTrigger asChild>
@@ -106,12 +106,12 @@ export function TopBar({ stageRef }: TopBarProps) {
       </div>
 
       <div className="flex items-center space-x-2">
-        <input 
-          type="file" 
-          id="import-json" 
-          className="hidden" 
+        <input
+          type="file"
+          id="import-json"
+          className="hidden"
           accept=".json"
-          onChange={handleFileUpload} 
+          onChange={handleFileUpload}
         />
         <Tooltip>
           <TooltipTrigger asChild>
@@ -127,7 +127,7 @@ export function TopBar({ stageRef }: TopBarProps) {
           <Save className="w-4 h-4 mr-2 text-muted-foreground" />
           <span className="hidden sm:inline">Save JSON</span>
         </Button>
-        
+
         <Button size="sm" className="h-8 bg-primary hover:bg-primary/90 text-primary-foreground shadow-md shadow-primary/20" onClick={() => exportCanvas('png')}>
           <Download className="w-4 h-4 mr-2" />
           Export PNG

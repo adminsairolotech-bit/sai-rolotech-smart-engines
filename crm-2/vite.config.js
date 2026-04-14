@@ -414,7 +414,7 @@ Customer Requirements:
 
 Give a 5-8 line technical estimate covering:
 1. Estimated number of forming stations
-2. Motor/drive requirements  
+2. Motor/drive requirements
 3. Frame/structure recommendations
 4. Tooling material recommendation
 5. Approximate machine size (L x W x H)

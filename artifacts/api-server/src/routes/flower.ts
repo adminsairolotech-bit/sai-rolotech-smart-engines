@@ -149,7 +149,7 @@ function applyClosedSectionRules(stations: FlowerStation[], materialType = "GI")
 
 /**
  * OPEN SECTION AI — Model A
- * 
+ *
  * Dedicated rule set for open profiles (C/Z/U channels, purlins, gutters, angles):
  * - Max 15°/station (less strict than closed: open edge allows more per-pass)
  * - Springback compensation: 3.0% per degree (more aggressive — open sections spring more)

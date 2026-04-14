@@ -5,7 +5,7 @@ Uploaded log ke hisaab se:
 * baseline suite **720 tests pass** thi
 * nayi production-grade suite me pehle **16 failures** aaye
 * phir `roll_contour_engine.py` aur `test_production_grade_suite.py` me fixes ke baad **124/124 pass** ho gaya
-* aur claimed Git push `213e75c` tak ho gaya. 
+* aur claimed Git push `213e75c` tak ho gaya.
 
 ## Iska matlab kya hua
 
@@ -17,11 +17,11 @@ Sabse important point yeh hai ki ab unhone sirf weak happy-path tests nahi chala
 * bend allowance
 * simulation keys
 * DXF/BOM pipeline
-  wali jagah touch ki, aur failures fix kiye. Yeh sahi direction hai. 
+  wali jagah touch ki, aur failures fix kiye. Yeh sahi direction hai.
 
 ## Jo fix especially valuable lag rahe hain
 
-Uploaded note ke mutabik `roll_contour_engine.py` me jo core bug pakda gaya tha woh yeh tha ki upper roll OD/radius hardcoded ya thickness/section-blind tha. Usko section height, groove depth, shoulder, aur thickness-aware formula se replace kiya gaya. Yeh real engineering improvement hai, sirf cosmetic change nahi. 
+Uploaded note ke mutabik `roll_contour_engine.py` me jo core bug pakda gaya tha woh yeh tha ki upper roll OD/radius hardcoded ya thickness/section-blind tha. Usko section height, groove depth, shoulder, aur thickness-aware formula se replace kiya gaya. Yeh real engineering improvement hai, sirf cosmetic change nahi.
 
 Saath hi test-side par bhi kaafi false failures clean hue:
 
@@ -32,7 +32,7 @@ Saath hi test-side par bhi kaafi false failures clean hue:
 * simulation output keys
 * thickness vs `thickness_mm`
 * bend allowance material-aware path
-  yeh sab align kiya gaya. 
+  yeh sab align kiya gaya.
 
 ## Mera review verdict
 

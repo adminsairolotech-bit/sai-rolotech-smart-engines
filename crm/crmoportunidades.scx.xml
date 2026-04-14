@@ -77,19 +77,19 @@ Marco.Name = "Marco"
 *
 DoDefault()
 With ThisForm
-	
+
 	* Evaluar si se han agregado mas oportunidades
 	If Reccount('Oport') &lt;&gt; .nOportTotReg
 		* Consultar oportunidades
 		.Consultar.Click()
 	Else
-		
+
 		* Actualizar la informacion del temporal
 		Select Temp
 		nRecno = Recno()
 		Scan
 			If Seek(Temp.NUMOPORT,'Oport')
-				
+
 				* Obtener el status
 				cStatus = ''
 				Do Case
@@ -104,26 +104,26 @@ With ThisForm
 					Case Oport.STATUS == 4
 						cStatus = 'Perdida'
 				EndCase
-				
+
 				* Actualizar la informacion del registro
 				Select Temp
 				Replace Temp.RESUMEN	With	Allt(Oport.ASUNTO),;
 						Temp.STATUS		With	cStatus,;
 						Temp.VALOR		With	Oport.IMPORTE
-				
+
 			EndIf
 			Select Temp
 		EndScan
-		
+
 		* Irme al registro activo
 		If Between(nRecno,1,Reccount())
 			Goto nRecno
 		EndIf
-		
+
 		* Actualizar el grid
 		.Grid1.Refresh()
 	EndIf
-	
+
 EndWith
 
 ENDPROC
@@ -137,25 +137,25 @@ If Not OpenDbf('Oport','NUMOPORT') Or;
 EndIf
 
 With ThisForm
-	
+
 	* Cargar los tipos de oportunidades
 	.TiposdeOport()
-	
+
 	* Cargar los tipos de probabilidad de cierre
 	.TiposdeProb()
-	
+
 	* Mostrar los usuarios
 	With ThisForm.Usuario
 		.RowSourceType = 6
 		.RowSource = 'Usuarios.NOMUSER'
-		
+
 		* Mostrar el usuario actual
 		Select Usuarios
 		Seek(m.NumUser)
 		.Value = Usuarios.NOMUSER
 		.InteractiveChange()
 	EndWith
-	
+
 	* Cargar los status
 	With ThisForm.Status
 		.AddItem('Todas')
@@ -164,10 +164,10 @@ With ThisForm
 		.AddItem('Esperando')
 		.AddItem('Ganadas')
 		.AddItem('Perdidas')
-		
+
 		.Value = 1
 	EndWith
-	
+
 	* Cargar los filtros
 	With ThisForm.Filtro
 		.AddItem('Por Trabajar')
@@ -175,22 +175,22 @@ With ThisForm
 		.AddItem('Ganadas del')
 		.AddItem('Perdidas del')
 		.AddItem('Contactar del')
-		
+
 		.Value = 1
 	EndWith
-	
+
 	* Mostrar la fecha final
 	.FechaFin.SetValue(Date())
-	
+
 	* Mostrar las lineas de los grid del color del formulario
 	.Grid1.GridLineColor = .BackColor
 	.Grid2.GridLineColor = .BackColor
 	.Grid3.GridLineColor = .BackColor
-	
+
 	* Cargar las oportunidades
 	.Consultar.Click()
-	
-EndWith	
+
+EndWith
 
 ENDPROC
 PROCEDURE Unload
@@ -213,15 +213,15 @@ PROCEDURE tiposdeoport
 *
 With ThisForm
 	Local i,cTipos,cTipoOport
-	
+
 	* Obtener los tipos de oportunidades desde el Config.msl
 	cTipos = GetMsl('CrmTiposOport')
 	cTipoOport = ''
-	
+
 	* Crear el temporal donde se van a almacenar los tipos
 	Create Cursor TipoOpor(TIPO C(15))
 	Index On Upper(TIPO) Tag Tipo
-	
+
 	* Agregarlos al temporal
 	i = 1
 	Do While .T.
@@ -232,10 +232,10 @@ With ThisForm
 		Insert Into TipoOpor Values (cTipoOport)
 		i=i+1
 	EndDo
-	
+
 	.Tipo.RowSourceType = 6
 	.Tipo.RowSource = 'TipoOpor.TIPO'
-	
+
 EndWith
 
 ENDPROC
@@ -247,15 +247,15 @@ PROCEDURE tiposdeprob
 *
 With ThisForm
 	Local i,cTipos,cTipoProb
-	
+
 	* Obtener los tipos de probabilidad de cierre desde el Config.msl
 	cTipos = GetMsl('CrmProbCierre')
 	cTipoProb = ''
-	
+
 	* Crear el temporal donde se van a almacenar los tipos
 	Create Cursor TipoProb(TIPO C(15))
 	Index On Upper(TIPO) Tag Tipo
-	
+
 	* Agregarlos al temporal
 	i = 1
 	Do While .T.
@@ -266,10 +266,10 @@ With ThisForm
 		Insert Into TipoProb Values (cTipoProb)
 		i=i+1
 	EndDo
-	
+
 	.ProbCierre.RowSourceType = 6
 	.ProbCierre.RowSource = 'TipoProb.TIPO'
-	
+
 EndWith
 
 ENDPROC
@@ -280,32 +280,32 @@ PROCEDURE totoport
 * Totalizar por tipos de oportunidad
 *
 With ThisForm
-	
+
 	* Obtener las oportunidades por tipo de oportunidad
 	Select TIPO, Count(TIPO) As Cant, Sum(VALOR) As Valor From Temp Group By 1 Order By 3 Into Cursor TempOpor
-	
+
 	* Obtener los totales
 	Select TempOpor
 	Sum CANT,VALOR	To	.CantOport.Value,.ValorOport.Value
-	
+
 	* Muestra los datos del temporal
 	.LockScreen = .T.
 	With ThisForm.Grid2
 		.RecordSourceType = 1
 		.RecordSource = 'TempOpor'
-		
+
 		.Column1.ControlSource = 'Allt(TempOpor.TIPO)'
 		.Column2.ControlSource = 'TempOpor.CANT'
 		.Column3.ControlSource = 'TempOpor.VALOR'
-		
+
 		* Irme al inicio del temporal
 		Select TempOpor
 		Go Top
 		.Refresh()
-		
+
 	EndWith
 	.LockScreen = .F.
-	
+
 EndWith
 
 ENDPROC
@@ -316,32 +316,32 @@ PROCEDURE totprobcierre
 * Totalizar por probabilidad de cierre
 *
 With ThisForm
-	
+
 	* Obtener las oportunidades por probabilidad de cierre
 	Select PROBCIERRE, Count(PROBCIERRE) As Cant, Sum(VALOR) As Valor From Temp Group By PROBCIERRE Order By 3 Into Cursor TempProb
-	
+
 	* Obtener los totales
 	Select TempProb
 	Sum CANT,VALOR	To	.CantProbCierre.Value,.ValorProbCierre.Value
-	
+
 	* Muestra los datos del temporal
 	.LockScreen = .T.
 	With ThisForm.Grid3
 		.RecordSourceType = 1
 		.RecordSource = 'TempProb'
-		
+
 		.Column1.ControlSource = 'Allt(TempProb.PROBCIERRE)'
 		.Column2.ControlSource = 'TempProb.CANT'
 		.Column3.ControlSource = 'TempProb.VALOR'
-		
+
 		* Irme al inicio del temporal
 		Select TempProb
 		Go Top
 		.Refresh()
-		
+
 	EndWith
 	.LockScreen = .F.
-	
+
 EndWith
 
 ENDPROC
@@ -354,10 +354,10 @@ ENDPROC
 		<reserved3>cnumuser
 activerecno
 noporttotreg
-*tiposdeprob 
-*tiposdeoport 
-*totoport 
-*totprobcierre 
+*tiposdeprob
+*tiposdeoport
+*totoport
+*totprobcierre
 </reserved3>
 		<reserved4/>
 		<reserved5/>
@@ -754,20 +754,20 @@ Name = "consultar"
 * Realiza la consulta de oportunidades segun las restricciones
 *
 With ThisForm
-	
+
 	* Deshabilitar el boton de excel
 	.Excel.Enabled = .F.
-	
+
 	* Quitar los temporal de los grid
 	.Grid1.RecordSource = ''
 	.Grid2.RecordSource = ''
 	.Grid3.RecordSource = ''
-	
+
 	* Borrar los temporales
 	DelAlias('Temp')
 	DelAlias('TempOpor')
 	DelAlias('TempProb')
-	
+
 	* Inicializar variables
 	Do Case
 		Case .Status.Value == 2
@@ -794,13 +794,13 @@ With ThisForm
 	dFechaFin = .FechaFin.Value
 	cTipo = Allt(.Tipo.Value)
 	cProbCierre = Allt(.ProbCierre.Value)
-	
+
 	* Localizar al contacto
 	cNumCont = ''
 	If Not Empty(.LeeContacto.Nombre.Value)
 		cNumCont = .LeeContacto.Clave.Value
 	EndIf
-	
+
 	* Formar la consulta
 	cSql = 'Select Oport.NUMOPORT As NumOport, Oport.CREADA As Creada, Oport.TIPO As Tipo, Contactos.EMPRESA As Empresa, '+;
 				'Contactos.NOMCONT As Contacto, Oport.ASUNTO As Resumen, '+;
@@ -816,41 +816,41 @@ With ThisForm
 				IIF(Empty(cTipo), '.T.', 'Allt(Oport.TIPO) == m.Val3')+' And '+;
 				IIF(Empty(cProbCierre), '.T.', 'Allt(Oport.PROBCIERRE) == m.Val4')+' And '+;
 				IIF(Empty(cNumCont), '.T.', 'Oport.NUMCONT == m.Val5')+' And '
-	
+
 	Do Case
 		Case nFiltro == 1
 			* Por Trabajar
 			cSql = cSql + '(Oport.STATUS == 0 Or Oport.STATUS == 1 Or (Oport.STATUS == 2 And Oport.SIGLLAMADA &lt;= m.Val7))'
-			
+
 		Case nFiltro == 2
 			* Creadas del ...
 			cSql = cSql + 'Between(Oport.CREADA,m.Val6,m.Val7)'
-			
+
 		Case nFiltro == 3
 			* Ganadas del ...
 			cSql = cSql + 'Between(Oport.GANADA,m.Val6,m.Val7)'
-			
+
 		Case nFiltro == 4
 			* Perdidas del ...
 			cSql = cSql + 'Between(Oport.PERDIDA,m.Val6,m.Val7)'
-			
+
 		Case nFiltro == 5
 			* Contactar del ...
 			cSql = cSql + 'Between(Oport.SIGLLAMADA,m.Val6,m.Val7)'
-			
+
 	EndCase
-	
+
 	* Hacer la consulta
 	If Not SqlMsl('Temp',cSql,.cNumUser,nStatus,cTipo,cProbCierre,cNumCont,dFechaIni,dFechaFin)
 Return
 	EndIf
-	
+
 	* Muestra los datos del temporal
 	.LockScreen = .T.
 	With ThisForm.Grid1
 		.RecordSourceType = 1
 		.RecordSource = 'Temp'
-		
+
 		.Column1.ControlSource = 'Allt(Temp.NUMOPORT)'
 		.Column2.ControlSource = 'Allt(Temp.EMPRESA)'
 		.Column3.ControlSource = 'Allt(Temp.CONTACTO)'
@@ -860,35 +860,35 @@ Return
 		.Column7.ControlSource = 'Allt(Temp.AGENTE)'
 		.Column8.ControlSource = 'MexDate3(Temp.CREADA)'
 		.Column9.ControlSource = 'Allt(Temp.TIPO)'
-		
+
 		* Irme al inicio del temporal
 		Select Temp
 		Go Top
-		
+
 		* Poner el cursor en el grid
 		.SetFocus()
-		
+
 	EndWith
 	.LockScreen = .F.
-	
+
 	* Almacenar en una propiedad de la forma el total de registros de Oport.dbf
 	.nOportTotReg = Reccount('Oport')
-	
+
 	* Mostrar aviso si no se encontro informacion
 	If Reccount('Temp') == 0
 		Alerta('No se encontró información')
 	Else
 		* Habilitar el boton de excel
 		.Excel.Enabled = .T.
-		
+
 		* Totalizar por tipos de oportunidad
 		.TotOport()
-		
+
 		* Totalizar por probabilidad de cierre
 		.TotProbCierre()
-		
+
 	EndIf
-	
+
 EndWith
 
 ENDPROC

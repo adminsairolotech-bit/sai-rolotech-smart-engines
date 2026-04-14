@@ -39,7 +39,7 @@ replit.md                                   (updated COPRA section)
 ## 3. ENGINE-BY-ENGINE PROOF
 
 ### 3.1 STATION ENGINE
-**File:** `app/engines/station_engine.py`  
+**File:** `app/engines/station_engine.py`
 **Public API:** `estimate(profile_result, input_result, flower_result) → Dict`
 
 **Why it's engineering logic (not visualization):** Implements material-specific max_angle_per_pass table, computes passes_per_bend = ceil(target_angle / max_angle_per_pass), multiplies by bend_count for forming_passes, adds separate entry/calibration/springback/section_extra stations. All values derived from rule-book formulae, not lookup tables of fixed station counts.
@@ -71,7 +71,7 @@ reason_log keys: [passes_per_bend, forming_passes, entry_stations,
 ---
 
 ### 3.2 FLOWER ENGINE
-**File:** `app/engines/advanced_flower_engine.py`  
+**File:** `app/engines/advanced_flower_engine.py`
 **Public API:** `generate_advanced_flower(profile_result, input_result) → Dict`
 
 **Why it's engineering logic:** Computes per-bend angle progression linearly from 0° to target_angle with final pass at 102% (overbend for springback). Classifies 9 distinct section types. Generates named passes: "edge pickup", "initial leg pre-form", "main flange angle progression", "pre-calibration", "final calibration". NOT just labels — actual angle arrays are computed.
@@ -119,7 +119,7 @@ pass_plan[8]: {pass:9, label:'final calib',    bend_angles_deg:[91.8, 91.8, 91.8
 ---
 
 ### 3.3 ROLL CONTOUR ENGINE
-**File:** `app/engines/roll_contour_engine.py` (1549 lines)  
+**File:** `app/engines/roll_contour_engine.py` (1549 lines)
 **Public API:** `generate_roll_contour(profile_result, input_result, station_result, flower_result) → Dict`
 
 **Why it's engineering logic:** Uses shapely.geometry.Polygon for real polygon intersection. Computes per-station upper/lower roll profile point arrays, contact points, forming depth, springback correction, roll gap, groove geometry. `geometry_grade` = `"manufacturing_grade"` when shapely available.
@@ -151,7 +151,7 @@ Pass  Stage         Target°   Gap mm  Width mm  Geometry         Interf
 ---
 
 ### 3.4 SPRINGBACK ENGINE
-**File:** `app/engines/springback_engine.py`  
+**File:** `app/engines/springback_engine.py`
 **Public API:** `calculate_springback(material, target_angle_deg, thickness_mm, bend_radius_mm) → Dict`
 
 **Two models (conservative = max of both):**
@@ -171,11 +171,11 @@ HSLA: factor=2.00° | elastic_plastic=0.281° | conservative=2.0°  | corrected=
 ---
 
 ### 3.5 FORCE ENGINE
-**File:** `app/engines/force_engine.py`  
+**File:** `app/engines/force_engine.py`
 **Public API:** `estimate_forming_force(thickness_mm, width_mm, material, bend_radius_mm, strip_speed_mpm) → Dict`
 
-**Formula:** `F = 0.8 × t² × w × Fy / r`  
-**Power:** `P = F × v / η` (η = 0.75)  
+**Formula:** `F = 0.8 × t² × w × Fy / r`
+**Power:** `P = F × v / η` (η = 0.75)
 **Torque:** `T = F × R_roll` (R_roll = 80mm default)
 
 **Actual Output (runtime verified):**
@@ -194,7 +194,7 @@ Formula: 0.8 × 4 × 200 × 350 / 6 = 37333.33 N
 ---
 
 ### 3.6 DEFECT ENGINE
-**File:** `app/engines/defect_engine.py`  
+**File:** `app/engines/defect_engine.py`
 **Public API:** `detect_defects(strain_value, pass_ratio, thickness_mm, material, strip_width_mm, angle_deg, ...) → Dict`
 
 **6 defect types with engineering calibration:**
@@ -220,7 +220,7 @@ GI thin wide (t=0.7, w=320):               defects=[('bow_camber','LOW')]  block
 ---
 
 ### 3.7 ROLL INTERFERENCE ENGINE
-**File:** `app/engines/roll_interference_engine.py`  
+**File:** `app/engines/roll_interference_engine.py`
 **Public APIs:** `check_contour_interference(roll_contour_result)`, `check_roll_interference(advanced_roll_result)`
 
 **Actual Output (runtime verified):**
@@ -239,7 +239,7 @@ check_contour_interference(contour)
 ---
 
 ### 3.8 BOM ENGINE
-**File:** `app/engines/bom_engine.py`  
+**File:** `app/engines/bom_engine.py`
 **Public API:** `generate_bom(station_result, shaft_result, bearing_result, ..., material, include_spares) → Dict`
 
 **Actual Output (runtime verified) — GI Lipped Channel, 24 stations, shaft=60mm:**
@@ -266,10 +266,10 @@ No   Description                              Qty    Unit   Weight(kg)
 ---
 
 ### 3.9 BEND ALLOWANCE / FLAT BLANK ENGINE
-**File:** `app/engines/bend_allowance_engine.py`  
-**Public APIs:**  
-- `bend_allowance(radius_mm, thickness_mm, angle_deg, material) → float`  
-- `calculate_flat_blank(segments_mm, bend_angles_deg, thickness_mm, bend_radius_mm, material) → Dict`  
+**File:** `app/engines/bend_allowance_engine.py`
+**Public APIs:**
+- `bend_allowance(radius_mm, thickness_mm, angle_deg, material) → float`
+- `calculate_flat_blank(segments_mm, bend_angles_deg, thickness_mm, bend_radius_mm, material) → Dict`
 - `flat_blank_from_profile(..., coil_width_tolerance_mm) → Dict` (adds coil width + weight/m)
 
 **Formula:** `BA = (π/180) × (R + k×t) × θ` — DIN 6935 K-factor neutral axis method
@@ -295,8 +295,8 @@ flat_blank_from_profile GI [50, 40, 50]mm @ 90°, 90°  t=1.5mm  R=3mm:
 ---
 
 ### 3.10 PROCESS CARD ENGINE
-**File:** `app/engines/process_card_engine.py`  
-**Public APIs:** `generate_process_card(simulation_result, thickness_mm, material, ...) → Dict`  
+**File:** `app/engines/process_card_engine.py`
+**Public APIs:** `generate_process_card(simulation_result, thickness_mm, material, ...) → Dict`
 `process_card_to_text(process_card_result) → str`
 
 **Why it's engineering logic:** Computes per-station springback-corrected angle (target + springback_deg), roll gap = thickness + gap_allowance, outer-fibre strain, force estimate. Generates text table for operator print.
@@ -306,7 +306,7 @@ flat_blank_from_profile GI [50, 40, 50]mm @ 90°, 90°  t=1.5mm  R=3mm:
 ---
 
 ### 3.11 MATERIAL DATABASE
-**File:** `app/utils/material_database.py`  
+**File:** `app/utils/material_database.py`
 **Public APIs:** `get_material(code)`, `list_materials()`, `get_property(code, prop, default)`
 
 **Actual Output (runtime verified) — all 10 materials:**
@@ -329,8 +329,8 @@ Sources: EN 10327, EN 10130, EN 10029, ASTM A606, DIN 6935
 ---
 
 ### 3.12 CAD EXPORT ENGINE
-**File:** `app/engines/cad_export_engine.py` (684 lines)  
-**Sub-functions:** `generate_roll_set_dxf(...)`, `generate_step_files(...)`  
+**File:** `app/engines/cad_export_engine.py` (684 lines)
+**Sub-functions:** `generate_roll_set_dxf(...)`, `generate_step_files(...)`
 **Library:** ezdxf (DXF R2010 / AC1024) for DXF; custom AP203 writer for STEP
 
 **DXF Actual Output (runtime verified):**
@@ -377,7 +377,7 @@ roll_s01.stp header:
 ---
 
 ### 3.13 REPORT ENGINE
-**File:** `app/engines/report_engine.py`  
+**File:** `app/engines/report_engine.py`
 **Public API:** `generate_report(pipeline) → Dict` (pipeline must have `status="pass"` and engine-specific keys)
 
 **13 sections in readable_report:**
@@ -481,7 +481,7 @@ Item 9: Exit Runout Table                              qty=1
 ```
 
 ### 5.2 Generated Process Card (runtime via API)
-**Endpoint:** `POST /api/process-card` — returns per-station operator setup parameters  
+**Endpoint:** `POST /api/process-card` — returns per-station operator setup parameters
 - Target angle, springback correction, corrected (over-bend) angle
 - Roll gap setting (mm), strip width at entry (mm), forming depth (mm)
 - Estimated force (kN), motor power (kW)
@@ -489,8 +489,8 @@ Item 9: Exit Runout Table                              qty=1
 - Rendered as ASCII text table (process_card_to_text)
 
 ### 5.3 Generated Engineering Report (runtime)
-**13-section readable report generated with** `generate_report(pipeline)`  
-File: `/tmp/readable_report_artifact.txt` (3329 chars)  
+**13-section readable report generated with** `generate_report(pipeline)`
+File: `/tmp/readable_report_artifact.txt` (3329 chars)
 All sections present including Section 13 disclaimer.
 
 ### 5.4 DXF Export (runtime)
@@ -602,7 +602,7 @@ Pass 7 [calibration]:target=91.8°  gap=2.10mm  width=199.1mm  interf=clear
 | Defect prediction | 6 calibrated rules | Heuristic DTM-class pre-check |
 | Machine layout | Rule-table station spacing | Parametric layout — NOT dynamic simulation |
 
-**Label used in code:** `simulation_engine.py` has explicit disclaimer in its output.  
+**Label used in code:** `simulation_engine.py` has explicit disclaimer in its output.
 **Correct label for all simulation outputs:** *Heuristic validation / DTM-like kinematic precheck — NOT finite element analysis*
 
 **Verdict: HONEST — no false FEA claims; all simulation outputs correctly labelled as rule-based or heuristic**

@@ -1,10 +1,10 @@
 Haan, **ye 2 real problems lag rahe hain**:
 
 **1. Station count galat estimate ho raha hai**
-Codex report me same 1.5 mm GI C-section ke liye Python pipeline ne **Recommended Stations = 4** diya, aur confidence bhi sirf **79/100** tha. Report me “Estimated Passes 5” bhi aaya. Iska matlab current engine ka station recommendation rule abhi **bahut optimistic / under-designed** hai. Aapka jo real shop-floor feel hai ki **1.5 mm strip ko 4 station me nikalna practical nahi, approx 9 station chahiye**, woh valid concern hai. 
+Codex report me same 1.5 mm GI C-section ke liye Python pipeline ne **Recommended Stations = 4** diya, aur confidence bhi sirf **79/100** tha. Report me “Estimated Passes 5” bhi aaya. Iska matlab current engine ka station recommendation rule abhi **bahut optimistic / under-designed** hai. Aapka jo real shop-floor feel hai ki **1.5 mm strip ko 4 station me nikalna practical nahi, approx 9 station chahiye**, woh valid concern hai.
 
 **2. Flower pattern / roll simulation ki pic nahi mili kyunki visual proof incomplete hai**
-Same report me clearly likha hai ki **LeftPanel, RollToolingView, DigitalTwinView, CompletePackagePanel visually capture nahi hue**, kyunki login/license gate tha aur **Playwright/browser automation available nahi tha**. Python dashboard dikha, but actual CNC workspace visuals prove nahi hue. Isliye flower pattern drawing, roll simulation pics, aur real roll view ka proof mila hi nahi. 
+Same report me clearly likha hai ki **LeftPanel, RollToolingView, DigitalTwinView, CompletePackagePanel visually capture nahi hue**, kyunki login/license gate tha aur **Playwright/browser automation available nahi tha**. Python dashboard dikha, but actual CNC workspace visuals prove nahi hue. Isliye flower pattern drawing, roll simulation pics, aur real roll view ka proof mila hi nahi.
 
 ### Iska seedha matlab
 

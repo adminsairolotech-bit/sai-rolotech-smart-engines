@@ -9,48 +9,48 @@ const html = `<!DOCTYPE html>
   @page { margin: 40px 50px; size: A4; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Segoe UI', Arial, sans-serif; color: #1a1a2e; line-height: 1.6; font-size: 11px; }
-  
+
   .cover { page-break-after: always; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 90vh; text-align: center; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: white; padding: 60px; border-radius: 0; }
   .cover h1 { font-size: 36px; margin-bottom: 10px; color: #e94560; }
   .cover h2 { font-size: 20px; font-weight: 300; margin-bottom: 30px; }
   .cover .version { font-size: 14px; opacity: 0.8; margin-top: 20px; }
   .cover .date { font-size: 12px; opacity: 0.6; }
-  
+
   .toc { page-break-after: always; padding: 30px 0; }
   .toc h2 { font-size: 24px; color: #e94560; border-bottom: 3px solid #e94560; padding-bottom: 10px; margin-bottom: 20px; }
   .toc-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dotted #ddd; font-size: 13px; }
   .toc-item.main { font-weight: bold; font-size: 14px; margin-top: 10px; }
-  
+
   h1 { font-size: 24px; color: #e94560; border-bottom: 3px solid #e94560; padding-bottom: 8px; margin: 25px 0 15px 0; page-break-after: avoid; }
   h2 { font-size: 18px; color: #1a1a2e; margin: 20px 0 10px 0; page-break-after: avoid; }
   h3 { font-size: 14px; color: #0f3460; margin: 15px 0 8px 0; page-break-after: avoid; }
-  
+
   p { margin-bottom: 8px; text-align: justify; }
   ul, ol { margin: 8px 0 8px 25px; }
   li { margin-bottom: 4px; }
-  
+
   .section { page-break-inside: avoid; margin-bottom: 15px; }
   .feature-box { background: #f8f9fa; border-left: 4px solid #e94560; padding: 12px 15px; margin: 10px 0; border-radius: 0 8px 8px 0; page-break-inside: avoid; }
   .feature-box h3 { color: #e94560; margin-top: 0; }
-  
+
   .tech-box { background: #e8f4f8; border-left: 4px solid #0f3460; padding: 12px 15px; margin: 10px 0; border-radius: 0 8px 8px 0; page-break-inside: avoid; }
-  
+
   table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 10px; }
   th { background: #1a1a2e; color: white; padding: 8px; text-align: left; }
   td { padding: 6px 8px; border: 1px solid #ddd; }
   tr:nth-child(even) { background: #f8f9fa; }
-  
+
   .highlight { color: #e94560; font-weight: bold; }
   .badge { display: inline-block; background: #e94560; color: white; padding: 2px 8px; border-radius: 10px; font-size: 9px; }
   .badge-blue { background: #0f3460; }
   .badge-green { background: #27ae60; }
-  
+
   .page-break { page-break-before: always; }
-  
+
   .footer { text-align: center; font-size: 9px; color: #999; margin-top: 30px; padding-top: 10px; border-top: 1px solid #eee; }
-  
+
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-  
+
   .stat-box { background: #1a1a2e; color: white; padding: 15px; border-radius: 8px; text-align: center; }
   .stat-box .number { font-size: 28px; color: #e94560; font-weight: bold; }
   .stat-box .label { font-size: 11px; opacity: 0.8; }
@@ -269,7 +269,7 @@ const html = `<!DOCTYPE html>
 <div class="feature-box">
   <h3>Ye Kya Hai?</h3>
   <p>Machine ki photo upload karo — AI turant diagnosis de dega ki problem kya hai aur kaise fix karna hai.</p>
-  
+
   <h3>Kaise Kaam Karta Hai (Step-by-Step):</h3>
   <ol>
     <li><strong>Photo Upload:</strong> User phone camera se photo khichta hai ya gallery se select karta hai (max 10MB)</li>
@@ -286,7 +286,7 @@ const html = `<!DOCTYPE html>
       </ul>
     </li>
   </ol>
-  
+
   <h3>Supported Equipment:</h3>
   <ul>
     <li>Roll Forming Machines</li>
@@ -295,7 +295,7 @@ const html = `<!DOCTYPE html>
     <li>Servo Motors</li>
     <li>Decoilers, Straighteners, Punching Units</li>
   </ul>
-  
+
   <h3>AI Response Language:</h3>
   <p>Hinglish (Hindi + English mix) — technicians ke liye easy to understand</p>
 </div>
@@ -304,13 +304,13 @@ const html = `<!DOCTYPE html>
 <div class="feature-box">
   <h3>Ye Kya Hai?</h3>
   <p>Industrial machine pe error code aaye toh yahan search karo — turant solution milega.</p>
-  
+
   <h3>Kaise Kaam Karta Hai:</h3>
   <ol>
     <li><strong>Local Database Search:</strong> Common error codes ka pre-built database hai — instant results milte hain bina internet ke</li>
     <li><strong>AI Expert Lookup:</strong> Agar code local database mein nahi mila, toh AI se poochho — detailed troubleshooting steps milenge</li>
   </ol>
-  
+
   <h3>Supported Brands:</h3>
   <table>
     <tr><th>Brand</th><th>Series/Models</th><th>Error Types</th></tr>
@@ -320,7 +320,7 @@ const html = `<!DOCTYPE html>
     <tr><td>Fuji Electric</td><td>FRENIC Series</td><td>Drive faults, Communication errors</td></tr>
     <tr><td>ABB</td><td>Motor Drives</td><td>Motor protection, Thermal faults</td></tr>
   </table>
-  
+
   <h3>AI Response Format:</h3>
   <p>Har error code ke liye AI ye deta hai:</p>
   <ol>
@@ -330,7 +330,7 @@ const html = `<!DOCTYPE html>
     <li>Reset procedure</li>
     <li>Preventive measures</li>
   </ol>
-  
+
   <h3>Safety Note:</h3>
   <p>System automatically remind karta hai: "Machine power OFF karo aur DC bus discharge hone do before working on hardware"</p>
 </div>
@@ -339,7 +339,7 @@ const html = `<!DOCTYPE html>
 <div class="feature-box">
   <h3>Ye Kya Hai?</h3>
   <p>AI automatically professional machine quotation generate karta hai — lead ka interest dekh ke price aur specs suggest karta hai.</p>
-  
+
   <h3>Kaise Kaam Karta Hai:</h3>
   <ol>
     <li>Lead select karo (ya manual details enter karo)</li>
@@ -367,7 +367,7 @@ const html = `<!DOCTYPE html>
 <div class="feature-box">
   <h3>Buddy Dashboard (/buddy)</h3>
   <p>AI assistant ka analytics dashboard — kitne sessions hue, user satisfaction score, top queries</p>
-  
+
   <h3>Buddy Rules (/buddy-rules)</h3>
   <p>Admin AI ki personality aur behavior configure kar sakta hai:</p>
   <ul>
@@ -376,7 +376,7 @@ const html = `<!DOCTYPE html>
     <li>No Competitor Comparison — competitors ka naam mat lo</li>
     <li>Language preference — Hinglish ya English</li>
   </ul>
-  
+
   <h3>Buddy Parivar (/buddy-family)</h3>
   <p>Specialized AI sub-buddies:</p>
   <ul>
@@ -479,7 +479,7 @@ const html = `<!DOCTYPE html>
 <h2>Quotation Maker (/quotation-maker)</h2>
 <div class="feature-box">
   <h3>Professional Machine Quotation Generator</h3>
-  
+
   <h3>Features:</h3>
   <ul>
     <li><strong>Lead Auto-Fill:</strong> Lead select karo — name, company, email, phone automatic fill</li>
@@ -489,7 +489,7 @@ const html = `<!DOCTYPE html>
     <li><strong>AI Generation:</strong> One-click AI se complete quote generate</li>
     <li><strong>PDF Export:</strong> Professional PDF format mein download/print</li>
   </ul>
-  
+
   <h3>Quotation Fields:</h3>
   <table>
     <tr><th>Field</th><th>Description</th></tr>
@@ -550,7 +550,7 @@ const html = `<!DOCTYPE html>
 <div class="feature-box">
   <h3>Complete Machine Maintenance System</h3>
   <p>Roll Forming Machines ke liye time-based maintenance schedules:</p>
-  
+
   <table>
     <tr><th>Schedule</th><th>Frequency</th><th>Focus Area</th><th>Time Required</th></tr>
     <tr><td>Daily (Roz)</td><td>Har din start se pehle</td><td>Safety checks, surface cleaning, greasing</td><td>10-15 min</td></tr>
@@ -559,7 +559,7 @@ const html = `<!DOCTYPE html>
     <tr><td>Quarterly (Timaahi)</td><td>Har 90 din</td><td>Gearbox oil change, hydraulic service, electrical inspection</td><td>Half day</td></tr>
     <tr><td>Yearly (Saal)</td><td>Annual</td><td>Complete overhaul, motor service, repainting</td><td>2-3 days</td></tr>
   </table>
-  
+
   <h3>Features:</h3>
   <ul>
     <li><strong>Interactive Checklist:</strong> Tasks check-off karo — progress bar dikhta hai</li>
@@ -687,7 +687,7 @@ const html = `<!DOCTYPE html>
     <li><strong>Login:</strong> Branded login card with email/password</li>
     <li><strong>Forgot Password:</strong> Email-based password recovery</li>
   </ul>
-  
+
   <h3>Main App Screens (Tab Navigation):</h3>
   <table>
     <tr><th>Tab</th><th>Screen</th><th>Features</th></tr>
@@ -711,7 +711,7 @@ const html = `<!DOCTYPE html>
     <li><strong>Gradle Build:</strong> AAB (Android App Bundle) build hota hai</li>
     <li><strong>Upload:</strong> AAB GitHub Release mein upload hota hai</li>
   </ol>
-  
+
   <h3>Build Specs:</h3>
   <ul>
     <li>Build time: ~15 minutes</li>

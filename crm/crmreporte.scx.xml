@@ -87,7 +87,7 @@ If Not OpenDbf('Contactos','NumCont') Or;
 EndIf
 
 With ThisForm
-	
+
 	* Localizar el reporte seleccionado del menu
 	Select Reportes
 	Locate For Upper(Alltrim(Prompt())) = Upper(Alltrim(Reportes.DESC))
@@ -96,9 +96,9 @@ With ThisForm
 		Return .f.
 	Endif
 	.Caption = Allt(Reportes.DESC)
-	
+
 	.Fecha2.SetValue(Date())
-	
+
 EndWith
 
 ENDPROC
@@ -116,7 +116,7 @@ PROCEDURE actcontroles
 *
 If Select('Reportes')&gt;0
 	With ThisForm
-		
+
 		* Activar el boton de imprimir si el reporte tiene un formato
 		.Imprimir.Enabled = Not Empty(Reportes.FORMATO)
 
@@ -154,10 +154,10 @@ EndIf
 Wait Window 'Obteniendo Información ...' NoWait
 
 If Empty(Reportes.SQLAVANZA)
-	
+
 	* Orden definido en el reporte
 	m.Orden=Allt(Reportes.ORDEN)
-	
+
 	* Si el reporte no esta hecho con un SQL, hacer la consulta
 	m.RetVal = SqlMsl('Tempo',;
 		'Select '+;
@@ -176,25 +176,25 @@ If Empty(Reportes.SQLAVANZA)
 		IIF(Empty(Reportes.CONDICION),'','('+Alltrim(Reportes.CONDICION)+') ')+;
 		IIF(Empty(m.Orden),'','Order By COL0'),;
 		m.vNumUser,m.vNumCli,m.vNumCont,DToS(m.vFecha1),DToS(m.vFecha2),m.vNumProy,m.vNumOrden)
-		
+
 	* Poner las relaciones para el despliegue de nuevas columnas
 	If m.RetVal
-		
+
 		Select Contactos
 		Set Relation To NUMCLI Into Clientes
-		
+
 		Select CRM
 		Set Relation To	NUMCONT		Into Contactos,;
 						NUMUSER		Into Usuarios,;
 						NUMORDEN	Into Ordenes
-		
+
 		Select Tempo
 		Set Relation To ID Into CRM
-		
+
 	EndIf
 
 Else
-	
+
 	* Es un SQL Avanzado
 	* Hacer la consulta
 	m.Sql = ThisForm.FixSQL(Reportes.SQLAVANZA)
@@ -222,9 +222,9 @@ lParameter Cadena
 	m.Cadena = StrTran(Upper(m.Cadena),'VFECHA2','Val5')
 	m.Cadena = StrTran(UPPER(m.Cadena),'VNUMPROY','Val6')
 	m.Cadena = StrTran(UPPER(m.Cadena),'VNUMORDEN','Val7')
-	
+
 	m.Cadena = StrTran(UPPER(m.Cadena),Chr(13)+Chr(10),Chr(32))
-	
+
 Return m.Cadena
 
 ENDPROC
@@ -234,9 +234,9 @@ ENDPROC
 		<ole2/>
 		<reserved1/>
 		<reserved2/>
-		<reserved3>*cargabase 
-*actcontroles 
-*fixsql 
+		<reserved3>*cargabase
+*actcontroles
+*fixsql
 </reserved3>
 		<reserved4/>
 		<reserved5/>
@@ -517,26 +517,26 @@ With Thisform
 	Else
 		m.vNumUser = Usuarios.NUMUSER
 	EndIf
-	
+
 	m.vNumCli = .LeeCli.Clave.Value
-	
+
 	m.vNumCont = ''
 	If Not Empty(.Contacto.Nombre.Value)
 		m.vNumCont = .Contacto.Clave.Value
 	EndIf
-	
+
 	m.vFecha1 = .Fecha1.dValue
 	m.vFecha2 = .Fecha2.dValue
 	m.vNumProy = .LeeProyecto.Clave.Value
 	m.vNumOrden = .NumOrden.Value
-	
+
 	* Crea la consulta del reporte
 	.CargaBase(ThisForm)
-	
+
 	* Manda imprimir el reporte
 	Select Tempo
 	=SendRep(Reportes.FORMATO,Reportes.DEST)
-	
+
 EndWith
 
 ENDPROC
@@ -760,25 +760,25 @@ With Thisform
 	Else
 		m.vNumUser = Usuarios.NUMUSER
 	EndIf
-	
+
 	m.vNumCli = .LeeCli.Clave.Value
-	
+
 	m.vNumCont = ''
 	If Not Empty(.Contacto.Nombre.Value)
 		m.vNumCont = .Contacto.Clave.Value
 	EndIf
-	
+
 	m.vFecha1 = .Fecha1.dValue
 	m.vFecha2 = .Fecha2.dValue
 	m.vNumProy = .LeeProyecto.Clave.Value
 	m.vNumOrden = .NumOrden.Value
-	
+
 	* Crea la consulta del reporte
 	.CargaBase(ThisForm)
-	
+
 	* Carga la consulta en Hoja
 	DoForm('Consulta',ThisForm,"CargaBase",Recno('Reportes'))
-	
+
 EndWith
 
 ENDPROC

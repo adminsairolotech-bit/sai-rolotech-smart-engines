@@ -26,4 +26,3 @@ After reading, return:
 - understanding summary
 - key engineering risks
 - required inputs still missing
-

@@ -5,7 +5,7 @@ Copyright (c) 2025 SAI Sai Rolotech Smart Engines. All rights reserved.
 IMPORTANT: READ THIS LICENSE AGREEMENT CAREFULLY BEFORE USING THE SOFTWARE.
 
 1. GRANT OF LICENSE
-   SAI Sai Rolotech Smart Engines grants you a non-exclusive, non-transferable license to 
+   SAI Sai Rolotech Smart Engines grants you a non-exclusive, non-transferable license to
    install and use SAI Sai Rolotech Smart Engines AI on Windows 10/11 computers you own.
 
 2. RESTRICTIONS

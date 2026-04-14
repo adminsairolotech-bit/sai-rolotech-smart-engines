@@ -36,33 +36,33 @@
 		<parent/>
 		<properties>Height = 17
 Width = 52
-numorden =  
-numproy =  
-numcont =  
+numorden =
+numproy =
+numcont =
 creada = {}
 cita = {}
 terminada = {}
 cerrada = {}
-numuser =  
-asesor1 =  
-asesor2 =  
-asesor3 =  
+numuser =
+asesor1 =
+asesor2 =
+asesor3 =
 prioridad = 0
 calif = 0
 avance = 0
 reabierta = 0
 hrsserv = 0
 cantserv = 0
-factura =  
+factura =
 importe = 0
 hrsestim = 0
 ingestim = 0
-problema =  
-equiporec =  
-causas =  
-pendpor =  
-tipo =  
-cerror =  
+problema =
+equiporec =
+causas =
+pendpor =
+tipo =
+cerror =
 nerror = 0
 Name = "orden"
 </properties>
@@ -88,11 +88,11 @@ With This
 	Select _Ordenes
 	If Bloquea('_Ordenes')
 		Go Bott
-		.NumOrden = Padl(Allt(SigDoc(NUMORDEN)),10)	
+		.NumOrden = Padl(Allt(SigDoc(NUMORDEN)),10)
 		Append Blank
 		Replace	NUMORDEN	With	.NumOrden,;
 				NUMPROY		With	.NumProy,;
-				NUMCONT		With	.NumCont,;			
+				NUMCONT		With	.NumCont,;
 				CREADA		With	.Creada,;
 				CITA		With	.Cita,;
 				NUMUSER		With	.NumUser,;
@@ -120,13 +120,13 @@ With This
 		.nError = 7
 		Return .F.
 	EndIf
-	
+
 	Select _Ordenes
 	=Seek(.NumOrden)
-	
+
 	Replace	CALIF		With	.Calif,;
 			CERRADA		With	.Cerrada
-			
+
 	* Abrir la base de datos con otro alias
 	Use
 	Use Ordenes Alias _Ordenes Order NumOrden In 0 Again
@@ -143,7 +143,7 @@ PROCEDURE modificar
 
 With This
 	Select _Ordenes
-	=Seek(.NumOrden)	
+	=Seek(.NumOrden)
 	Replace	NUMPROY		With	.NumProy,;
 			NUMCONT		With	.NumCont,;
 			CREADA		With	.Creada,;
@@ -163,7 +163,7 @@ With This
 			CAUSAS		With	.Causas,;
 			PENDPOR		With	.PendPor,;
 			TIPO		With	.Tipo
-			
+
 	* Abrir la base de datos con otro alias
 	Use
 	Use Ordenes Alias _Ordenes Order NumOrden In 0 Again
@@ -181,12 +181,12 @@ PROCEDURE reabrir
 With This
 	Select _Ordenes
 	=Seek(.NumOrden)
-	
+
 	Replace	TERMINADA	With	{},;
 			CERRADA		With	{},;
 			AVANCE		With	90,;
 			REABIERTA	With	REABIERTA+1
-			
+
 	* Abrir la base de datos con otro alias
 	Use
 	Use Ordenes Alias _Ordenes Order NumOrden In 0 Again
@@ -202,7 +202,7 @@ PROCEDURE recalcularhorastotales
 *
 
 With This
-	
+
 	* Obtener las actividades de la orden
 	If Not SqlMsl('Temp','Select Crm.* ' +;
 		'From Crm '+;
@@ -212,31 +212,31 @@ With This
 		.NumOrden)
 Return
 	EndIf
-	
+
 	* Inicializar la variable que almacena el total de horas invertidas en la orden
 	nHrsServ = 0
-	
+
 	* Recorre el temporal con las actividades de la orden
 	Select Temp
 	Scan
-				
+
 		* Almacena el total de horas invertidas en la orden
 		nHrsServ = nHrsServ + (Temp.FECHAFIN-Temp.FECHA)/3600
-		
+
 	EndScan
-	
+
 	* Almacena en una variable el numero de servicios de la orden
 	nCantServ = Reccount('Temp')
-	
+
 	* Borra el temporal
 	DelAlias('Temp')
-	
+
 	Select _Ordenes
 	=Seek(.NumOrden)
-	
+
 	Replace	HRSSERV		With	nHrsServ,;
 			CANTSERV	With	nCantServ
-			
+
 	* Abrir la base de datos con otro alias
 	Use
 	Use Ordenes Alias _Ordenes Order NumOrden In 0 Again
@@ -254,14 +254,14 @@ PROCEDURE serviciorealizado
 With This
 	Select _Ordenes
 	=Seek(.NumOrden)
-	
+
 	Replace	TERMINADA	With	{},;
 			AVANCE		With	.Avance,;
 			HRSSERV		With	HRSSERV+.HrsServ,;
 			CANTSERV	With	.CantServ,;
 			CAUSAS		With	.Causas,;
 			PENDPOR		With	.PendPor
-			
+
 	* Abrir la base de datos con otro alias
 	Use
 	Use Ordenes Alias _Ordenes Order NumOrden In 0 Again
@@ -283,7 +283,7 @@ With This
 		.nError = 1
 		Return .F.
 	EndIf
-		
+
 	* No omitir el usuario
 	If Empty(.NumUser)
 		.cError = 'No se puede omitir el usuario'
@@ -297,14 +297,14 @@ With This
 *!*			.nError = 3
 *!*			Return .F.
 *!*		EndIf
-	
+
 	* No omitir la descripcion del problema
 	If Empty(.Problema)
 		.cError = 'No se puede omitir el problema a resolver'
 		.nError = 4
 		Return .F.
 	EndIf
-	
+
 EndWith
 
 ENDPROC
@@ -318,7 +318,7 @@ PROCEDURE validservterminado
 With This
 	* No voy a validar nada
 	Return .t.
-	
+
 	* No esta terminado
 	If Empty(.Terminada)
 		* No omitir el avance
@@ -327,7 +327,7 @@ With This
 			.nError = 5
 			Return .F.
 		EndIf
-		
+
 		* No omitir las causas por las que queda pendiente el servicio
 		If Empty(.PendPor)
 			.cError = 'No se pueden las causas por las que se queda pendiente'
@@ -335,7 +335,7 @@ With This
 			Return .F.
 		EndIf
 	EndIf
-	
+
 EndWith
 
 ENDPROC
@@ -373,14 +373,14 @@ pendpor
 tipo
 cerror
 nerror
-*validagregar 
-*agregar 
-*modificar 
-*serviciorealizado 
-*validservterminado 
-*cerrar 
-*reabrir 
-*recalcularhorastotales 
+*validagregar
+*agregar
+*modificar
+*serviciorealizado
+*validservterminado
+*cerrar
+*reabrir
+*recalcularhorastotales
 </reserved3>
 		<reserved4/>
 		<reserved5/>

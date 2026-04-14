@@ -95,7 +95,7 @@ With ThisForm
 		nModo=1
 	EndIf
 	.nModo = nModo
-	
+
 	* Verificar que el # de registro sea valido, en modif y baja
 	* Irme al registro que se desea modificar o borrar
 	Select CRM
@@ -115,7 +115,7 @@ With ThisForm
 		Select Usuarios
 		Seek m.NumUser
 		.Usuario.Value = Usuarios.NOMUSER
-		
+
 		.Timer1.Enabled = .t.
 		.HoraFin.InputMask = '99:99:99'
 		.Caption = 'Agregar actividad realizada'
@@ -123,11 +123,11 @@ With ThisForm
 		.HoraIni.Value = Left(Time(),5)
 		.HoraFin.Value = Time()
 		Keyboard '{ALT-C}'
-		
+
 	Case .nModo == 2
 		.Caption = 'Modificar actividad realizada'
 		.CargarInfo
-		
+
 	Case .nModo == 3
 		.Caption = 'Eliminar actividad realizada'
 		.Procesar.Caption = '\&lt;Eliminar'
@@ -135,13 +135,13 @@ With ThisForm
 		.SetAll('Enabled',.f.)
 		.Procesar.Enabled = .t.
 		.Cerrar.Enabled = .t.
-		
+
 	Case .nModo == 4
 		.Caption = 'Completar una actividad pendiente'
 		.CargarInfo
 
-	Endcase	
-	
+	Endcase
+
 EndWith
 ENDPROC
 PROCEDURE KeyPress
@@ -165,7 +165,7 @@ DoDefault(nKeyCode, nShiftAltCtrl)
 ENDPROC
 PROCEDURE cargarinfo
 With ThisForm
-	
+
 	If Seek(CRM.NUMCONT,'Contactos')
 		.Contacto.Clave.Value = CRM.NUMCONT
 		.Contacto.Nombre.Value = Contactos.NOMCONT
@@ -176,7 +176,7 @@ With ThisForm
 		.Telefono.Enabled = .f.
 		.eMail.Enabled = .f.
 	Endif
-	
+
 	Select CRM
 *!*		.Accion.Value = CRM.DESC
 *!*		.Categoria.Value = CRM.CATEGORIA
@@ -203,7 +203,7 @@ With ThisForm
 	.HoraFin.Value = CRM.HORAFIN
 	.Obs.Value = CRM.OBS
 	.Seguim.Value = CRM.SEGUIM
-	
+
 	If Seek(Crm.NUMUSER,'Usuarios')
 		.Usuario.Value = Usuarios.NOMUSER
 		.Usuario.Enabled = .t.
@@ -294,7 +294,7 @@ With ThisForm
 		NUMUSER		with Usuarios.NUMUSER,;
 		TIPO		with '1'
 	Use
-		
+
 EndWith
 ENDPROC
 </methods>
@@ -310,11 +310,11 @@ lusacat2
 lusacat3
 lusacat4
 lusacat5
-*cargainfo 
-*saveinfo 
-*validainfo 
-*cargarinfo 
-*creadbcateg 
+*cargainfo
+*saveinfo
+*validainfo
+*cargarinfo
+*creadbcateg
 </reserved3>
 		<reserved4/>
 		<reserved5/>
@@ -448,7 +448,7 @@ ZOrderSet = 4
 calias = CrmCat25
 ccampoclave = CrmCat25.NUMCAT
 ccamponombre = CrmCat25.NOMCAT
-cformabusqueda = 
+cformabusqueda =
 ctagclave = NumCat
 ctagnombre = NomCat
 nanchoclave = 5
@@ -495,7 +495,7 @@ ZOrderSet = 4
 calias = CrmCat24
 ccampoclave = CrmCat24.NUMCAT
 ccamponombre = CrmCat24.NOMCAT
-cformabusqueda = 
+cformabusqueda =
 ctagclave = NumCat
 ctagnombre = NomCat
 nanchoclave = 5
@@ -542,7 +542,7 @@ ZOrderSet = 4
 calias = CrmCat23
 ccampoclave = CrmCat23.NUMCAT
 ccamponombre = CrmCat23.NOMCAT
-cformabusqueda = 
+cformabusqueda =
 ctagclave = NumCat
 ctagnombre = NomCat
 nanchoclave = 5
@@ -589,7 +589,7 @@ ZOrderSet = 4
 calias = CrmCat22
 ccampoclave = CrmCat22.NUMCAT
 ccamponombre = CrmCat22.NOMCAT
-cformabusqueda = 
+cformabusqueda =
 ctagclave = NumCat
 ctagnombre = NomCat
 nanchoclave = 5
@@ -735,7 +735,7 @@ With ThisForm
 		.Telefono.Enabled = .f.
 		.eMail.Enabled = .f.
 	Endif
-EndWith		
+EndWith
 
 ENDPROC
 </methods>
@@ -770,7 +770,7 @@ ZOrderSet = 4
 calias = CrmCat21
 ccampoclave = CrmCat21.NUMCAT
 ccamponombre = CrmCat21.NOMCAT
-cformabusqueda = 
+cformabusqueda =
 ctagclave = NumCat
 ctagnombre = NomCat
 nanchoclave = 5
@@ -1007,7 +1007,7 @@ Name = "Procesar"
 		<protected/>
 		<methods>PROCEDURE Click
 With ThisForm
-		
+
 	Do Case
 	Case .nModo == 1
 		If .ValidaInfo()
@@ -1016,13 +1016,13 @@ With ThisForm
 			.SaveInfo
 			.Release
 		Endif
-		
+
 	Case .nModo == 2 or .nModo==4
 		If .ValidaInfo()
 			.SaveInfo
 			.Release
 		Endif
-		
+
 	Case .nModo == 3
 		If GetNY('¿Seguro que desea borrar la acción?')
 			Select CRM
@@ -1031,7 +1031,7 @@ With ThisForm
 		Endif
 
 	EndCase
-EndWith	
+EndWith
 
 ENDPROC
 </methods>

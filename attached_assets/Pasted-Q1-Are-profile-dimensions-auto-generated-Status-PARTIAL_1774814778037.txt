@@ -119,4 +119,3 @@ Roll radius/width fields	NOT CALCULATED — None	Cannot use for tooling design
 RollFormingSimulator UI	REAL rendering, wired to API	UI is functional ✓
 Consistency (7/13 parameters)	PASS	Basic geometry trustworthy ✓
 The three items that need real engineering fixes before this data can be used for manufacturing decisions: the flat strip width formula, the flange detection in manual mode, and the roll groove radius/width calculation.
-

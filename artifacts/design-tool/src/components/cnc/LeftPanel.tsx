@@ -2332,4 +2332,3 @@ export function LeftPanel() {
     </>
   );
 }
-

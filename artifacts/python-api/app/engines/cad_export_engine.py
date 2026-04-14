@@ -584,7 +584,7 @@ def _step_hollow_cylinder(
     """
     Generate STEP AP203 text for a hollow cylinder (roll body).
     Returns (step_data_section_text, next_entity_id).
-    
+
     AP203 geometry:
       - Two cartesian points for axis origin + direction
       - Outer cylindrical surface + inner cylindrical surface
@@ -982,4 +982,3 @@ def generate_cad_export(
             "dwg_export_note": "Native DWG writer not implemented in cad_export_engine (DXF + STEP only).",
         },
     }
-

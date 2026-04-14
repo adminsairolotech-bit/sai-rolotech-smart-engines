@@ -216,7 +216,7 @@ export async function sendQuotationFollowup(lead) {
 
 Kya main aapki further help kar sakta hoon?
 - Machine specs ke baare mein?
-- Delivery timeline?  
+- Delivery timeline?
 - Installation support?
 
 Batayein, hum ready hain! 😊`;

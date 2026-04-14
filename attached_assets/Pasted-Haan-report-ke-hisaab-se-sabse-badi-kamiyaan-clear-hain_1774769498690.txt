@@ -1,4 +1,4 @@
-Haan — report ke hisaab se **sabse badi kamiyaan clear hain**, aur inko systematically fix kiya ja sakta hai. Uploaded analysis me main gaps ye nikle: **FEA missing**, **zero test coverage**, **DWG/modern CAD export missing**, **help/manual missing**, **RBAC + audit log missing**, plus **bundle/performance** aur **error-handling inconsistency**. Overall score bhi isi wajah se `7.61/10` par ruk raha hai. 
+Haan — report ke hisaab se **sabse badi kamiyaan clear hain**, aur inko systematically fix kiya ja sakta hai. Uploaded analysis me main gaps ye nikle: **FEA missing**, **zero test coverage**, **DWG/modern CAD export missing**, **help/manual missing**, **RBAC + audit log missing**, plus **bundle/performance** aur **error-handling inconsistency**. Overall score bhi isi wajah se `7.61/10` par ruk raha hai.
 
 Mera seedha recommendation:
 
@@ -8,7 +8,7 @@ Mera seedha recommendation:
 
 Ye sabse practical aur fastest improvement hai.
 
-**Abhi problem:** report me **unit tests / integration tests = zero** bola gaya hai. 
+**Abhi problem:** report me **unit tests / integration tests = zero** bola gaya hai.
 
 **Fix:**
 
@@ -34,7 +34,7 @@ Ye sabse practical aur fastest improvement hai.
 
 ### 2. Engineering accuracy ko stronger banao
 
-Report me current model ko **empirical** bola gaya hai, aur FEA, bow/camber prediction, wrinkling analysis, deformation zone width missing hai. 
+Report me current model ko **empirical** bola gaya hai, aur FEA, bow/camber prediction, wrinkling analysis, deformation zone width missing hai.
 
 **Fix in 3 levels:**
 
@@ -65,7 +65,7 @@ Report me current model ko **empirical** bola gaya hai, aur FEA, bow/camber pred
 
 ### 3. DWG / better CAD export add karo
 
-Report me SVG, DXF R12, PDF, ZIP, STEP present hain, but **DWG, IGES, DXF 2024 missing** bola gaya hai. 
+Report me SVG, DXF R12, PDF, ZIP, STEP present hain, but **DWG, IGES, DXF 2024 missing** bola gaya hai.
 
 **Fix priority:**
 
@@ -86,7 +86,7 @@ Report me SVG, DXF R12, PDF, ZIP, STEP present hain, but **DWG, IGES, DXF 2024 m
 
 ### 4. Security + enterprise controls add karo
 
-Report ke hisaab se **RBAC nahi hai, audit log nahi hai, encryption at rest nahi hai**, enterprise readiness low hai. 
+Report ke hisaab se **RBAC nahi hai, audit log nahi hai, encryption at rest nahi hai**, enterprise readiness low hai.
 
 **Fix:**
 
@@ -118,7 +118,7 @@ Report ke hisaab se **RBAC nahi hai, audit log nahi hai, encryption at rest nahi
 
 ### 5. User help/manual/wizard add karo
 
-Report me UI strong bola gaya hai, but **guided wizard** aur **help/manual** missing bola gaya hai. 
+Report me UI strong bola gaya hai, but **guided wizard** aur **help/manual** missing bola gaya hai.
 
 **Fix:**
 
@@ -433,6 +433,6 @@ State:
 
 # Straight answer
 
-Haan, jo kamiyaan report me nikli hain unko fix karne ka clear path hai, aur sabse pehle **tests + engineering risk engine + workflow security + help/manual** par kaam karna chahiye. Yehi fastest improvement dega. Report ke mutabik top 5 upgrades jo score ko 9+ ki taraf le ja sakte hain wo bhi isi direction me hain. 
+Haan, jo kamiyaan report me nikli hain unko fix karne ka clear path hai, aur sabse pehle **tests + engineering risk engine + workflow security + help/manual** par kaam karna chahiye. Yehi fastest improvement dega. Report ke mutabik top 5 upgrades jo score ko 9+ ki taraf le ja sakte hain wo bhi isi direction me hain.
 
 Agar chaho, main ab isi ko aur strong bana kar **single ultra master remediation file** bhi likh deta hoon jise tum direct Replit me permanent rules file ki tarah rakh sako.

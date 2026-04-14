@@ -41,9 +41,9 @@ export function RightProperties() {
             <div className="pt-4 border-t">
               <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">View</h3>
               <label className="flex items-center space-x-2 text-sm cursor-pointer">
-                <input 
-                  type="checkbox" 
-                  checked={showGrid} 
+                <input
+                  type="checkbox"
+                  checked={showGrid}
                   onChange={toggleGrid}
                   className="rounded border-border bg-background text-primary focus:ring-primary h-4 w-4"
                 />
@@ -64,18 +64,18 @@ export function RightProperties() {
         </span>
         <div className="flex items-center space-x-1">
           {activeShape && (
-            <Button 
-              variant="ghost" 
-              size="icon" 
+            <Button
+              variant="ghost"
+              size="icon"
               className="h-7 w-7 text-muted-foreground hover:text-foreground"
               onClick={() => handleChange('isLocked', !activeShape.isLocked)}
             >
               {activeShape.isLocked ? <Lock className="w-3.5 h-3.5" /> : <Unlock className="w-3.5 h-3.5" />}
             </Button>
           )}
-          <Button 
-            variant="ghost" 
-            size="icon" 
+          <Button
+            variant="ghost"
+            size="icon"
             className="h-7 w-7 text-destructive hover:bg-destructive/10"
             onClick={deleteSelectedShapes}
           >
@@ -86,16 +86,16 @@ export function RightProperties() {
 
       <ScrollArea className="flex-1 p-4">
         <div className="space-y-6">
-          
+
           {/* POSITION & SIZE */}
           <div>
             <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Layout</h3>
             <div className="grid grid-cols-2 gap-3">
               <div className="flex items-center space-x-2">
                 <span className="text-xs text-muted-foreground w-3">X</span>
-                <Input 
-                  type="number" 
-                  value={Math.round(activeShape?.x || 0)} 
+                <Input
+                  type="number"
+                  value={Math.round(activeShape?.x || 0)}
                   onChange={(e) => handleNumberChange('x', e.target.value)}
                   className="h-8 text-xs font-mono"
                   disabled={isMultiSelection || activeShape?.isLocked}
@@ -103,9 +103,9 @@ export function RightProperties() {
               </div>
               <div className="flex items-center space-x-2">
                 <span className="text-xs text-muted-foreground w-3">Y</span>
-                <Input 
-                  type="number" 
-                  value={Math.round(activeShape?.y || 0)} 
+                <Input
+                  type="number"
+                  value={Math.round(activeShape?.y || 0)}
                   onChange={(e) => handleNumberChange('y', e.target.value)}
                   className="h-8 text-xs font-mono"
                   disabled={isMultiSelection || activeShape?.isLocked}
@@ -115,9 +115,9 @@ export function RightProperties() {
                 <>
                   <div className="flex items-center space-x-2">
                     <span className="text-xs text-muted-foreground w-3">W</span>
-                    <Input 
-                      type="number" 
-                      value={Math.round(activeShape?.width || (activeShape?.radius ? activeShape.radius * 2 : 0))} 
+                    <Input
+                      type="number"
+                      value={Math.round(activeShape?.width || (activeShape?.radius ? activeShape.radius * 2 : 0))}
                       onChange={(e) => {
                         const val = parseFloat(e.target.value);
                         if(activeShape.type === 'circle') handleChange('radius', val/2);
@@ -129,9 +129,9 @@ export function RightProperties() {
                   </div>
                   <div className="flex items-center space-x-2">
                     <span className="text-xs text-muted-foreground w-3">H</span>
-                    <Input 
-                      type="number" 
-                      value={Math.round(activeShape?.height || (activeShape?.radius ? activeShape.radius * 2 : 0))} 
+                    <Input
+                      type="number"
+                      value={Math.round(activeShape?.height || (activeShape?.radius ? activeShape.radius * 2 : 0))}
                       onChange={(e) => {
                         const val = parseFloat(e.target.value);
                         if(activeShape.type === 'circle') handleChange('radius', val/2);
@@ -145,9 +145,9 @@ export function RightProperties() {
               )}
               <div className="flex items-center space-x-2">
                 <span className="text-xs text-muted-foreground w-3">°</span>
-                <Input 
-                  type="number" 
-                  value={Math.round(activeShape?.rotation || 0)} 
+                <Input
+                  type="number"
+                  value={Math.round(activeShape?.rotation || 0)}
                   onChange={(e) => handleNumberChange('rotation', e.target.value)}
                   className="h-8 text-xs font-mono"
                   disabled={isMultiSelection || activeShape?.isLocked}
@@ -165,9 +165,9 @@ export function RightProperties() {
                   <span>Opacity</span>
                   <span className="font-mono">{Math.round((activeShape?.opacity || 1) * 100)}%</span>
                 </div>
-                <Slider 
-                  value={[(activeShape?.opacity || 1) * 100]} 
-                  max={100} 
+                <Slider
+                  value={[(activeShape?.opacity || 1) * 100]}
+                  max={100}
                   step={1}
                   onValueChange={(vals) => handleChange('opacity', vals[0] / 100)}
                   disabled={activeShape?.isLocked}
@@ -175,24 +175,24 @@ export function RightProperties() {
               </div>
 
               {activeShape?.type !== 'line' && activeShape?.type !== 'pencil' && (
-                <ColorPicker 
+                <ColorPicker
                   label="Fill Color"
-                  color={activeShape?.fill || 'transparent'} 
-                  onChange={(c) => handleChange('fill', c)} 
+                  color={activeShape?.fill || 'transparent'}
+                  onChange={(c) => handleChange('fill', c)}
                 />
               )}
 
-              <ColorPicker 
+              <ColorPicker
                 label="Stroke Color"
-                color={activeShape?.stroke || 'transparent'} 
-                onChange={(c) => handleChange('stroke', c)} 
+                color={activeShape?.stroke || 'transparent'}
+                onChange={(c) => handleChange('stroke', c)}
               />
 
               <div className="flex items-center space-x-2">
                 <span className="text-xs text-muted-foreground w-12">Width</span>
-                <Input 
-                  type="number" 
-                  value={activeShape?.strokeWidth || 0} 
+                <Input
+                  type="number"
+                  value={activeShape?.strokeWidth || 0}
                   onChange={(e) => handleNumberChange('strokeWidth', e.target.value)}
                   className="h-8 text-xs font-mono flex-1"
                   disabled={isMultiSelection || activeShape?.isLocked}
@@ -207,21 +207,21 @@ export function RightProperties() {
             <div className="pt-4 border-t border-border/50">
               <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Typography</h3>
               <div className="space-y-3">
-                <Input 
-                  value={activeShape.text || ''} 
+                <Input
+                  value={activeShape.text || ''}
                   onChange={(e) => handleChange('text', e.target.value)}
                   className="text-sm"
                   placeholder="Enter text..."
                 />
                 <div className="grid grid-cols-2 gap-2">
-                  <Input 
-                    type="number" 
-                    value={activeShape.fontSize || 16} 
+                  <Input
+                    type="number"
+                    value={activeShape.fontSize || 16}
                     onChange={(e) => handleNumberChange('fontSize', e.target.value)}
                     className="h-8 text-xs font-mono"
                     placeholder="Size"
                   />
-                  <select 
+                  <select
                     className="flex h-8 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-1 text-xs shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                     value={activeShape.fontFamily || 'Inter'}
                     onChange={(e) => handleChange('fontFamily', e.target.value)}

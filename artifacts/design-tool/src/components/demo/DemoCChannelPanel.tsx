@@ -163,7 +163,7 @@ function OverviewTab() {
               <rect x="196" y="56" width="4" height="188" fill="#f59e0b" opacity="0.8" />
               <rect x="50" y="240" width="150" height="4" fill="#f59e0b" opacity="0.8" />
               <rect x="50" y="240" width="4" height="40" fill="#f59e0b" opacity="0.8" />
-              
+
               <line x1="30" y1="20" x2="30" y2="60" stroke="#06b6d4" strokeWidth="1" strokeDasharray="3,3" />
               <text x="15" y="45" fill="#06b6d4" fontSize="10" textAnchor="middle">20</text>
 

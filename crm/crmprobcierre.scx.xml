@@ -265,7 +265,7 @@ Name = "grabar"
 * Grabar en el Config.msl los tipos de probabilidad de cierre
 *
 With ThisForm
-	
+
 	* Recorrer el temporal
 	cTipoProb = ''
 	Select TipoProb
@@ -274,13 +274,13 @@ With ThisForm
 			cTipoProb = cTipoProb + IIF(Not Empty(cTipoProb),'^','') + Allt(TIPO)
 		EndIf
 	EndScan
-	
+
 	* Grabar en el Config.msl la informacion
 	PutMsl('CrmProbCierre', cTipoProb)
-	
+
 	* Cerrar la ventana
 	.Release
-	
+
 EndWith
 
 ENDPROC

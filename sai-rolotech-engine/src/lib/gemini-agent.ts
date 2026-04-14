@@ -48,13 +48,13 @@ export class GeminiAgent {
       return text;
     } catch (error: any) {
       console.error(chalk.red(`[ERROR] Gemini Key failed: ${error.message}`));
-      
+
       // If rate limited, try one more time with a different key
       if (error.response?.status === 429) {
         console.log(chalk.yellow("[WARN] Rate limited. Retrying with next key..."));
         return this.generate(prompt, systemInstruction);
       }
-      
+
       throw error;
     }
   }

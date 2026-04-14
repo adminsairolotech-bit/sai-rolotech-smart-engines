@@ -81,22 +81,22 @@ If Not OpenDbf('Oport','NUMOPORT') Or;
 EndIf
 
 With ThisForm
-	
+
 	* Cargar los tipos de oportunidades
 	.TiposdeOport()
-	
+
 	* Cargar los tipos de probabilidad de cierre
 	.TiposdeProb()
-	
+
 	* Almacena en una propiedad de la forma el id de la oportunidad
 	.cNumOport = cNumOport
-	
+
 	* Localizarla para mostrar su informacion
 	If Not Seek(cNumOport,'Oport')
 		Alerta('No se localizo la oportunidad')
 		Return .F.
 	EndIf
-	
+
 	* Obtener el status
 	cStatus = ''
 	Do Case
@@ -112,7 +112,7 @@ With ThisForm
 			cStatus = 'Perdida'
 	EndCase
 	.Status.Value = cStatus
-	
+
 	.FCreada.SetValue(Oport.CREADA)
 	.NumOport.Value = Oport.NUMOPORT
 	.ConocioEn.Value = Oport.CONOCIOEN
@@ -123,19 +123,19 @@ With ThisForm
 	.Obs.Value = Oport.OBS
 	.ObsCli.Value = Oport.OBSCLI
 	.ProbCierre.Value = Oport.PROBCIERRE
-	
+
 	* Mostrar el usuario
 	cNumUser = Oport.NUMUSER
 	With ThisForm.Usuario
 		.RowSourceType = 6
 		.RowSource = 'Usuarios.NOMUSER'
-		
+
 		Select Usuarios
 		Seek(cNumUser)
 		.Value = Usuarios.NOMUSER
 		.InteractiveChange()
 	EndWith
-	
+
 	* Mostrar el contacto
 	.cNumCont = Oport.NUMCONT
 	.cNumCli = ''
@@ -146,10 +146,10 @@ With ThisForm
 		.Email.Value = Contactos.MAIL
 		.cNumCli = Contactos.NUMCLI
 	EndIf
-	
+
 	* Ocultar controles que solo se usan al hacer clic en Esperar, Cerrada Perdida
 	.ActControles()
-	
+
 	* Deshabilitar los botones si ya esta ganada o perdida
 	If Oport.STATUS == 3 Or Oport.STATUS == 4
 		.Esperar.Enabled = .F.
@@ -157,10 +157,10 @@ With ThisForm
 		.Cerrada.Enabled = .F.
 		.Perdida.Enabled = .F.
 	EndIf
-	
+
 	* Enviar el cursor al seguimiento realizado
 	.Seguimiento.SetFocus()
-	
+
 EndWith
 
 ENDPROC
@@ -189,7 +189,7 @@ PROCEDURE actcontroles
 * * Ocultar controles que solo se usan al hacer clic en Esperar, Cerrada Perdida
 *
 With ThisForm
-	
+
 	* Esperar
 	.InfoEsperar.Visible = .F.
 	.InfoEsperar.Left = 275
@@ -197,7 +197,7 @@ With ThisForm
 	If Not .Esperar.Enabled
 		.Esperar.Enabled = .T.
 	EndIf
-	
+
 	* Cerrada
 	.InfoCerrada.Visible = .F.
 	.InfoCerrada.Left = 275
@@ -205,17 +205,17 @@ With ThisForm
 	If Not .Cerrada.Enabled
 		.Cerrada.Enabled = .T.
 	EndIf
-	
+
 	* Perdida
 	.InfoPerdida.Visible = .F.
 	If Not .Perdida.Enabled
 		.Perdida.Enabled = .T.
 	EndIf
-	
+
 	* Disminuir el tamaño de la ventana
 	.Height = 350
 	.AutoCenter = .T.
-	
+
 EndWith
 
 ENDPROC
@@ -226,7 +226,7 @@ PROCEDURE actualizaoport
 * Actualiza la informacion de la oportunidad
 *
 With ThisForm
-	
+
 	* Localizar la oportunidad y actualiza la informacion
 	Select Oport
 	Seek(.cNumOport)
@@ -241,7 +241,7 @@ With ThisForm
 			OBSCLI		With	Allt(.ObsCli.Value),;
 			INICIADA	With	IIF(Empty(INICIADA),Date(),INICIADA),;
 			PROBCIERRE	With	.ProbCierre.Value
-	
+
 EndWith
 
 ENDPROC
@@ -252,9 +252,9 @@ PROCEDURE agregaractiv
 * Agrega la actividad en el CRM
 *
 With ThisForm
-	
+
 	With ThisForm.oActividad
-		
+
 		* Llenar la informacion de la actividad
 		.Id = ''
 		.NumCont = ThisForm.cNumCont
@@ -270,7 +270,7 @@ With ThisForm
 		.Refer = ''
 		.NumOrden = ''
 		.OrdenPost = ''
-		
+
 		* Manda llamar el metodo para validar la informacion para grabar la actividad
 		If Not .ValidAgregar()
 			Alerta(.cError)
@@ -278,17 +278,17 @@ With ThisForm
 			ThisForm.LeeObs.SetFocus()
 			Return .F.
 		EndIf
-		
+
 		* Agregar una nueva actividad
 		If Not .Agregar()
 			Alerta(.cError)
 			Return .F.
 		EndIf
 	EndWith
-	
+
 	* SI se logro agregar la actividad
 	Return .T.
-	
+
 EndWith
 
 ENDPROC
@@ -300,15 +300,15 @@ PROCEDURE tiposdeoport
 *
 With ThisForm
 	Local i,cTipos,cTipoOport
-	
+
 	* Obtener los tipos de oportunidades desde el Config.msl
 	cTipos = GetMsl('CrmTiposOport')
 	cTipoOport = ''
-	
+
 	* Crear el temporal donde se van a almacenar los tipos
 	Create Cursor TipoOpor(TIPO C(15))
 	Index On Upper(TIPO) Tag Tipo
-	
+
 	* Agregarlos al temporal
 	i = 1
 	Do While .T.
@@ -319,10 +319,10 @@ With ThisForm
 		Insert Into TipoOpor Values (cTipoOport)
 		i=i+1
 	EndDo
-	
+
 	.Tipo.RowSourceType = 6
 	.Tipo.RowSource = 'TipoOpor.TIPO'
-	
+
 EndWith
 
 ENDPROC
@@ -334,15 +334,15 @@ PROCEDURE tiposdeprob
 *
 With ThisForm
 	Local i,cTipos,cTipoProb
-	
+
 	* Obtener los tipos de probabilidad de cierre desde el Config.msl
 	cTipos = GetMsl('CrmProbCierre')
 	cTipoProb = ''
-	
+
 	* Crear el temporal donde se van a almacenar los tipos
 	Create Cursor TipoProb(TIPO C(15))
 	Index On Upper(TIPO) Tag Tipo
-	
+
 	* Agregarlos al temporal
 	i = 1
 	Do While .T.
@@ -353,10 +353,10 @@ With ThisForm
 		Insert Into TipoProb Values (cTipoProb)
 		i=i+1
 	EndDo
-	
+
 	.ProbCierre.RowSourceType = 6
 	.ProbCierre.RowSource = 'TipoProb.TIPO'
-	
+
 EndWith
 
 ENDPROC
@@ -367,59 +367,59 @@ PROCEDURE validainfo
 * Metodo para validar la informacion antes de grabar
 *
 With ThisForm
-	
+
 	* Validar que no se omita el tipo
 	If Empty(.Tipo.Value) Or Allt(.Tipo.Value) == '&lt; Definir &gt;'
 		Alerta('No se puede omitir el tipo')
 		.Tipo.SetFocus()
 		Return .F.
 	EndIf
-	
+
 	* Validar que no se omita el agente
 	If Empty(.Usuario.Value)
 		Alerta('No se puede omitir el agente')
 		.Usuario.SetFocus()
 		Return .F.
 	EndIf
-	
+
 	* Validar que no se omita el asunto
 	If Empty(.Asunto.Value)
 		Alerta('No se puede omitir el asunto')
 		.Asunto.SetFocus()
 		Return .F.
 	EndIf
-	
+
 	* Validar que no se omitan las observaciones
 	If Empty(.Obs.Value)
 		Alerta('No se puede omitir la observación')
 		.Obs.SetFocus()
 		Return .F.
 	EndIf
-	
+
 	* Validar que no se omita el seguimiento realizado
 	If Empty(.Seguimiento.Value)
 		Alerta('No se puede omitir el seguimiento')
 		.Seguimiento.SetFocus()
 		Return .F.
 	EndIf
-	
+
 	* Validar que no se omita el comentario del prospecto
 	If Empty(.ObsCli.Value)
 		Alerta('No se puede omitir el comentario del prospecto')
 		.ObsCli.SetFocus()
 		Return .F.
 	EndIf
-	
+
 	* Validar que no se omita la probabilidad de cierre
 	If Empty(.ProbCierre.Value)
 		Alerta('No se puede omitir la probabilidad de cierre')
 		.ProbCierre.SetFocus()
 		Return .F.
 	EndIf
-	
+
 	* Pasaron todas las validaciones
 	Return .T.
-	
+
 EndWith
 
 ENDPROC
@@ -434,12 +434,12 @@ cnumcont
 cnumoport
 cnumcli
 nstatus
-*actcontroles 
-*tiposdeoport 
-*agregaractiv 
-*validainfo 
-*actualizaoport 
-*tiposdeprob 
+*actcontroles
+*tiposdeoport
+*agregaractiv
+*validainfo
+*actualizaoport
+*tiposdeprob
 </reserved3>
 		<reserved4/>
 		<reserved5/>
@@ -861,10 +861,10 @@ PROCEDURE Valid
 * NumCot
 *
 With ThisForm
-	
+
 	* Alinear el folio del numero de cotizacion
 	This.Value = PadL(Allt(This.Value),10)
-	
+
 	* Si esta vacio el importe, mostrar el total de la cotizacion
 	If Empty(.Importe.Value)
 		If Not Empty(This.Value)
@@ -876,7 +876,7 @@ With ThisForm
 			EndIf
 		EndIf
 	EndIf
-	
+
 EndWith
 
 ENDPROC
@@ -1488,12 +1488,12 @@ Name = "guardar"
 * InfoPerdida.Guardar
 *
 With ThisForm
-	
+
 	* Si no pasa las validaciones no continuar
 	If Not .ValidaInfo()
 		Return .F.
 	EndIf
-	
+
 	* Validar que no se omita el comentario de por que perdimos
 	If Empty(.InfoPerdida.CausaPerd.Value)
 		Alerta('No se puede omitir la causa del por qué perdimos')
@@ -1507,25 +1507,25 @@ With ThisForm
 		.InfoPerdida.ObsMejorar.SetFocus()
 		Return .F.
 	EndIf
-	
+
 	* Agregar la actividad
 	If Not .AgregarActiv()
 		Return .F.
 	EndIf
-	
+
 	* Actualizar la informacion
 	.ActualizaOport()
-	
+
 	* Localizar la oportunidad y actualiza la informacion
 	Select Oport
 	Replace	STATUS		With	4,;
 			PERDIDA		With	Date(),;
 			CAUSAPERD	With	Allt(.InfoPerdida.CausaPerd.Value),;
 			OBSMEJORAR	With	Allt(.InfoPerdida.ObsMejorar.Value)
-	
+
 	* Cerrar la ventana
 	.Release
-	
+
 EndWith
 
 ENDPROC
@@ -1632,35 +1632,35 @@ Name = "guardar"
 * InfoEsperar.Guardar
 *
 With ThisForm
-	
+
 	* Si no pasa las validaciones no continuar
 	If Not .ValidaInfo()
 		Return .F.
 	EndIf
-	
+
 	* Validar que no se omita la fecha de la siguiente llamada
 	If Empty(.InfoEsperar.SigLlamada.Value)
 		Alerta('No se puede omitir la fecha de la sig. llamada')
 		.InfoEsperar.SigLlamada.SetFocus()
 		Return .F.
 	EndIf
-	
+
 	* Agregar la actividad
 	If Not .AgregarActiv()
 		Return .F.
 	EndIf
-	
+
 	* Actualizar la informacion
 	.ActualizaOport()
-	
+
 	* Localizar la oportunidad y actualiza la informacion
 	Select Oport
 	Replace	STATUS		With	2,;
 			SIGLLAMADA	With	.InfoEsperar.SigLlamada.Value
-	
+
 	* Cerrar la ventana
 	.Release
-	
+
 EndWith
 
 ENDPROC
@@ -1801,36 +1801,36 @@ Name = "guardar"
 * InfoCerrada.Guardar
 *
 With ThisForm
-	
+
 	* Si no pasa las validaciones no continuar
 	If Not .ValidaInfo()
 		Return .F.
 	EndIf
-	
+
 	* Validar que no se omita el folio de la factura
 	If Empty(.InfoCerrada.NumFact.Value)
 		Alerta('No se puede omitir el folio de la factura')
 		.InfoCerrada.NumFact.SetFocus()
 		Return .F.
 	EndIf
-	
+
 	* Agregar la actividad
 	If Not .AgregarActiv()
 		Return .F.
 	EndIf
-	
+
 	* Actualizar la informacion
 	.ActualizaOport()
-	
+
 	* Localizar la oportunidad y actualiza la informacion
 	Select Oport
 	Replace	STATUS		With	3,;
 			GANADA		With	Date(),;
 			NUMFACT		With	.InfoCerrada.NumFact.Value
-	
+
 	* Cerrar la ventana
 	.Release
-	
+
 EndWith
 
 ENDPROC
@@ -1982,30 +1982,30 @@ Name = "trabajando"
 * Trabajando
 *
 With ThisForm
-	
+
 	* Ocultar controles que solo se usan al hacer clic en Esperar, Cerrada o Perdida
 	.ActControles()
-	
+
 	* Si no pasa las validaciones no continuar
 	If Not .ValidaInfo()
 		Return .F.
 	EndIf
-	
+
 	* Agregar la actividad
 	If Not .AgregarActiv()
 		Return .F.
 	EndIf
-	
+
 	* Actualizar la informacion
 	.ActualizaOport()
-	
+
 	* Localizar la oportunidad y actualiza la informacion
 	Select Oport
 	Replace	STATUS		With	1
-	
+
 	* Cerrar la ventana
 	.Release
-	
+
 EndWith
 
 ENDPROC
@@ -2048,17 +2048,17 @@ Name = "esperar"
 * Esperar
 *
 With ThisForm
-	
+
 	* Ocultar controles que solo se usan al hacer clic en Esperar, Cerrada o Perdida
 	.ActControles()
-	
+
 	.InfoEsperar.Visible = .T.
 	.InfoEsperar.SigLlamada.SetFocus()
 	.Height = 410
 	.AutoCenter = .T.
-	
+
 	This.Enabled = .F.
-	
+
 EndWith
 
 ENDPROC
@@ -2101,17 +2101,17 @@ Name = "perdida"
 * Perdida
 *
 With ThisForm
-	
+
 	* Ocultar controles que solo se usan al hacer clic en Esperar, Cerrada o Perdida
 	.ActControles()
-	
+
 	.InfoPerdida.Visible = .T.
 	.InfoPerdida.SetFocus()
 	.Height = 455
 	.AutoCenter = .T.
-	
+
 	This.Enabled = .F.
-	
+
 EndWith
 
 ENDPROC
@@ -2154,17 +2154,17 @@ Name = "cerrada"
 * Cerrada
 *
 With ThisForm
-	
+
 	* Ocultar controles que solo se usan al hacer clic en Esperar, Cerrada o Perdida
 	.ActControles()
-	
+
 	.InfoCerrada.Visible = .T.
 	.InfoCerrada.NumFact.SetFocus()
 	.Height = 410
 	.AutoCenter = .T.
-	
+
 	This.Enabled = .F.
-	
+
 EndWith
 
 ENDPROC

@@ -384,14 +384,14 @@
 
 ### 1. Station Count Formula
 ```
-recommended = entry_stations + forming_passes + calibration_stations 
+recommended = entry_stations + forming_passes + calibration_stations
             + section_extra + return_extra + springback_extra
 
 passes_per_bend = ceil(target_angle / max_angle_per_pass)
 
 max_angle varies by material:
 - SS: 10-18°
-- AL: 24-35°  
+- AL: 24-35°
 - MS: 15-25°
 ```
 

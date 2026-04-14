@@ -308,7 +308,7 @@ export default function DemoVideo() {
 // SCENE 1: Brand Opening (0-8s)
 function Scene1Intro() {
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, scale: 1.1 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9, filter: 'blur(10px)' }}
@@ -321,8 +321,8 @@ function Scene1Intro() {
         transition={{ delay: 0.5, duration: 1, type: 'spring', stiffness: 50 }}
         style={{ display: 'flex', alignItems: 'center', gap: '2vw', marginBottom: '2vh' }}
       >
-        <motion.div 
-          animate={{ rotate: 360 }} 
+        <motion.div
+          animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
           style={{ width: '8vw', height: '8vw', border: `0.3vw solid ${COLORS.gold}`, borderRadius: '1vw', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
@@ -333,7 +333,7 @@ function Scene1Intro() {
         </h1>
       </motion.div>
 
-      <motion.h2 
+      <motion.h2
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5, duration: 1 }}
@@ -342,7 +342,7 @@ function Scene1Intro() {
         PRECISION ROLL FORMING ENGINEERING
       </motion.h2>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 2.5, duration: 1 }}
@@ -357,7 +357,7 @@ function Scene1Intro() {
 // SCENE 2: The Problem (8-18s)
 function Scene2Problem() {
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, x: '-10vw' }}
       transition={{ duration: 1 }}
       style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '5vw' }}
@@ -381,7 +381,7 @@ function Scene2Problem() {
           { name: 'HAT PROFILE', path: 'M 10 80 L 30 80 L 30 20 L 70 20 L 70 80 L 90 80' },
           { name: 'Z-SECTION', path: 'M 20 20 L 50 20 L 50 80 L 80 80' }
         ].map((profile, i) => (
-          <motion.div 
+          <motion.div
             key={i}
             initial={{ opacity: 0, scale: 0.5, rotateY: 90 }}
             animate={{ opacity: 1, scale: 1, rotateY: 0 }}
@@ -389,7 +389,7 @@ function Scene2Problem() {
             style={{ width: '15vw', height: '15vw', background: 'rgba(255,255,255,0.02)', border: `1px solid ${COLORS.gold}40`, borderRadius: '1vw', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
           >
             <svg viewBox="0 0 100 100" style={{ width: '60%', height: '60%' }}>
-              <motion.path 
+              <motion.path
                 d={profile.path} fill="none" stroke={COLORS.gold} strokeWidth="4"
                 initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ delay: 2 + i * 0.2, duration: 1.5, ease: "easeInOut" }}
               />
@@ -405,13 +405,13 @@ function Scene2Problem() {
 // SCENE 3: DXF Import (18-30s)
 function Scene3Dxf() {
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
       transition={{ duration: 1 }}
       style={{ width: '100%', height: '100%', display: 'flex', padding: '6vw', gap: '4vw' }}
     >
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-        <motion.div 
+        <motion.div
           initial={{ x: -50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.5 }}
           style={{ fontSize: '1.2vw', color: COLORS.cyan, marginBottom: '1vh', letterSpacing: '0.2em' }}
         >
@@ -429,8 +429,8 @@ function Scene3Dxf() {
         >
           Instant precision. No manual drafting required.
         </motion.p>
-        
-        <motion.div 
+
+        <motion.div
           initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.5 }}
           style={{ marginTop: '4vh', background: 'rgba(6,182,212,0.05)', border: `1px solid ${COLORS.cyan}40`, padding: '2vw', borderRadius: '1vw' }}
         >
@@ -447,24 +447,24 @@ function Scene3Dxf() {
       </div>
 
       <div style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 1, duration: 1.5 }}
           style={{ width: '100%', height: '80%', background: '#050810', borderRadius: '1vw', border: '1px solid rgba(255,255,255,0.1)', position: 'relative', overflow: 'hidden' }}
         >
           {/* Grid */}
           <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)', backgroundSize: '4vw 4vw' }} />
-          
+
           <svg viewBox="0 0 200 200" style={{ width: '100%', height: '100%', position: 'absolute', inset: 0 }}>
             {/* The DXF Shape */}
-            <motion.path 
-              d="M 50 150 L 50 50 L 150 50 L 150 150 L 130 150 L 130 70 L 70 70 L 70 150 Z" 
+            <motion.path
+              d="M 50 150 L 50 50 L 150 50 L 150 150 L 130 150 L 130 70 L 70 70 L 70 150 Z"
               fill="none" stroke={COLORS.cyan} strokeWidth="2"
               initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ delay: 2, duration: 3, ease: "easeInOut" }}
             />
             {/* Dimensions */}
             <motion.line x1="50" y1="40" x2="150" y2="40" stroke={COLORS.textMuted} strokeWidth="0.5" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 4 }} />
             <motion.text x="100" y="35" fill={COLORS.text} fontSize="6" textAnchor="middle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 4.2 }}>100.00</motion.text>
-            
+
             <motion.line x1="40" y1="50" x2="40" y2="150" stroke={COLORS.textMuted} strokeWidth="0.5" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 4.5 }} />
             <motion.text x="35" y="100" fill={COLORS.text} fontSize="6" textAnchor="middle" transform="rotate(-90 35,100)" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 4.7 }}>100.00</motion.text>
           </svg>
@@ -486,7 +486,7 @@ function Scene4Flower() {
   ];
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, filter: 'blur(20px)' }}
       transition={{ duration: 1.5 }}
       style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '5vw' }}
@@ -497,7 +497,7 @@ function Scene4Flower() {
       >
         AUTOMATED <span style={{ color: COLORS.cyan }}>FLOWER PATTERN</span> GENERATION
       </motion.h2>
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}
         style={{ fontSize: '1.5vw', color: COLORS.textMuted, marginBottom: '6vh' }}
       >
@@ -523,7 +523,7 @@ function Scene4Flower() {
         {/* Legend */}
         <div style={{ position: 'absolute', right: 0, top: 0, display: 'flex', flexDirection: 'column', gap: '1vh' }}>
           {stages.map((stage, i) => (
-            <motion.div 
+            <motion.div
               key={i}
               initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.5 + i * 1.5 }}
               style={{ display: 'flex', alignItems: 'center', gap: '1vw', fontSize: '1.2vw', color: i === stages.length -1 ? COLORS.gold : COLORS.textMuted }}
@@ -541,7 +541,7 @@ function Scene4Flower() {
 // SCENE 5: 3D Roll Sim (45-60s) - KEY SCENE
 function Scene5RollSim() {
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, scale: 1.2 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
       transition={{ duration: 1.5 }}
       style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}
@@ -552,20 +552,20 @@ function Scene5RollSim() {
       </div>
 
       <div style={{ position: 'relative', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-        <motion.div 
+        <motion.div
           initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.5, type: 'spring', bounce: 0.5 }}
           style={{ width: '6vw', height: '6vw', borderRadius: '50%', background: 'rgba(245,158,11,0.1)', border: `2px solid ${COLORS.gold}`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '3vh', boxShadow: `0 0 30px ${COLORS.gold}60` }}
         >
           <div style={{ fontSize: '2vw' }}>3D</div>
         </motion.div>
-        
+
         <motion.h2
           initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 1 }}
           style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '7vw', margin: '0 0 2vh 0', textShadow: '0 10px 30px #000' }}
         >
           FULL 3D <span style={{ color: COLORS.gold }}>ROLL SIMULATION</span>
         </motion.h2>
-        
+
         <motion.p
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5 }}
           style={{ fontSize: '1.8vw', color: COLORS.textMuted, maxWidth: '60vw' }}
@@ -575,7 +575,7 @@ function Scene5RollSim() {
       </div>
 
       {/* Animated Overlay indicating scanning/simulation */}
-      <motion.div 
+      <motion.div
         animate={{ y: ['-50vh', '150vh'] }}
         transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
         style={{ position: 'absolute', left: 0, right: 0, height: '2px', background: COLORS.cyan, boxShadow: `0 0 20px 5px ${COLORS.cyan}80`, zIndex: 5 }}
@@ -593,7 +593,7 @@ function Scene6GCode() {
   ];
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, x: '10vw' }}
       transition={{ duration: 1 }}
       style={{ width: '100%', height: '100%', display: 'flex', padding: '6vw', gap: '4vw', background: '#050810' }}
@@ -614,13 +614,13 @@ function Scene6GCode() {
       </div>
 
       <div style={{ flex: 1, position: 'relative' }}>
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 1 }}
           style={{ position: 'absolute', inset: 0, background: '#000', border: `1px solid #333`, borderRadius: '1vw', padding: '3vw', overflow: 'hidden' }}
         >
           <div style={{ fontSize: '1vw', color: '#555', borderBottom: '1px solid #333', paddingBottom: '1vh', marginBottom: '2vh' }}>OUTPUT.TAP</div>
           {codes.map((code, i) => (
-            <motion.div 
+            <motion.div
               key={i}
               initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.5 + i * 0.2 }}
               style={{ fontSize: '1.5vw', color: code.startsWith('G02') || code.startsWith('G01') ? COLORS.gold : COLORS.cyan, marginBottom: '1vh', fontFamily: "'JetBrains Mono', monospace" }}
@@ -628,7 +628,7 @@ function Scene6GCode() {
               <span style={{ color: '#555', marginRight: '2vw' }}>N0{(i+1)*10}</span> {code}
             </motion.div>
           ))}
-          <motion.div 
+          <motion.div
             animate={{ opacity: [1, 0] }} transition={{ repeat: Infinity, duration: 0.8 }}
             style={{ width: '1vw', height: '2vw', background: COLORS.text, marginTop: '1vh' }}
           />
@@ -650,14 +650,14 @@ function Scene7Features() {
   ];
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, scale: 1.1 }}
       transition={{ duration: 1 }}
       style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
     >
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3vw', width: '70vw' }}>
         {features.map((f, i) => (
-          <motion.div 
+          <motion.div
             key={i}
             initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 + i * 0.2, type: 'spring' }}
             style={{ display: 'flex', alignItems: 'center', gap: '2vw', background: 'rgba(255,255,255,0.03)', padding: '2vw', borderRadius: '1vw', borderLeft: `0.5vw solid ${f.color}` }}
@@ -674,7 +674,7 @@ function Scene7Features() {
 // SCENE 8: CTA (80-90s)
 function Scene8CTA() {
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }} animate={{ opacity: 1 }}
       transition={{ duration: 1.5 }}
       style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}
@@ -688,7 +688,7 @@ function Scene8CTA() {
         initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 1, duration: 2, ease: "easeOut" }}
         style={{ textAlign: 'center', zIndex: 10 }}
       >
-        <motion.div 
+        <motion.div
           animate={{ boxShadow: [`0 0 20px ${COLORS.gold}40`, `0 0 60px ${COLORS.gold}80`, `0 0 20px ${COLORS.gold}40`] }}
           transition={{ repeat: Infinity, duration: 3 }}
           style={{ width: '10vw', height: '10vw', margin: '0 auto 4vh auto', border: `0.4vw solid ${COLORS.gold}`, borderRadius: '1.5vw', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(245,158,11,0.1)' }}

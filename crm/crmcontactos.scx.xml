@@ -81,17 +81,17 @@ Endif
 
 With ThisForm
 	.AddProperty('nAccion',nAccion)
-	
+
 	Do Case
 	Case .nAccion==1
 		.Caption = 'Agregar Contacto'
 		.Save.Caption = '\&lt;Agregar'
-		
+
 	Case .nAccion==2
 		.Caption = 'Modificar Contacto'
 		.Save.Caption = '\&lt;Modificar'
 		.CargaInfo(nRecno)
-		
+
 	Case .nAccion==3
 		.Caption = 'Eliminar Contacto'
 		.Save.Caption = '\&lt;Eliminar'
@@ -99,7 +99,7 @@ With ThisForm
 		.SetAll('Enabled',.f.)
 		.Save.Enabled = .t.
 		.Cerrar.Enabled = .t.
-		
+
 	EndCase
 EndWith
 
@@ -118,7 +118,7 @@ With ThisForm
 	.Telefono.Value = Contactos.TELEFONO
 	.Mail.Value = Contactos.MAIL
 	.LeeCve1.SetValue(Contactos.NUMCLI)
-	
+
 EndWith
 
 ENDPROC
@@ -147,8 +147,8 @@ ENDPROC
 		<ole2/>
 		<reserved1/>
 		<reserved2/>
-		<reserved3>*cargainfo 
-*saveinfo 
+		<reserved3>*cargainfo
+*saveinfo
 </reserved3>
 		<reserved4/>
 		<reserved5/>
@@ -393,7 +393,7 @@ With ThisForm
 	Case .nAccion==1
 		.SaveInfo()
 		.Release
-		
+
 	Case .nAccion==2
 		.SaveInfo()
 		.Release
@@ -404,7 +404,7 @@ With ThisForm
 			Delete
 			.Release
 		Endif
-		
+
 	EndCase
 EndWith
 

@@ -1,8 +1,8 @@
 ## Summary
 - **What changed?**
-  - 
+  -
 - **Why was this change needed?**
-  - 
+  -
 - **Which audit bucket(s) are touched?**
   - [ ] 1. DXF import and geometry normalization
   - [ ] 2. Centerline / inner / outer conversion
@@ -28,7 +28,7 @@
 - [ ] ADR required for this PR
 - [ ] ADR not required (purely cosmetic or comment-only)
 - **ADR Link(s) (MANDATORY when ADR required):**
-  - 
+  -
 - **ADR Status:**
   - [ ] Proposed
   - [ ] Accepted
@@ -67,11 +67,11 @@
 
 ### CNC Safety Evidence
 - **Validator command / endpoint used:**
-  - 
+  -
 - **Validator score:**
-  - 
+  -
 - **Key warning/error outputs reviewed:**
-  - 
+  -
 
 ## Testing
 ### Automated
@@ -93,13 +93,13 @@
 
 ## Validation Evidence
 - **Normal path evidence:**
-  - 
+  -
 - **Edge-case evidence:**
-  - 
+  -
 - **Export output evidence (if applicable):**
-  - 
+  -
 - **Screenshots / logs / artifacts:**
-  - 
+  -
 
 ## Risk Assessment
 - **Risk level:**
@@ -108,19 +108,19 @@
   - [ ] High
   - [ ] Critical
 - **Primary risks introduced:**
-  - 
+  -
 - **Mitigations implemented:**
-  - 
+  -
 - **Rollback plan:**
-  - 
+  -
 
 ## Backward Compatibility
 - [ ] Backward compatible
 - [ ] Breaking change
 - **If breaking, describe migration and operator impact:**
-  - 
+  -
 - **Data/schema/API compatibility notes:**
-  - 
+  -
 
 ## Reviewer Checklist
 - [ ] Business logic matches roll-forming domain rules.
@@ -150,4 +150,4 @@
 - [ ] I attest this change does **not** reduce CNC safety or hide safety-critical failures.
 - [ ] I attest validation evidence in this PR is complete and truthful.
 - **Approver name(s):**
-  - 
+  -

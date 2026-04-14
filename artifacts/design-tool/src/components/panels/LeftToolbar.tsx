@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { 
-  MousePointer2, Square, Circle, Triangle, 
+import {
+  MousePointer2, Square, Circle, Triangle,
   Minus, ArrowRight, Type, Pencil, Layers, Blocks
 } from 'lucide-react';
 import { useDesignStore, ToolType } from '../../store/useDesignStore';
@@ -26,14 +26,14 @@ export function LeftToolbar() {
   return (
     <div className="w-64 border-r bg-card flex flex-col z-10 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
       <div className="flex border-b">
-        <button 
+        <button
           className={cn("flex-1 py-3 text-xs font-medium border-b-2 flex items-center justify-center transition-colors", activeTab === 'tools' ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground")}
           onClick={() => setActiveTab('tools')}
         >
           <Blocks className="w-4 h-4 mr-2" />
           Tools
         </button>
-        <button 
+        <button
           className={cn("flex-1 py-3 text-xs font-medium border-b-2 flex items-center justify-center transition-colors", activeTab === 'layers' ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground")}
           onClick={() => setActiveTab('layers')}
         >
@@ -55,8 +55,8 @@ export function LeftToolbar() {
                       onClick={() => setTool(t.id)}
                       className={cn(
                         "flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-200 border",
-                        isActive 
-                          ? "bg-primary/10 border-primary/30 text-primary shadow-inner" 
+                        isActive
+                          ? "bg-primary/10 border-primary/30 text-primary shadow-inner"
                           : "bg-background border-transparent text-muted-foreground hover:bg-muted hover:text-foreground border-border/50"
                       )}
                     >
@@ -82,13 +82,13 @@ export function LeftToolbar() {
             {[...shapes].reverse().map((shape) => {
               const isSelected = selectedIds.includes(shape.id);
               return (
-                <div 
+                <div
                   key={shape.id}
                   onClick={(e) => selectShape(shape.id, e.ctrlKey || e.metaKey)}
                   className={cn(
                     "flex items-center justify-between p-2 rounded-lg cursor-pointer text-sm transition-colors border",
-                    isSelected 
-                      ? "bg-primary/10 border-primary/20 text-primary" 
+                    isSelected
+                      ? "bg-primary/10 border-primary/20 text-primary"
                       : "bg-transparent border-transparent hover:bg-muted text-muted-foreground hover:text-foreground"
                   )}
                 >

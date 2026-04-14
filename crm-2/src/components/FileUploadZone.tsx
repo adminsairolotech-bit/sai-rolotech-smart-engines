@@ -19,7 +19,7 @@ export function FileUploadZone({ onUpload, accept, maxSize, label, description }
 
   const onDrop = useCallback(async (acceptedFiles: File[], fileRejections: any[]) => {
     setError(null);
-    
+
     if (fileRejections.length > 0) {
       const error = fileRejections[0].errors[0];
       if (error.code === 'file-too-large') {
@@ -63,20 +63,20 @@ export function FileUploadZone({ onUpload, accept, maxSize, label, description }
         )}
       >
         <input {...getInputProps()} />
-        
+
         <div className={cn(
           "w-12 h-12 rounded-full flex items-center justify-center mb-4 transition-colors",
           isDragActive ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary"
         )}>
           <UploadCloud className="w-6 h-6" />
         </div>
-        
+
         <h4 className="text-sm font-semibold text-foreground mb-1">{label}</h4>
         <p className="text-xs text-muted-foreground max-w-xs">{description}</p>
-        
+
         <AnimatePresence>
           {isUploading && (
-            <motion.div 
+            <motion.div
               variants={fadeInUp}
               initial="hidden"
               animate="visible"
@@ -89,10 +89,10 @@ export function FileUploadZone({ onUpload, accept, maxSize, label, description }
           )}
         </AnimatePresence>
       </div>
-      
+
       <AnimatePresence>
         {error && (
-          <motion.div 
+          <motion.div
             variants={fadeIn}
             initial="hidden"
             animate="visible"

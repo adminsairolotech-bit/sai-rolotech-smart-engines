@@ -65,7 +65,7 @@ Width = 525
 DoCreate = .T.
 Caption = "Cerrar Orden de Servicio"
 KeyPreview = .T.
-cnumuser =  
+cnumuser =
 Name = "Formamsl1"
 Marco.Name = "Marco"
 </properties>
@@ -85,10 +85,10 @@ With ThisForm
 	* Si se manda llamar desde consulta de ordenes, mostrar la orden seleccionada
 	If PCount()==1
 		.NumOrden.Value = cNumOrden
-		KeyBoard '{ENTER}'		
+		KeyBoard '{ENTER}'
 	Endif
 
-EndWith	
+EndWith
 
 ENDPROC
 PROCEDURE cargarinfoorden
@@ -102,9 +102,9 @@ PROCEDURE cargarinfoorden
 	cNumOrden = ThisForm.NumOrden.Value
 	If Seek(cNumOrden, 'Ordenes')
 		=Seek(Ordenes.NUMCONT,'Contactos')
-		
+
 		cSql = 'select * from crm where numorden=val1'
-		
+
 		ThisForm.InfoOrden.Value = ;
 			Allt(MexDate2(Ordenes.CREADA)) + ' / ' + Allt(Contactos.NOMCONT)+ ' / '+;
 			Allt(Contactos.EMPRESA)+Chr(13)+Chr(13)+;
@@ -112,9 +112,9 @@ PROCEDURE cargarinfoorden
 			'================================='+Chr(13)+;
 			StrTran(StrTran(Ordenes.PROBLEMA,Chr(13),''),Chr(10),'') + Chr(13)+Chr(13)+;
 			'Servicios:'+Chr(13)+;
-			'================================='+Chr(13)+;			
+			'================================='+Chr(13)+;
 			ThisForm.ObtenerServicios(cNumorden)
-			
+
 		ThisForm.Save.Enabled = .t.
 		ThisForm.Tipo.SetFocus()
 	Else
@@ -123,7 +123,7 @@ PROCEDURE cargarinfoorden
 			.NumOrden.SetFocus()
 		Endif
 	Endif
-	
+
 
 ENDPROC
 PROCEDURE cargartipos
@@ -140,7 +140,7 @@ With ThisForm
 		Return
 	Endif
 	i = 0
-	Do While .t.	
+	Do While .t.
 		i=i+1
 		cTipo = SubLin(cTipos,i)
 		If Empty(cTipo)
@@ -166,7 +166,7 @@ lParameter cNumOrden
 		cNumOrden)
 	    Return
 	Endif
-	
+
 	* Ordenar los servicios x fecha
 	cRetVal = ''
 	Select Temp
@@ -197,9 +197,9 @@ ENDPROC
 		<reserved1/>
 		<reserved2/>
 		<reserved3>cnumuser
-*cargartipos 
-*cargarinfoorden 
-*obtenerservicios 
+*cargartipos
+*cargarinfoorden
+*obtenerservicios
 </reserved3>
 		<reserved4/>
 		<reserved5/>
@@ -310,7 +310,7 @@ Replace ;
 Wait Window 'Orden ha sido cerrada' NoWait
 ThisForm.Release()
 
-	
+
 
 ENDPROC
 </methods>

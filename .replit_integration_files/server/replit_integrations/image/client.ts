@@ -34,4 +34,3 @@ export async function generateImage(prompt: string): Promise<string> {
   const mimeType = imagePart.inlineData.mimeType || "image/png";
   return `data:${mimeType};base64,${imagePart.inlineData.data}`;
 }
-

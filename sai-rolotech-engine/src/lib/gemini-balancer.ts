@@ -37,10 +37,10 @@ export class GeminiKeyManager {
    */
   public getNextKey(): string {
     if (this.keys.length === 0) return "";
-    
+
     const key = this.keys[this.currentIndex];
     this.currentIndex = (this.currentIndex + 1) % this.keys.length;
-    
+
     console.log(chalk.blue(`[BALANCER] Using Gemini Key #${this.currentIndex + 1} (Rotation)`));
     return key;
   }

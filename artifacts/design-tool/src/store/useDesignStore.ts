@@ -44,7 +44,7 @@ interface DesignState {
   setPan: (pan: { x: number; y: number }) => void;
   setCanvasColor: (color: string) => void;
   toggleGrid: () => void;
-  
+
   // Shape Actions
   addShape: (shape: Omit<Shape, 'id'>) => void;
   updateShape: (id: string, attrs: Partial<Shape>) => void;
@@ -53,7 +53,7 @@ interface DesignState {
   selectShape: (id: string, multi?: boolean) => void;
   clearSelection: () => void;
   reorderShape: (id: string, direction: 'up' | 'down' | 'top' | 'bottom') => void;
-  
+
   // History Actions
   pushHistory: () => void;
   undo: () => void;
@@ -139,7 +139,7 @@ export const useDesignStore = create<DesignState>((set, get) => ({
 
   updateSelectedShapes: (attrs) => {
     set((state) => ({
-      shapes: state.shapes.map((shape) => 
+      shapes: state.shapes.map((shape) =>
         state.selectedIds.includes(shape.id) && !shape.isLocked ? { ...shape, ...attrs } : shape
       ),
     }));
@@ -149,7 +149,7 @@ export const useDesignStore = create<DesignState>((set, get) => ({
   deleteSelectedShapes: () => {
     const { selectedIds, shapes } = get();
     if (selectedIds.length === 0) return;
-    
+
     set({
       shapes: shapes.filter((shape) => !selectedIds.includes(shape.id) || shape.isLocked),
       selectedIds: [],

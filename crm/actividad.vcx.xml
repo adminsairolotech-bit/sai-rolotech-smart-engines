@@ -36,22 +36,22 @@
 		<parent/>
 		<properties>Height = 17
 Width = 60
-id =  
-numcont =  
-cerror =  
-tipo =  
+id =
+numcont =
+cerror =
+tipo =
 fecha = {}
 fechafin = {}
-obs =  
-numuser =  
-numusergen =  
-numorden =  
-numcotiza =  
-refer =  
-ordenpost =  
+obs =
+numuser =
+numusergen =
+numorden =
+numcotiza =
+refer =
+ordenpost =
 statuscot = 0
 nerror = 0
-folioser =  
+folioser =
 Name = "actividad"
 </properties>
 		<protected/>
@@ -85,7 +85,7 @@ With This
 		Append Blank
 		Replace	ID			With	.Id
 	EndIf
-	
+
 	* Actualizar la informacion
 	Replace	NUMCONT		With	.NumCont,;
 			TIPO		With	.Tipo,;
@@ -101,7 +101,7 @@ With This
 			ORDENPOST	With	.OrdenPost,;
 			STATUSCOT	With	.StatusCot,;
 			FOLIOSER	With	.FolioSer
-	
+
 	* Abrir las bases de datos con otro alias
 	Use
 	Use Crm Alias _Crm Order Id In 0 Again
@@ -119,7 +119,7 @@ PROCEDURE modificar
 With This
 	Select _Crm
 	=Seek(.Id)
-	
+
 	* Actualizar la informacion
 	Replace	NUMCONT		With	.NumCont,;
 			TIPO		With	.Tipo,;
@@ -135,7 +135,7 @@ With This
 			ORDENPOST	With	.OrdenPost,;
 			STATUSCOT	With	.StatusCot,;
 			FOLIOSER	With	.FolioSer
-	
+
 	* Abrir las bases de datos con otro alias
 	Use
 	Use Crm Alias _Crm Order Id In 0 Again
@@ -150,7 +150,7 @@ PROCEDURE modpost
 * Actualiza el campo OrdenPost de una actividad relacionada con una orden de servicio
 *
 With This
-	
+
 	* La orden se genero despues de grabar una actividad
 	* Grabar el folio de la orden en la actividad
 	Select _Crm
@@ -159,11 +159,11 @@ With This
 			Replace	ORDENPOST	With	.OrdenPost
 		EndIf
 	EndIf
-	
+
 	* Abrir las bases de datos con otro alias
 	Use
 	Use Crm Alias _Crm Order Id In 0 Again
-	
+
 EndWith
 
 ENDPROC
@@ -180,35 +180,35 @@ With This
 		.nError = 1
 		Return .F.
 	EndIf
-	
+
 	* No omitir la fecha
 	If Empty(.FechaFin)
 		.cError = 'No se puede omitir la hora final'
 		.nError = 2
 		Return .F.
 	EndIf
-	
+
 	* Fecha Fin debe ser mayor o igual a fecha
 	If .Fecha&gt;.FechaFin
 		.cError = 'Fecha inicial debe ser menor o igual a fecha final'
 		.nError = 1
 		Return .f.
 	Endif
-		
+
 	* No omitir el tipo de actividad
 	If Empty(.Tipo)
 		.cError = 'No se puede omitir el tipo de actividad'
 		.nError = 3
 		Return .F.
 	EndIf
-	
+
 	* No omitir la descripcion de la actividad
 	If Empty(.Obs)
 		.cError = 'No se puede omitir la descripción'
 		.nError = 4
 		Return .F.
 	EndIf
-	
+
 EndWith
 
 ENDPROC
@@ -235,10 +235,10 @@ ordenpost
 statuscot
 nerror
 folioser
-*agregar 
-*validagregar 
-*modificar 
-*modpost 
+*agregar
+*validagregar
+*modificar
+*modpost
 </reserved3>
 		<reserved4/>
 		<reserved5/>

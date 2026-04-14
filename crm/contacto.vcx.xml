@@ -36,13 +36,13 @@
 		<parent/>
 		<properties>Height = 18
 Width = 57
-numcont =  
-nomcont =  
-telefono =  
-empresa =  
-mail =  
-numcli =  
-cerror =  
+numcont =
+nomcont =
+telefono =
+empresa =
+mail =
+numcli =
+cerror =
 nerror = 0
 Name = "contacto"
 </properties>
@@ -92,7 +92,7 @@ With This
 	* Cerrar tabla para asegurar actualizacion y voler a abrirla
 	Use
 	Use Contactos Alias _Contactos Order NumCont In 0 Again
-	
+
 EndWith
 
 ENDPROC
@@ -105,7 +105,7 @@ PROCEDURE validagregar
 * Si manda numero de contacto, validar que exista en la tabla de contactos
 
 With This
-	
+
 	* Validar que exista el numero de contacto
 	If Not Empty(.NumCont)
 		If Not Seek(.NumCont,'_Contactos')
@@ -114,7 +114,7 @@ With This
 			Return .F.
 		EndIf
 	EndIf
-		
+
 	* No omitir el contacto
 	If Empty(.NomCont)
 		.cError = 'No se puede omitir el contacto'
@@ -153,8 +153,8 @@ mail
 numcli
 cerror
 nerror
-*agregar 
-*validagregar 
+*agregar
+*validagregar
 </reserved3>
 		<reserved4/>
 		<reserved5/>

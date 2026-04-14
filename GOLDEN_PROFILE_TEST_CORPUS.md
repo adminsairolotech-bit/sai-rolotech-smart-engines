@@ -1,8 +1,8 @@
 # GOLDEN PROFILE TEST CORPUS
 
-**Version:** 1.0.0  
-**Owner:** Sai Rolotech Smart Engines QA + Safety Engineering  
-**Status:** Production Baseline (Release-Blocking)  
+**Version:** 1.0.0
+**Owner:** Sai Rolotech Smart Engines QA + Safety Engineering
+**Status:** Production Baseline (Release-Blocking)
 **Last Updated:** 2026-04-09
 
 ## Purpose

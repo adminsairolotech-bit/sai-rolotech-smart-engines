@@ -1640,7 +1640,7 @@ Aapka sawaal samajh mein nahi aaya ya topic offline KB mein nahi hai.
 ${topics.map((t, i) => `${i + 1}. ${t}`).join("\n")}
 
 **Try asking about:**
-- "G71 cycle kaise likhte hain?" 
+- "G71 cycle kaise likhte hain?"
 - "SS 304 ke liye springback kitna?"
 - "C-channel ka strip width calculate karo 200×75×20mm t=2mm"
 - "Roll OD kya hona chahiye?"

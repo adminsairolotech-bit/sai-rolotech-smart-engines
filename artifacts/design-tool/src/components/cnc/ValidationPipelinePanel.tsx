@@ -233,7 +233,7 @@ function runLayerValidation(layerId: number, store: ReturnType<typeof useCncStor
 
 /**
  * Layer 5 AI cross-review: deterministic local scoring first, then optional AI enhancement.
- * 
+ *
  * The local score is the authoritative gate (all 4 layers must be 100 for a PASS).
  * AI is called as an advisory; if it finds additional issues, they are appended.
  * This makes the gate deterministic and not vulnerable to freeform AI text parsing.

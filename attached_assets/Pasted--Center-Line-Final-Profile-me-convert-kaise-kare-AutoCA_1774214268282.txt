@@ -87,7 +87,7 @@ Inner offset = K × Thickness
 Example:
 
 ```text
-Inside R = 1.5  
+Inside R = 1.5
 Outside R = 1.5 + 1.2 = 2.7
 ```
 

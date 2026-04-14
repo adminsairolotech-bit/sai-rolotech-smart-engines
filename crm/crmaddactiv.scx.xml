@@ -65,12 +65,12 @@ Width = 607
 DoCreate = .T.
 Caption = "Agregar Actividad"
 KeyPreview = .T.
-cnumcotiza =  
+cnumcotiza =
 nstatuscot = 0
-crefer =  
-cnumuser =  
-cnumorden =  
-cordenpost =  
+crefer =
+cnumuser =
+cnumorden =
+cordenpost =
 Name = "Formamsl1"
 Marco.Name = "Marco"
 </properties>
@@ -90,16 +90,16 @@ With ThisForm
 	If PCount()==0
 		nModo=1
 	EndIf
-	
+
 	* Almacena el modo en que se manda llamar la ventana
 	.nModo = nModo
 
 	* Manda llamar el metodo para cargar los tipos de actividades
 	.TiposDeActividades()
-	
+
 	* Oculta la leyenda de SUSPENDIDO
 	.LabelSuspendido.Visible = .F.
-	
+
 	Select Crm
 	If (.nModo==2)
 		If (nRec&lt;=0 or nRec &gt; Reccount())
@@ -108,7 +108,7 @@ With ThisForm
 		EndIf
 		GoTo nRec
 	EndIf
-	
+
 	Do Case
 	Case .nModo == 1
 		.Caption = 'Agregar Actividad'
@@ -125,7 +125,7 @@ With ThisForm
 		.lContar = .T.
 		.LabelOrden.Visible = .F.
 		.NumOrden.Visible = .F.
-		
+
 	Case .nModo == 2
 		.Caption = 'Modificar Actividad'
 		.Id.Visible = .T.
@@ -138,12 +138,12 @@ With ThisForm
 		.Obs.Height = 115
 		.LabelOrden.Visible = .T.
 		.NumOrden.Visible = .T.
-		
-	Endcase	
+
+	Endcase
 
 	.InfoCont.SetFocus()
-	
-EndWith	
+
+EndWith
 
 ENDPROC
 PROCEDURE KeyPress
@@ -154,20 +154,20 @@ With ThisForm
 	If nKeyCode=-7
 		Keyboard '{ALT-P}'
 		NoDefault
-	Endif	
+	Endif
 
 	* Presion ESC
 	If nKeyCode == 27
-	
+
 		* No hacer nada, estoy agregando actividad
 		If .nModo == 1
 			NoDefault
 			Return
 		Endif
-	
+
 		* Estoy modificando
 		If .nModo == 2
-		
+
 			If Empty(.Obs.Tag)
 				* No ha entrado a la obvservacion
 				DoDefault(nKeyCode, nShiftAltCtrl)
@@ -186,9 +186,9 @@ ENDPROC
 PROCEDURE cargarinfo
 * Metodo para cargar la informacion de la actividad
 With ThisForm
-	
+
 	.Id.Value = Crm.ID
-	
+
 	* Almacenar el numero de cotizacion, el status, la referencia,
 	* el numero de orden y orden posterior
 	.cNumCotiza = Crm.NUMCOTIZA
@@ -196,19 +196,19 @@ With ThisForm
 	.cRefer = Crm.REFER
 	.cNumOrden = Crm.NUMORDEN
 	.cOrdenPost = Crm.ORDENPOST
-	
+
 	* Mostrar el nombre del usuario
 	.cNumUser = Crm.NUMUSER
 	If Seek(.cNumUser,'Usuarios')
 		.Usuario.Value = Usuarios.NOMUSER
 	EndIf
-	
+
 	* Mostrar la fecha, hora de inicio y fin de la actividad
 	.LeeFecha.SetValue(SToD(DToS(Crm.FECHA)))
 	.HoraIni.Value = SubStr(TToC(Crm.FECHA),12,5)
 	.HoraFin.Value = SubStr(TToC(Crm.FECHAFIN),12,5)
 	.HoraFin.InputMask = '99:99'
-	
+
 	* Obtener la informacion del contacto
 	cNumCont = Crm.NUMCONT
 	If Seek(cNumCont,'Contactos')
@@ -216,16 +216,16 @@ With ThisForm
 		.InfoCont.LeeContacto.Nombre.Value = Contactos.NOMCONT
 		.InfoCont.LeeContacto.LostFocus()
 	EndIf
-	
+
 	* Mostrar el tipo de actividad
 	.Tipo.Nombre.Value = Crm.TIPO
-	
+
 	* Mostrar las observaciones
 	.Obs.Value = Crm.OBS
-	
+
 	* Mostrar el numero de orden
 	.NumOrden.Value = .cNumOrden
-	
+
 EndWith
 
 ENDPROC
@@ -234,38 +234,38 @@ With ThisForm
 	* Manda el Focus al contacto
 	If .oContacto.nError = 1
 		.InfoCont.LeeContacto.SetFocus
-	EndIf	
-	
+	EndIf
+
 	* Manda el focus a la empresa del contacto
 	If .oContacto.nError = 2
 		.InfoCont.Empresa.SetFocus
-	EndIf	
-	
+	EndIf
+
 	* Manda el focus al telefono del contacto
 	If .oContacto.nError = 3
 		.InfoCont.Telefono.SetFocus
-	EndIf	
-	
+	EndIf
+
 	* Manda el focus a la fecha
 	If .oActividad.nError = 1
 		.LeeFecha.SetFocus
 	EndIf
-	
+
 	* Manda el focus a la fecha
 	If .oActividad.nError = 2
 		.HoraFin.SetFocus
 	EndIf
-	
+
 	* Manda el focus al tipo de actividad
 	If .oActividad.nError = 3
 		.Tipo.SetFocus
 	EndIf
-	
+
 	* Manda el focus a la descripcion de la actividad
 	If .oActividad.nError = 4
 		.Obs.SetFocus
 	EndIf
-	
+
 EndWith
 
 ENDPROC
@@ -281,10 +281,10 @@ With ThisForm
 	Create Cursor CrmActiv(;
 		NUMACTIV C(5),;
 		NOMACTIV C(20))
-		
+
 	Index on NUMACTIV Tag NumActiv
 	Index on UPPER(NOMACTIV) Tag NomActiv
-	
+
 	* Crear temporal con los tipos
 	i = 1
 	Do While .t.
@@ -313,9 +313,9 @@ crefer
 cnumuser
 cnumorden
 cordenpost
-*cargarinfo 
-*enviarfocus 
-*tiposdeactividades 
+*cargarinfo
+*enviarfocus
+*tiposdeactividades
 </reserved3>
 		<reserved4/>
 		<reserved5/>
@@ -446,7 +446,7 @@ ZOrderSet = 4
 calias = CrmActiv
 ccampoclave = CrmActiv.NUMACTIV
 ccamponombre = CrmActiv.NOMACTIV
-cformabusqueda = 
+cformabusqueda =
 ctagclave = NumActiv
 ctagnombre = NomActiv
 nanchoclave = 5
@@ -871,7 +871,7 @@ Name = "save"
 		<methods>PROCEDURE Click
 * Grabar la informacion
 With ThisForm
-	
+
 	* Validar que exista la orden
 	cNumOrden = .NumOrden.Value
 	If Not Empty(cNumOrden)
@@ -881,9 +881,9 @@ With ThisForm
 			Return .F.
 		EndIf
 	EndIf
-	
+
 	With ThisForm.oContacto
-		* Llenar la informacion del contacto	
+		* Llenar la informacion del contacto
 		.NumCont = ThisForm.InfoCont.LeeContacto.Clave.Value
 		.NomCont = ThisForm.InfoCont.LeeContacto.Nombre.Value
 		.Empresa = ThisForm.InfoCont.Empresa.Value
@@ -898,7 +898,7 @@ With ThisForm
 			ThisForm.EnviarFocus()
 			Return .F.
 		EndIf
-	
+
 	EndWith
 
 	* Manda llamar la funcion ValHora2() para
@@ -909,7 +909,7 @@ With ThisForm
 	dFechaIni = ValHora2(dFecha,cHoraIni)
 	dFechaFin = ValHora2(dFecha,cHoraFin)
 
-	With ThisForm.oActividad	
+	With ThisForm.oActividad
 		* Llenar la informacion de la actividad
 		.Id = Padl(Allt(ThisForm.Id.Value),10)
 		.Tipo = ThisForm.Tipo.Nombre.Value
@@ -924,7 +924,7 @@ With ThisForm
 		.Refer = ThisForm.cRefer
 		.NumOrden = cNumOrden
 		.OrdenPost = ThisForm.cOrdenPost
-		
+
 		* Manda llamar el metodo para validar la informacion para grabar la actividad
 		If Not .ValidAgregar()
 			Alerta(.cError)
@@ -932,9 +932,9 @@ With ThisForm
 			ThisForm.EnviarFocus()
 			Return .F.
 		EndIf
-	
+
 	EndWith
-	
+
 	* Manda llamar el metodo para grabar al contacto
 	If Not .oContacto.Agregar()
 		Alerta(.oContacto.cError)
@@ -943,7 +943,7 @@ With ThisForm
 
 	* Asigna el numero de contacto despues de haberlo grabado
 	.oActividad.NumCont = .oContacto.NumCont
-	
+
 	Do Case
 		Case .nModo == 1
 			* Agregar
@@ -952,7 +952,7 @@ With ThisForm
 				Alerta(.oActividad.cError)
 				Return .F.
 			EndIf
-			
+
 		Case .nModo == 2
 			* Modificar
 			* Manda llamar el metodo para modificar una actividad
@@ -960,14 +960,14 @@ With ThisForm
 				Alerta(.oActividad.cError)
 				Return .F.
 			EndIf
-			
-	EndCase	
-	
+
+	EndCase
+
 	* Almacena en unas variables el numero de actividad y contacto
 	cId = .oActividad.Id
 	cNumCont = .oContacto.NumCont
 	m.Obs = .oActividad.Obs
-	
+
 	* Validar si modifico el numero de orden
 	If cNumOrden &lt;&gt; .cNumOrden
 		* Si modifico el numero de orden
@@ -976,28 +976,28 @@ With ThisForm
 			* Manda llamar el metodo para quitar las horas del servicio a la orden anterior
 			.oOrden.NumOrden = .cNumOrden
 			.oOrden.RecalcularHorasTotales()
-			
+
 			* Almacena la nueva orden para recalcular sus horas
 			.oOrden.NumOrden = cNumOrden
 		Else
 			* Si borro el numero de orden. Recalcular las horas invertidas sin este servicio
 			.oOrden.NumOrden = .cNumOrden
 		EndIf
-		
+
 		* Manda llamar al metodo para recalcular las horas totales
 		.oOrden.RecalcularHorasTotales()
-		
+
 	EndIf
-	
+
 	* Manda llamar la ventana de agregar orden de servicio en caso de seleccionar esa opcion
 	If .Agregar.Value = 2
 		Do DoForm With 'CrmAddOrden',cId,cNumCont,m.Obs In Crm
 		.Release
 	EndIf
-	
+
 	* Cerrar la ventana
 	.Release
-	
+
 EndWith
 
 ENDPROC

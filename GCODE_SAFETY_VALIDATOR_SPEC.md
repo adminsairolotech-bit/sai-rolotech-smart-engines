@@ -1,8 +1,8 @@
 # G-code Safety Validator Specification
 
-**Document Version:** 1.0.0  
-**Project:** Sai Rolotech Smart Engines (Roll Forming Engineering Suite)  
-**Status:** Production-Grade Safety Specification  
+**Document Version:** 1.0.0
+**Project:** Sai Rolotech Smart Engines (Roll Forming Engineering Suite)
+**Status:** Production-Grade Safety Specification
 **Audience:** CNC/controls engineers, backend/API developers, validation-engine developers, QA, safety/compliance reviewers
 
 ---
@@ -674,4 +674,3 @@ No UI success state, no export success state, and no CNC-ready label may be pres
 - **5. Export engine (ZIP, CSV, XML, DXF):** blocks export of unsafe G-code packages.
 - **7. G-code / CNC safety:** primary bucket; defines validator policy and required failure handling.
 - **4. Roll tooling engine (indirect):** bend sequence expectations consumed from tooling outputs.
-

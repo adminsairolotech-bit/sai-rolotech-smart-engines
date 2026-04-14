@@ -101,4 +101,3 @@ PRs touching any of the above areas **must not be merged** unless all conditions
 - [ ] Safety impact documented
 - [ ] Index table updated in `ADR_INDEX.md`
 - [ ] PR references ADR ID in title or description
-

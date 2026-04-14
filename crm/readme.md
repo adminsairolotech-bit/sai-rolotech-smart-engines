@@ -6,5 +6,3 @@ Modulo CRM de SAIT, incluye:
 * Seguimiento a Oportunidades
 * Ordenes de Servicio
 * Proyectos
-
-

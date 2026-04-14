@@ -1,19 +1,19 @@
 ### Llamadas de Configuración
 
 
-**GET /api/sait/boveda/config**  
+**GET /api/sait/boveda/config**
 Regresa la información de TODAS las empresas usando el OCF.
-```  
+```
 [
   {rfc, key, user, pass, addr, port},
-  {rfc, key, user, pass, addr, port},  
-  ..., 
-] 
+  {rfc, key, user, pass, addr, port},
+  ...,
+]
 HTTP: 200,500
 ```
 
 
-**GET /api/sait/boveda/config/:rfc**  
+**GET /api/sait/boveda/config/:rfc**
 Regresa la configuración de la empresa indicada por rfc:.
 ```
 {rfc, key, user, pass, addr, port}
@@ -21,7 +21,7 @@ HTTP: 200,204,500
 ```
 
 
-**POST /api/sait/boveda/config/:rfc**  
+**POST /api/sait/boveda/config/:rfc**
 Crea la base de datos para la empresa indicada en :rfc  y define su variables de configuración. Regresa los valores definidos.
 ```
 Recibe:
@@ -34,7 +34,7 @@ HTTP: 200,500
 ```
 
 
-**PUT /api/sait/boveda/config/:rfc**  
+**PUT /api/sait/boveda/config/:rfc**
 Actualiza la configuración de la empresa indicada por :rfc, regresa los valores actualizados.
 ```
 Recibe:
@@ -48,7 +48,7 @@ HTTP: 200,500
 
 
 
-**GET /api/sait/boveda/config/respaldar/:inicio/:fin**  
+**GET /api/sait/boveda/config/respaldar/:inicio/:fin**
 Genera un respaldo de la información, bla bla bla
 ```
 Parametros en URL
@@ -59,7 +59,7 @@ Regresa:
 ```
 
 
-**POST /api/sait/boveda/config/mailtest**  
+**POST /api/sait/boveda/config/mailtest**
 Comprueba la conexión con el servidor de correos.
 ```
 Recibe:
@@ -70,7 +70,7 @@ Regresa:
 ```
 
 
-**POST /api/sait/boveda/config/bovedatest**  
+**POST /api/sait/boveda/config/bovedatest**
 Comprueba la conexión con el servidor de boveda.sait.mx, usando el APIKEY que se manda.
 ```
 Recibe:
@@ -79,4 +79,3 @@ Recibe:
 Regresa:
   {"result":"OK}
 ```
-

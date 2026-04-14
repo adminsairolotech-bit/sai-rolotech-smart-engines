@@ -1,7 +1,7 @@
 # COPRA Gap -> Execution Plan (Strict Audit Mode)
 
-**Date:** 2026-04-04  
-**Source baseline:** `COPRA_GAP_ANALYSIS_2026-04-04.md`  
+**Date:** 2026-04-04
+**Source baseline:** `COPRA_GAP_ANALYSIS_2026-04-04.md`
 **Runtime note:** This plan is generated from source inspection. Runtime execution is still pending in this shell environment.
 
 ---
@@ -211,4 +211,3 @@ flowchart TD
 - Reason:
   - Core architecture is present and improving.
   - Runtime proof chain is still incomplete for critical modules (especially solver-backed FEA and full production evidence refresh).
-

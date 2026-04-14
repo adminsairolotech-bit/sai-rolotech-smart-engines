@@ -111,7 +111,7 @@ With ThisForm
 
 	* Manda llamar el metodo para cargar el historial del contacto
 	.CargarHistorial()
-	
+
 EndWith
 
 ENDPROC
@@ -127,7 +127,7 @@ With ThisForm
 	* Borra el temporal
 	Select Temp
 	Zap
-	
+
 	.Grid1.RecordSource = ''
 
 	* Busca en CRM las actividades del cliente
@@ -146,7 +146,7 @@ Return
 
 	Index On DTOS(FECHA)+INIFIN Tag FecIni
 	Set Order To FecIni
-	
+
 	* Muestra los datos de TEMP
 	.LockScreen = .T.
 	With ThisForm.Grid1
@@ -159,7 +159,7 @@ Return
 		.Column4.ControlSource = 'Temp.TIPO'
 		.Column5.ControlSource = 'SubStr(Temp.OBS,1,100)'
 		.Column6.ControlSource = 'Proper(Allt(Temp.NOMUSER))'
-		
+
 		Go Bott
 		.SetFocus
 
@@ -169,7 +169,7 @@ Return
 	* Muestra mensaje si no se encontro informacion
 	If Reccount('Temp')==0
 		Alerta('No se encontró información')
-		Return 		
+		Return
 	Endif
 
 EndWith
@@ -181,7 +181,7 @@ With ThisForm
 	.Detalle.Value = MexDate2(Temp.FECHA)+' '+Temp.INIFIN+IIF(Not Empty(Temp.NUMORDEN),' OS# '+Allt(Temp.NUMORDEN),'')+Chr(13)+;
 		Proper(Allt(Temp.NOMCONT))+Chr(13)+Proper(Allt(Temp.NOMUSER))+Chr(13)+;
 		+Allt(Temp.TIPO)+Chr(13)+'--------------------'+Chr(13)+Allt(Temp.OBS)
-	
+
 EndWith
 
 ENDPROC
@@ -192,8 +192,8 @@ ENDPROC
 		<reserved1/>
 		<reserved2/>
 		<reserved3>cnumcli
-*cargarhistorial 
-*mostrardetalle 
+*cargarhistorial
+*mostrardetalle
 </reserved3>
 		<reserved4/>
 		<reserved5/>
@@ -297,7 +297,7 @@ Name = "excel"
 		<protected/>
 		<methods>PROCEDURE Click
 With Thisform
-	* Mada a Excel la consulta	
+	* Mada a Excel la consulta
 	cNomcia = Allt(Cia.NOMCIA)
 	cTitulo = .Caption
 	cColumnas = 'Folio^Contacto^#Clliente^Fecha^Inicio-Fin^#Orden^Tipo^Descripción^Usuario'
@@ -378,10 +378,10 @@ With Thisform
 		m.Texto = m.Texto +MexDate2(Temp.FECHA)+' '+Temp.INIFIN+IIF(Not Empty(Temp.NUMORDEN),' OS# '+Allt(Temp.NUMORDEN),'')+Chr(13)+;
 		Proper(Allt(Temp.NOMCONT))+Chr(13)+Proper(Allt(Temp.NOMUSER))+Chr(13)+;
 		+Allt(Temp.TIPO)+Chr(13)+'--------------------'+Chr(13)+Allt(Temp.OBS)+Chr(13)+Chr(13)
-	EndScan		
-	
+	EndScan
+
 	_ClipText = m.Texto
-	
+
 EndWith
 
 ENDPROC

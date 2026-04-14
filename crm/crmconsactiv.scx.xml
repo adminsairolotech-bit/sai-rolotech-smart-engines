@@ -64,7 +64,7 @@
 Width = 765
 DoCreate = .T.
 Caption = "Consultar Actividades"
-cnumuser =  
+cnumuser =
 Name = "Formamsl1"
 Marco.Name = "Marco"
 </properties>
@@ -94,9 +94,9 @@ With ThisForm
 	* Asignar la fecha
 	.Fecha1.SetValue(Date())
 	.Fecha2.SetValue(Date())
-	
+
 	.Grid1.GridLineColor = .BackColor
-	
+
 	* Deshabilitar la opcion de modificar
 	.Modificar.Enabled = .F.
 
@@ -369,7 +369,7 @@ Name = "consultar"
 		<protected/>
 		<methods>PROCEDURE Click
 With ThisForm
-		
+
 	* Crear variables
 	cNumUser = ''
 	cNumCli = ''
@@ -377,11 +377,11 @@ With ThisForm
 	dFecha1 = {}
 	dFecha2 = {}
 	cNumCli = .LeeCliente.Clave.Value
-	
+
 	If Not Empty(.LeeContacto.Nombre.Value)
 		cNumCont = .LeeContacto.Clave.Value
 	Endif
-	
+
 	If Empty(.Usuario.Value)
 		cNumUser = ''
 	Else
@@ -394,7 +394,7 @@ With ThisForm
 	* Borra el temporal
 	Select Temp
 	Zap
-	
+
 	.Grid1.RecordSource = ''
 
 	* Busca en CRM las actividades que cumplan con las restricciones
@@ -414,11 +414,11 @@ With ThisForm
 		cNumUser,cNumCli,cNumCont,dtos(dFecha1),dtos(dFecha2))
 Return
 	Endif
-	
+
 	* Crea la relacion del temporal con la tabla de usuarios.dbf
 	Select Temp
 	Set Relation To NUMUSER Into Usuarios
-	
+
 	* Muestra los datos de TEMP
 	.LockScreen = .T.
 	With ThisForm.Grid1
@@ -428,7 +428,7 @@ Return
 		Select Temp
 		Index On FECHA Tag Fecha
 		Set Order To Fecha
-		
+
 		.Column1.ControlSource = 'Allt(Temp.ID)'
 		.Column2.ControlSource = 'MexDate3(Temp.FECHA)'
 		.Column3.ControlSource = 'Temp.INICIO'
@@ -438,7 +438,7 @@ Return
 		.Column7.ControlSource = 'Temp.TIPO'
 		.Column8.ControlSource = 'Temp.OBS'
 		.Column9.ControlSource = 'Usuarios.NOMUSER'
-		
+
 		Go Bott
 		.SetFocus
 
@@ -452,10 +452,10 @@ Return
 	Else
 		* Habilitar la opcion de modificar
 		.Modificar.Enabled = .T.
-		
+
 	Endif
 
-	
+
 EndWith
 
 ENDPROC
@@ -685,7 +685,7 @@ If nKeyCode==13
 	* Presiono [Enter]
 	* Manda llamar la ventana para modificar la actividad
 	Do DoForm With 'CrmAddActiv',2,Temp.RECNO In Crm
-	
+
 EndIf
 
 ENDPROC
@@ -765,7 +765,7 @@ If nKeyCode==13
 	* Presiono [Enter]
 	* Manda llamar la ventana para modificar la actividad
 	Do DoForm With 'CrmAddActiv',2,Temp.RECNO In Crm
-	
+
 EndIf
 
 ENDPROC
@@ -845,7 +845,7 @@ If nKeyCode==13
 	* Presiono [Enter]
 	* Manda llamar la ventana para modificar la actividad
 	Do DoForm With 'CrmAddActiv',2,Temp.RECNO In Crm
-	
+
 EndIf
 
 ENDPROC
@@ -925,7 +925,7 @@ If nKeyCode==13
 	* Presiono [Enter]
 	* Manda llamar la ventana para modificar la actividad
 	Do DoForm With 'CrmAddActiv',2,Temp.RECNO In Crm
-	
+
 EndIf
 
 ENDPROC
@@ -1004,7 +1004,7 @@ If nKeyCode==13
 	* Presiono [Enter]
 	* Manda llamar la ventana para modificar la actividad
 	Do DoForm With 'CrmAddActiv',2,Temp.RECNO In Crm
-	
+
 EndIf
 
 ENDPROC
@@ -1083,7 +1083,7 @@ If nKeyCode==13
 	* Presiono [Enter]
 	* Manda llamar la ventana para modificar la actividad
 	Do DoForm With 'CrmAddActiv',2,Temp.RECNO In Crm
-	
+
 EndIf
 
 ENDPROC
@@ -1162,7 +1162,7 @@ If nKeyCode==13
 	* Presiono [Enter]
 	* Manda llamar la ventana para modificar la actividad
 	Do DoForm With 'CrmAddActiv',2,Temp.RECNO In Crm
-	
+
 EndIf
 
 ENDPROC
@@ -1240,7 +1240,7 @@ If nKeyCode==13
 	* Presiono [Enter]
 	* Manda llamar la ventana para modificar la actividad
 	Do DoForm With 'CrmAddActiv',2,Temp.RECNO In Crm
-	
+
 EndIf
 
 ENDPROC
@@ -1337,7 +1337,7 @@ Name = "excel"
 		<protected/>
 		<methods>PROCEDURE Click
 With Thisform
-	* Mada a Excel la consulta	
+	* Mada a Excel la consulta
 	cNomcia = Allt(Cia.NOMCIA)
 	cTitulo = .Caption
 	cColumnas = 'Folio^Fecha^Inicio^Duración^Contacto^Empresa^Tipo^Descripción^Usuario^Reg'

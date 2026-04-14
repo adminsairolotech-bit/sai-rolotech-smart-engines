@@ -1,5 +1,5 @@
 
-AUTO CAD SE PROFILE DRAW KAR KE ESE SHEET ME KESE CONVERT KARE 
+AUTO CAD SE PROFILE DRAW KAR KE ESE SHEET ME KESE CONVERT KARE
 
 AutoCAD me profile draw karne ke baad usko sheet (flat pattern / developed shape) me convert karna mainly depend karta hai ki aap simple 2D bending profile bana rahe ho ya roll forming profile.
 
@@ -265,7 +265,7 @@ ya ek real profile bana ke dikha deta hu
 Bas bolo 👍
 
 
-UPPER WALE ROOLS OR NICHE WALE ROLLS KA OD DESIDNE KESE KARE SIDE KA GAPE KITNA RAHE KI ROLLS AAPS ME NA TARAKYE OR BHI ADVANCE CHIUJE SAMAJYE 
+UPPER WALE ROOLS OR NICHE WALE ROLLS KA OD DESIDNE KESE KARE SIDE KA GAPE KITNA RAHE KI ROLLS AAPS ME NA TARAKYE OR BHI ADVANCE CHIUJE SAMAJYE
 
 Ye ab real roll forming design ka core topic hai 🔥
 Main aapko practical + factory level logic me samjha raha hu — jo COPRA / real machine design me use hota hai.
@@ -437,7 +437,7 @@ AGAR AS PER FLOWER PATTERN 12 BAN RAHE HAI OR CLIENT 8 ME CHAHTA HAI TO KYA KAAR
 
 
 Thought for 17s
-Agar flower pattern 12 pass maang raha hai aur client 8 station me profile chah raha hai, to seedha 12 ko 8 me ghusa dena sahi design nahi hota. Roll-Kraft aur Formtek dono general level par yahi point rakhte hain ki required number of stations profile shape, material, machine capability, aur strain progression par depend karta hai; kam stations dene se per-pass deformation badh jati hai aur defects ka risk badhta hai. 
+Agar flower pattern 12 pass maang raha hai aur client 8 station me profile chah raha hai, to seedha 12 ko 8 me ghusa dena sahi design nahi hota. Roll-Kraft aur Formtek dono general level par yahi point rakhte hain ki required number of stations profile shape, material, machine capability, aur strain progression par depend karta hai; kam stations dene se per-pass deformation badh jati hai aur defects ka risk badhta hai.
 
 Seedhi baat
 12-pass design ko 8-pass line par tabhi lao jab profile aur material us reduction ko tolerate kare.
@@ -459,7 +459,7 @@ springback zyada
 
 roll load zyada
 
-Ye defects kam-pass / high-strain setup me aur zyada severe ho sakte hain, especially asymmetrical ya high-strength sections me. 
+Ye defects kam-pass / high-strain setup me aur zyada severe ho sakte hain, especially asymmetrical ya high-strength sections me.
 
 Kya karna chahiye
 Option 1: Flower ko dubara redesign karo
@@ -477,7 +477,7 @@ section asymmetrical hai?
 
 edge stretch/compression zyada hai?
 
-Research aur tooling references dono yahi dikhate hain ki pass schedule thickness, flange length, material strength, aur section complexity ke hisab se decide hota hai. 
+Research aur tooling references dono yahi dikhate hain ki pass schedule thickness, flange length, material strength, aur section complexity ke hisab se decide hota hai.
 
 Practical redesign method
 12 passes me jo progression tha, use 8 me compress karo, lekin random nahi:
@@ -560,7 +560,7 @@ shaft stiffness badhana
 face support improve karna
 
 entry guide aur side supports lagana
-zaroori ho jata hai, taki strip unstable na ho aur edge buckle na kare. Ye general tooling guidance ke saath consistent hai ki machine configuration bhi station count selection me role play karti hai. 
+zaroori ho jata hai, taki strip unstable na ho aur edge buckle na kare. Ye general tooling guidance ke saath consistent hai ki machine configuration bhi station count selection me role play karti hai.
 
 Option 4: Speed kam karo
 Agar client 8 station hi use karega, to line speed reduce karna practical remedy hota hai:
@@ -583,7 +583,7 @@ Better:
 
 8 sizing/calibration/straightening
 
-Twist aur setup defects ke liye Roll-Kraft bhi setup, guides, alignment aur corrective tooling ko major factor batata hai. 
+Twist aur setup defects ke liye Roll-Kraft bhi setup, guides, alignment aur corrective tooling ko major factor batata hai.
 
 Kab 12 ko 8 me lana relatively possible hota hai
 Ye conditions hon to chance better hai:
@@ -606,7 +606,7 @@ machine accurate hai
 
 client thoda slower speed accept kare
 
-Roll-Kraft ke overview me bhi note hai ki mild steel, non-notched, simpler conditions me fewer passes workable ho sakte hain, jabki high-strength, pre-cut, ya difficult shapes me more passes needed hote hain. 
+Roll-Kraft ke overview me bhi note hai ki mild steel, non-notched, simpler conditions me fewer passes workable ho sakte hain, jabki high-strength, pre-cut, ya difficult shapes me more passes needed hote hain.
 
 Kab 12 ko 8 me nahi lana chahiye
 In cases me main mana karunga:
@@ -627,7 +627,7 @@ cosmetic surface critical
 
 very low scrap tolerance
 
-High-strength materials me bow, flare, twist aur setup sensitivity badhne ki baat industry sources me clear hai. 
+High-strength materials me bow, flare, twist aur setup sensitivity badhne ki baat industry sources me clear hai.
 
 Client ko kya jawab dena chahiye
 Aap practical language me bolo:
@@ -682,7 +682,7 @@ Thought for 14s
 Bilkul.
 Agar flower pattern me 12 passes aa rahe hain aur client 8 station hi chahta hai, to engineer ko “force fit” nahi, “re-balance” karna hota hai.
 
-Industry guidance me bhi yehi bataya jata hai ki required stations profile shape, bends, material thickness, section depth, roll diameter, aur machine configuration par depend karte hain; zyada depth, bends, thickness ya difficult material ho to stations badhte hain, aur larger roll pitch/diameter se kuch had tak stations kam kiye ja sakte hain. 
+Industry guidance me bhi yehi bataya jata hai ki required stations profile shape, bends, material thickness, section depth, roll diameter, aur machine configuration par depend karte hain; zyada depth, bends, thickness ya difficult material ho to stations badhte hain, aur larger roll pitch/diameter se kuch had tak stations kam kiye ja sakte hain.
 
 Sabse pehle rule
 12-pass flower ko direct 8-pass me copy mat karo.
@@ -702,7 +702,7 @@ marking
 
 flange mismatch
 
-High-strength ya difficult sections me springback aur twist ka risk aur badhta hai. 
+High-strength ya difficult sections me springback aur twist ka risk aur badhta hai.
 
 8 station me lane ka sahi tareeka
 1) 12 passes ko 3 groups me tod do
@@ -778,7 +778,7 @@ S7 close
 
 S8 calibration
 
-Ye isliye zaroori hai kyunki close hone ke baad profile ko size pakadna padta hai, warna springback se part khul jata hai. Springback correction real forming me important hota hai. 
+Ye isliye zaroori hai kyunki close hone ke baad profile ko size pakadna padta hai, warna springback se part khul jata hai. Springback correction real forming me important hota hai.
 
 4) Roll OD bada karo
 Jab stations kam karte ho to har pass par load badhta hai.
@@ -790,7 +790,7 @@ face width improve karna
 
 shaft stiffness badhana
 
-padta hai. Formtek bhi broadly yahi point rakhta hai ki roll pitch diameter aur machine characteristics station requirement ko affect karte hain. 
+padta hai. Formtek bhi broadly yahi point rakhta hai ki roll pitch diameter aur machine characteristics station requirement ko affect karte hain.
 
 Practical soch:
 
@@ -810,7 +810,7 @@ side rollers
 
 proper strip centering
 
-bahut important ho jate hain. Roll-Kraft entry guides ko proper forming ki shuruaat manta hai. 
+bahut important ho jate hain. Roll-Kraft entry guides ko proper forming ki shuruaat manta hai.
 
 6) Speed kam karo
 8 station me agar aap 12-station wali hi speed chalaoge to defect chance aur badhega.
@@ -859,7 +859,7 @@ cosmetic surface critical profile
 
 punched/notched strip
 
-AHSS guidance me roll forming ke saath flare, buckling aur springback risks ka mention milta hai, especially tougher materials me. 
+AHSS guidance me roll forming ke saath flare, buckling aur springback risks ka mention milta hai, especially tougher materials me.
 
 Practical decision formula
 Client ko aise samjhao:
@@ -958,7 +958,7 @@ JI
 Thought for 15s
 Thik hai — ab 12 pass ko 8 pass me convert karne ka practical design logic samjhte hain.
 
-Official roll-forming guidance ke mutabik number of stations profile shape, bend count, section depth, thickness, material aur machine par depend karta hai; aur kuch cases me bigger roll pitch diameter / center distance se required stages thode kam kiye ja sakte hain. 
+Official roll-forming guidance ke mutabik number of stations profile shape, bend count, section depth, thickness, material aur machine par depend karta hai; aur kuch cases me bigger roll pitch diameter / center distance se required stages thode kam kiye ja sakte hain.
 
 12 se 8 ka asli rule
 Pass kam karna = har pass par zyada work karwana.
@@ -971,7 +971,7 @@ roll OD review
 guides improve
 
 last stations calibration ke liye reserve
-karna padta hai. Incremental forming ka fayda hi ye hota hai ki strain localization aur springback ko control kiya ja sake. 
+karna padta hai. Incremental forming ka fayda hi ye hota hai ki strain localization aur springback ko control kiya ja sake.
 
 Sabse pehle 12-pass flower ko 4 groups me todo
 Maan lo original 12-pass sequence ka kaam ye tha:
@@ -1057,7 +1057,7 @@ S7: 88°–92° overbend
 S8: calibration to final 90°
 
 👉 Yahan ek important baat:
-S7 me thoda overbend isliye dete hain kyunki springback se profile khul sakta hai. Springback higher-strength materials me aur badhta hai. 
+S7 me thoda overbend isliye dete hain kyunki springback se profile khul sakta hai. Springback higher-strength materials me aur badhta hai.
 
 Example 2: Lip wala C profile
 Agar profile me flange ke end par chhota lip hai, to 8 pass me direct sab kuch ek saath mat karo.
@@ -1114,7 +1114,7 @@ twist
 mismatch
 
 Roll OD ka kya kare
-Official guidance ke hisab se roll pitch diameter badhne se kabhi-kabhi stages reduce kiye ja sakte hain. 
+Official guidance ke hisab se roll pitch diameter badhne se kabhi-kabhi stages reduce kiye ja sakte hain.
 
 Iska practical matlab:
 
@@ -1142,7 +1142,7 @@ to 8-pass redesign me:
 Exact number profile depth aur shaft spacing par depend karega.
 
 Entry guide aur side guide ka role
-Kam stations me strip zyada unstable hoti hai. Entry guides proper strip alignment ke liye critical hote hain; Roll-Kraft ke mutabik proper forming ki shuruaat hi entry guidance se hoti hai. 
+Kam stations me strip zyada unstable hoti hai. Entry guides proper strip alignment ke liye critical hote hain; Roll-Kraft ke mutabik proper forming ki shuruaat hi entry guidance se hoti hai.
 
 Isliye 8-pass design me:
 
@@ -1214,7 +1214,7 @@ pre-punched strip
 
 tight tolerance
 
-AHSS guidance ke mutabik higher flow stress materials me springback, twist aur dimensional control tougher ho jata hai. 
+AHSS guidance ke mutabik higher flow stress materials me springback, twist aur dimensional control tougher ho jata hai.
 
 Practical client answer
 Client ko aise bolo:
@@ -1268,7 +1268,7 @@ https://www.iqsdirectory.com/articles/roll-forming/steel-channels/roll-forming.j
 
 https://www.researchgate.net/publication/261613460/figure/fig2/AS%3A669533882839053%401536640725703/The-flower-pattern-diagram-of-the-roll-formed-Uprofile.png
 Bilkul. Ab main 8-station ka practical station-by-station logic de raha hoon.
-Dhyan rahe: exact station count aur angle progression fixed rule se nahi nikalta; ye profile shape, bends, depth, thickness, material, aur machine setup par depend karta hai. Industry guidance ke mutabik section jitna deep hoga, bends jitne zyada honge, thickness/material strength jitni zyada hogi, utne zyada stations chahiye hote hain. Roll pitch diameter ya center distance badhne se kuch cases me stations thode kam kiye ja sakte hain. 
+Dhyan rahe: exact station count aur angle progression fixed rule se nahi nikalta; ye profile shape, bends, depth, thickness, material, aur machine setup par depend karta hai. Industry guidance ke mutabik section jitna deep hoga, bends jitne zyada honge, thickness/material strength jitni zyada hogi, utne zyada stations chahiye hote hain. Roll pitch diameter ya center distance badhne se kuch cases me stations thode kam kiye ja sakte hain.
 
 1) Simple C-channel ka 8-station logic
 Maan lo profile simple hai:
@@ -1309,11 +1309,11 @@ Ye station critical hai. Yahin se twist aur flare ka risk badhta hai.
 
 S7 — Close / slight overbend
 Flange 88°–92°.
-Yahan slight overbend diya ja sakta hai taki springback ke baad profile 90° ke paas aaye. Springback higher-strength material me aur zyada hota hai. 
+Yahan slight overbend diya ja sakta hai taki springback ke baad profile 90° ke paas aaye. Springback higher-strength material me aur zyada hota hai.
 
 S8 — Calibration / sizing / straightening
 Final width, squareness, angle hold, twist correction.
-Is station ko ignore karoge to profile ban jayega, lekin production stable nahi chalega. Roll forming me flare, buckling aur twist control ke liye final sizing aur good tooling condition important hoti hai. 
+Is station ko ignore karoge to profile ban jayega, lekin production stable nahi chalega. Roll forming me flare, buckling aur twist control ke liye final sizing aur good tooling condition important hoti hai.
 
 2) C-channel with lip ka 8-station logic
 Ye simple channel se tough hota hai, kyunki ab aapko flange aur lip dono control karne hote hain.
@@ -1347,7 +1347,7 @@ Yahan lip ka final angle aur channel width lock karo.
 
 Important rule
 Lip ko early stations me full mat uthao.
-Agar aap lip ko bahut jaldi aggressive form karoge to edge wave, twist, marking aur strip instability badh sakti hai. Roll forming defects, especially flare/twist/buckling, higher stress build-up aur poor tooling condition se worsen hote hain. 
+Agar aap lip ko bahut jaldi aggressive form karoge to edge wave, twist, marking aur strip instability badh sakti hai. Roll forming defects, especially flare/twist/buckling, higher stress build-up aur poor tooling condition se worsen hote hain.
 
 3) Shutter patti / narrow section ka 8-station logic
 Shutter patti type profiles me width narrow hoti hai, kabhi beads/ribs hote hain, aur section visually simple lagta hai lekin tracking issue zyada aa sakta hai.
@@ -1377,7 +1377,7 @@ S8 — Sizing + anti-twist correction
 Narrow sections me final straightness bahut important hoti hai
 
 Practical note
-Shutter patti me aksar problem angle se kam aur tracking, edge marking, straightness, oil canning, wave se zyada hoti hai. Isliye yahan guide design aur final calibration bahut important hote hain. Entry guidance proper na ho to poori line unstable behave kar sakti hai. 
+Shutter patti me aksar problem angle se kam aur tracking, edge marking, straightness, oil canning, wave se zyada hoti hai. Isliye yahan guide design aur final calibration bahut important hote hain. Entry guidance proper na ho to poori line unstable behave kar sakti hai.
 
 4) 12-pass ko 8-pass me merge kaise sochna hai
 Ye yaad rakho:
@@ -1408,7 +1408,7 @@ edge marking
 twist
 
 flange mismatch
-ka risk badhta hai. AHSS guidance bhi batati hai ki higher stress aur material strength se springback aur deformation control tough hota hai. 
+ka risk badhta hai. AHSS guidance bhi batati hai ki higher stress aur material strength se springback aur deformation control tough hota hai.
 
 5) 8-station design me roll OD aur support ka logic
 Kam stations ka matlab har station par zyada kaam. Isliye practical redesign me aksar:
@@ -1420,7 +1420,7 @@ shaft stiffer
 face support better
 
 guides stronger
-rakhe jate hain. Higher-strength steel ke liye larger shaft diameters/forming force requirement bhi noted hai. 
+rakhe jate hain. Higher-strength steel ke liye larger shaft diameters/forming force requirement bhi noted hai.
 
 Simple language me:
 
@@ -1434,7 +1434,7 @@ Rule 2: S5 ke baad defects dhyan se dekhna start karo.
 Rule 3: S7 me slight overbend useful ho sakta hai.
 Rule 4: S8 ko sizing/calibration hi treat karo.
 Rule 5: Trial slow speed par lo.
-Rule 6: Worn tooling ke saath 8-station aggressive design mat chalao. Worn tools buckling/defect severity badha sakte hain. 
+Rule 6: Worn tooling ke saath 8-station aggressive design mat chalao. Worn tools buckling/defect severity badha sakte hain.
 
 7) Kab 8-station workable hota hai
 8-station version zyada workable hota hai jab:
@@ -1464,7 +1464,7 @@ cosmetic finish critical ho
 
 section deep ho
 
-Ye sab conditions springback, twist, flare aur buckling sensitivity badhati hain. 
+Ye sab conditions springback, twist, flare aur buckling sensitivity badhati hain.
 
 Final practical answer
 Agar client 8 station hi chahta hai, to aapko ye karna chahiye:
@@ -1504,7 +1504,7 @@ Thought for 13s
 Chaliye, ab ek real engineering example lete hain:
 0.8 mm MS sheet ka simple C-channel, jise client 8 station me banana chahta hai.
 
-Roll-Kraft aur Formtek ke general guidance ke mutabik station count shape, bends, section depth, thickness, material aur machine capability par depend karta hai; exact fixed formula nahi hota. Section depth, bends aur thickness badhne par stations badhte hain, aur kuch cases me larger roll pitch diameter se stations thode kam kiye ja sakte hain. 
+Roll-Kraft aur Formtek ke general guidance ke mutabik station count shape, bends, section depth, thickness, material aur machine capability par depend karta hai; exact fixed formula nahi hota. Section depth, bends aur thickness badhne par stations badhte hain, aur kuch cases me larger roll pitch diameter se stations thode kam kiye ja sakte hain.
 
 Example profile
 Maan lo final profile:
@@ -1519,7 +1519,7 @@ material = mild steel
 
 final bend = 90° + 90°
 
-Is type ka simple symmetric profile 8 stations me lana comparatively practical hota hai, especially mild steel aur moderate depth me. High-strength material me generally more passes aur zyada overbend lag sakta hai. 
+Is type ka simple symmetric profile 8 stations me lana comparatively practical hota hai, especially mild steel aur moderate depth me. High-strength material me generally more passes aur zyada overbend lag sakta hai.
 
 8-station flower progression
 Is profile ke liye ek practical 8-pass progression aisa ho sakta hai:
@@ -1540,7 +1540,7 @@ S7: 90° ke aas-paas, ya slight overbend 91–92°
 
 S8: calibration / sizing / straightening
 
-Is logic me early passes strip ko guide karte hain, middle passes main shape banate hain, aur last passes angle lock aur springback correction ke liye rakhe jate hain. Springback ka risk material strength badhne ke saath badhta hai. 
+Is logic me early passes strip ko guide karte hain, middle passes main shape banate hain, aur last passes angle lock aur springback correction ke liye rakhe jate hain. Springback ka risk material strength badhne ke saath badhta hai.
 
 12 pass se 8 pass me merge kaise hua
 Agar original 12-pass flower me 8°, 15°, 22°, 30°, 40°, 50°, 60°, 70°, 80°, 88°, 90° jaisi progression thi, to 8-pass version me:
@@ -1553,7 +1553,7 @@ closing ke paas increments chhote rakhe
 
 final sizing alag rakhi
 
-Ye isliye, kyunki last ke stations me deformation sensitivity zyada hoti hai; yahin twist, flare, springback aur edge marking ka risk badhta hai. 
+Ye isliye, kyunki last ke stations me deformation sensitivity zyada hoti hai; yahin twist, flare, springback aur edge marking ka risk badhta hai.
 
 Upper aur lower roll OD ka starting logic
 Is profile ke liye practical starting range:
@@ -1562,7 +1562,7 @@ small-to-medium line: roughly 100–120 mm OD
 
 agar client stations kam kar raha hai, to same profile ko smooth banane ke liye thoda larger OD helpful hota hai
 
-Formtek ke guidance ke mutabik larger roll pitch diameter se kuch extent tak required stages kam ho sakte hain, aur machine setup deformation ko affect karta hai. 
+Formtek ke guidance ke mutabik larger roll pitch diameter se kuch extent tak required stages kam ho sakte hain, aur machine setup deformation ko affect karta hai.
 
 Practical shop-floor rule:
 
@@ -1570,7 +1570,7 @@ Practical shop-floor rule:
 
 to 8-station redesign me 110–130 mm OD consider karna reasonable hota hai
 
-Ye exact rule nahi, starting engineering estimate hai. Final OD ko profile depth, spindle spacing, shaft size aur flange interference dekhkar freeze kiya jata hai. 
+Ye exact rule nahi, starting engineering estimate hai. Final OD ko profile depth, spindle spacing, shaft size aur flange interference dekhkar freeze kiya jata hai.
 
 Upper aur lower roll same rakhen ya different
 Simple symmetric channel me starting point ke liye:
@@ -1579,7 +1579,7 @@ upper aur lower roll OD same rakhna easiest hota hai
 
 isse machining, alignment aur setup easy hota hai
 
-Lekin profile depth ya clearance issue aaye to top-bottom contour alag ho sakta hai. Machine setup aur spindle distance process quality ko directly affect karte hain. 
+Lekin profile depth ya clearance issue aaye to top-bottom contour alag ho sakta hai. Machine setup aur spindle distance process quality ko directly affect karte hain.
 
 Vertical gap kitna rakhen
 Agar sheet thickness 0.8 mm hai, to practical forming clearance often:
@@ -1588,7 +1588,7 @@ Agar sheet thickness 0.8 mm hai, to practical forming clearance often:
 
 ya 0.85–0.90 mm setting as a safe starting adjustment
 
-Exact gap material hardness, coating, finish aur station function par depend karta hai. Final setting feeler gauge aur trials se fine-tune hoti hai; Formtek ke setup notes me inboard/outboard clearances aur feeler gauges ka use mention hai. 
+Exact gap material hardness, coating, finish aur station function par depend karta hai. Final setting feeler gauge aur trials se fine-tune hoti hai; Formtek ke setup notes me inboard/outboard clearances aur feeler gauges ka use mention hai.
 
 Side gap kitna rakhen
 Jahan upper/lower contours ek dusre ke paas aate hain, wahan side collision avoid karne ke liye:
@@ -1597,7 +1597,7 @@ initial design me 0.3 to 0.5 mm per side machining clearance
 
 critical close stations me kabhi 0.2–0.3 mm bhi use hota hai, but only after careful trial
 
-Ye fixed universal rule nahi hai; actual value profile, deflection, bearing play aur machine accuracy par depend karti hai. Tooling clearances har station par designated hote hain aur final adjustment feeler gauges se ki jati hai. 
+Ye fixed universal rule nahi hai; actual value profile, deflection, bearing play aur machine accuracy par depend karti hai. Tooling clearances har station par designated hote hain aur final adjustment feeler gauges se ki jati hai.
 
 Roll aapas me takraye na, uske liye kya dekhen
 Yeh 5 checks mandatory rakho:
@@ -1617,10 +1617,10 @@ Running condition me roll static drawing se thoda behave alag karega.
 inboard-outboard both sides check karo
 Sirf section center par clearance check karna enough nahi hota.
 
-Machine setup, spindle distance aur roll clearances product deformation aur “roll fight” ko affect kar sakte hain, especially jab geometry aggressive ho. 
+Machine setup, spindle distance aur roll clearances product deformation aur “roll fight” ko affect kar sakte hain, especially jab geometry aggressive ho.
 
 “Roll fight” kab hota hai
-Agar successive passes me pitch line logic galat ho, ya different effective diameters ki wajah se strip ko alag-alag passes alag speed se kheenchne lagen, to “roll fight” jaisa behavior aata hai. Formtek is risk ko especially unequal pitch-diameter situations me mention karta hai. 
+Agar successive passes me pitch line logic galat ho, ya different effective diameters ki wajah se strip ko alag-alag passes alag speed se kheenchne lagen, to “roll fight” jaisa behavior aata hai. Formtek is risk ko especially unequal pitch-diameter situations me mention karta hai.
 
 Iska result:
 
@@ -1643,7 +1643,7 @@ S7 = close / slight overbend
 
 S8 = sizing
 
-Agar aap S7 me 90° exact bana doge aur springback zyada hua, to part khul jayega. Isi liye stronger materials me overbend aur calibration aur important ho jate hain. 
+Agar aap S7 me 90° exact bana doge aur springback zyada hua, to part khul jayega. Isi liye stronger materials me overbend aur calibration aur important ho jate hain.
 
 Agar profile me lip bhi ho
 Phir same 8 station me logic badal jayega:
@@ -1654,7 +1654,7 @@ lip ko later passes me start karo
 
 last station me lip calibration rakho
 
-Lip ko jaldi aggressive form karne se edge wave aur twist ka risk badhta hai, kyunki local strain concentration badh jati hai. AHSS guidance roll forming me strain distribution aur dimensional accuracy ke importance par zor deti hai. 
+Lip ko jaldi aggressive form karne se edge wave aur twist ka risk badhta hai, kyunki local strain concentration badh jati hai. AHSS guidance roll forming me strain distribution aur dimensional accuracy ke importance par zor deti hai.
 
 Practical starting design summary
 Is example ke liye aap initial design aise soch sakte ho:
@@ -1675,7 +1675,7 @@ side machining clearance: 0.3–0.5 mm per side starting basis
 
 final station: sizing compulsory
 
-Ye starting engineering base hai, final production setup nahi. Final values trial, springback check, twist observation aur actual machine rigidity par set hongi. 
+Ye starting engineering base hai, final production setup nahi. Final values trial, springback check, twist observation aur actual machine rigidity par set hongi.
 
 Sabse important baat
 CAD me profile banana aur running tooling banana alag cheez hai.
@@ -1695,7 +1695,7 @@ shaft load
 
 roll marking
 
-In sab par machine setup aur material properties ka strong effect hota hai. 
+In sab par machine setup aur material properties ka strong effect hota hai.
 
 Agar aap chaho, agle message me main isi example ka station-wise upper roll + lower roll sketch logic text me bana deta hoon, yani har station me roll groove kaisa sochna hai.
 
@@ -1706,7 +1706,7 @@ JI
 Thought for 21s
 Thik hai — ab station-wise upper roll + lower roll ka sketch logic samajhte hain, yani har station me roll groove ko sochna kaise hai.
 
-Basic roll-form design fixed formula se nahi hota; Roll-Kraft ke mutabik alag designers alag approaches use kar sakte hain, aur successful profile banane ke ek se zyada tareeqe hote hain. Entry guides strip ko first pass me correct elevation aur lateral position me lane ke liye critical hote hain, aur setup/alignment mistakes twist aur quality issues ka major cause ban sakti hain. 
+Basic roll-form design fixed formula se nahi hota; Roll-Kraft ke mutabik alag designers alag approaches use kar sakte hain, aur successful profile banane ke ek se zyada tareeqe hote hain. Entry guides strip ko first pass me correct elevation aur lateral position me lane ke liye critical hote hain, aur setup/alignment mistakes twist aur quality issues ka major cause ban sakti hain.
 
 Main yahan simple C-channel ka example le raha hoon:
 
@@ -1720,7 +1720,7 @@ thickness = 0.8 mm
 
 mild steel
 
-Is explanation ka focus conceptual roll shape par hai, exact OD ya machining radius par nahi. Final dimensions hamesha trial, setup, springback, machine rigidity aur actual material behavior se tune hoti hain. 
+Is explanation ka focus conceptual roll shape par hai, exact OD ya machining radius par nahi. Final dimensions hamesha trial, setup, springback, machine rigidity aur actual material behavior se tune hoti hain.
 
 Sabse pehle ek basic rule
 Har station me upper aur lower rolls ka kaam alag nazar aa sakta hai, lekin system milkar 3 cheeze karta hai:
@@ -1731,7 +1731,7 @@ shape ko thoda-thoda bend karta hai
 
 final stations me angle aur width lock karta hai
 
-Roll forming incremental process hai; har station sheet ko thoda-thoda deform karta hai, isliye ek hi pass me zyada hard bend dena unstable ho sakta hai. 
+Roll forming incremental process hai; har station sheet ko thoda-thoda deform karta hai, isliye ek hi pass me zyada hard bend dena unstable ho sakta hai.
 
 Station-wise upper/lower roll logic
 S1 — Entry / trap pass
@@ -1750,7 +1750,7 @@ mostly flat ya very shallow matching land
 purpose bend dena nahi, strip ko seat karna hai
 
 Soch kaise rakho:
-Yeh station “forming” se zyada centering ka hota hai. Entry guide aur first pass traps milkar strip ko square rakhte hain. Agar yahan strip off-center ghusi, to aage sari line me problem snowball ho sakti hai. 
+Yeh station “forming” se zyada centering ka hota hai. Entry guide aur first pass traps milkar strip ko square rakhte hain. Agar yahan strip off-center ghusi, to aage sari line me problem snowball ho sakti hai.
 
 Simple text sketch:
 
@@ -1775,7 +1775,7 @@ poore bend ko crush nahi karegi
 sirf strip ko “invite” karegi ki edge uthe
 
 Design logic:
-Is station me edge ko bas jagao, force mat karo. Entry ke turant baad aggressive forming wandering aur marking badha sakti hai. Proper entry guidance yahan bahut important hai. 
+Is station me edge ko bas jagao, force mat karo. Entry ke turant baad aggressive forming wandering aur marking badha sakti hai. Proper entry guidance yahan bahut important hai.
 
 Sketch:
 
@@ -1798,7 +1798,7 @@ matching male contour jo edge ko niche se lower contour ke against guide kare
 contact line smooth honi chahiye, point contact nahi
 
 Design logic:
-Yahan se actual forming start hoti hai. Upper-lower rolls ko aisa socho ki material ko pakad ke modne ke bajay flow karne de rahe ho. Incremental forming ka matlab hi yahi hai. 
+Yahan se actual forming start hoti hai. Upper-lower rolls ko aisa socho ki material ko pakad ke modne ke bajay flow karne de rahe ho. Incremental forming ka matlab hi yahi hai.
 
 Sketch:
 
@@ -1823,7 +1823,7 @@ edges ko bend line par support
 web par unnecessary pressure nahi
 
 Design logic:
-Is stage me ek common galti hoti hai: web ko bhi unnecessarily pinch kar dena. Usse marks ya tracking issue aa sakta hai. Roll contour ka focus bend line ke around support par hona chahiye, poori strip ko dabaane par nahi. Setup/alignment mistakes twist generate kar sakti hain. 
+Is stage me ek common galti hoti hai: web ko bhi unnecessarily pinch kar dena. Usse marks ya tracking issue aa sakta hai. Roll contour ka focus bend line ke around support par hona chahiye, poori strip ko dabaane par nahi. Setup/alignment mistakes twist generate kar sakti hain.
 
 Sketch:
 
@@ -1848,7 +1848,7 @@ bend radius area me smooth wrap
 side relief rakho taki roll-metal-roll jam na ho
 
 Design logic:
-Yahin se “roll fight” ya interference ka risk badhta hai. Agar successive passes ki metal line logic galat ho, ya contour mismatch ho, to strip pull, marks aur twist aane lagte hain. Machine/process quality par roll clearances aur setup ka direct effect hota hai. 
+Yahin se “roll fight” ya interference ka risk badhta hai. Agar successive passes ki metal line logic galat ho, ya contour mismatch ho, to strip pull, marks aur twist aane lagte hain. Machine/process quality par roll clearances aur setup ka direct effect hota hai.
 
 Sketch:
 
@@ -1873,7 +1873,7 @@ top corners par relief zaroor rakho
 yahan sharp corner collision ka check bahut zaroori
 
 Design logic:
-Ye station critical hai. Yahin flare, twist aur springback behavior clearly dekhne lagta hai. Tooling/mill alignment aur shaft/bearing condition bhi ab quality par strongly effect dikhate hain. 
+Ye station critical hai. Yahin flare, twist aur springback behavior clearly dekhne lagta hai. Tooling/mill alignment aur shaft/bearing condition bhi ab quality par strongly effect dikhate hain.
 
 Sketch:
 
@@ -1896,7 +1896,7 @@ matching contour jo flange ko 90° ya slight overbend 91–92° tak le ja sake
 yahan contour crisp ho sakta hai, lekin knife-edge bilkul nahi
 
 Design logic:
-Springback ko dekhte hue S7 me slight overbend useful hota hai. Stronger materials me springback aur dimensional recovery zyada hoti hai, isliye final angle directly geometry se nahi, running trial se set hota hai. 
+Springback ko dekhte hue S7 me slight overbend useful hota hai. Stronger materials me springback aur dimensional recovery zyada hoti hai, isliye final angle directly geometry se nahi, running trial se set hota hai.
 
 Sketch:
 
@@ -1923,7 +1923,7 @@ squareness correction
 very controlled contact
 
 Design logic:
-Is station ko sirf “last bend” mat samjho. Ye sizing station hai. Yahan part ki final width, straightness, twist correction aur repeatability lock hoti hai. Roll-Kraft ke setup/alignment resources aur twist-remedy guidance ke hisab se final product stability me setup ka role bahut bada hota hai. 
+Is station ko sirf “last bend” mat samjho. Ye sizing station hai. Yahan part ki final width, straightness, twist correction aur repeatability lock hoti hai. Roll-Kraft ke setup/alignment resources aur twist-remedy guidance ke hisab se final product stability me setup ka role bahut bada hota hai.
 
 Sketch:
 
@@ -1934,30 +1934,30 @@ Lower:      |____|
 Upper aur lower roll contour banate waqt 7 golden rules
 1) Web ko stable rakho
 Har station me web ke liye ek clear support philosophy honi chahiye.
-Agar web kabhi flat, kabhi floating, kabhi pinch me aa gaya, to strip tracking aur marks dono badhenge. Improper entry aur setup defects aage multiply hote hain. 
+Agar web kabhi flat, kabhi floating, kabhi pinch me aa gaya, to strip tracking aur marks dono badhenge. Improper entry aur setup defects aage multiply hote hain.
 
 2) Bend line ke paas support do, random pressure mat do
 Forming ka target bend zone hai.
-Poore strip ko crush karne se quality improve nahi hoti. Incremental forming controlled local deformation ka process hai. 
+Poore strip ko crush karne se quality improve nahi hoti. Incremental forming controlled local deformation ka process hai.
 
 3) Side relief zaroor do
 Jab flange close hota hai, upper-lower roll shoulders ke paas mechanical collision ka risk hota hai.
-CAD overlay me station-wise minimum clearance check karo. Machine running condition me shaft/bearing play bhi dhyan me rakho. Setup and machine condition quality ko affect karte hain. 
+CAD overlay me station-wise minimum clearance check karo. Machine running condition me shaft/bearing play bhi dhyan me rakho. Setup and machine condition quality ko affect karte hain.
 
 4) Early stations me soft contour, late stations me tighter contour
 S2–S3 me profile ko gently start karo.
-S6–S8 me contour closer aur more controlling ho sakta hai. Yehi smooth progression defects kam karta hai. 
+S6–S8 me contour closer aur more controlling ho sakta hai. Yehi smooth progression defects kam karta hai.
 
 5) S7 aur S8 ko alag kaam do
 S7 = close / overbend
 S8 = size / calibrate
-Dono ko ek hi hard pass me combine karne se repeatability kharab ho sakti hai. Final straightness aur twist correction setup-sensitive hoti hai. 
+Dono ko ek hi hard pass me combine karne se repeatability kharab ho sakti hai. Final straightness aur twist correction setup-sensitive hoti hai.
 
 6) Entry guides ko ignore mat karo
-Agar entry guide weak hai to best rolls bhi stable product nahi denge. Roll-Kraft specifically kehta hai ki proper roll forming ki shuruaat entry guide se hoti hai. 
+Agar entry guide weak hai to best rolls bhi stable product nahi denge. Roll-Kraft specifically kehta hai ki proper roll forming ki shuruaat entry guide se hoti hai.
 
 7) Mill alignment check karo
-Base level, shaft parallelism, shoulder alignment, entry table aur side units ki alignment saari quality par effect dalti hai. Misalignment se twist, poor tracking aur repeated setup issues aate hain. 
+Base level, shaft parallelism, shoulder alignment, entry table aur side units ki alignment saari quality par effect dalti hai. Misalignment se twist, poor tracking aur repeated setup issues aate hain.
 
 Practical CAD workflow
 AutoCAD ya CAD me upper/lower roll logic banate waqt:
@@ -1976,7 +1976,7 @@ side relief aur non-contact zones mark karo
 
 station overlay karke interference check karo
 
-Yehi practical route hai jisse roll contour “draw” se “machinable tooling” me jata hai. Roll-Kraft tooling setup package aur design overview dono is baat ko reinforce karte hain ki engineering drawings ke saath setup information bhi critical hoti hai. 
+Yehi practical route hai jisse roll contour “draw” se “machinable tooling” me jata hai. Roll-Kraft tooling setup package aur design overview dono is baat ko reinforce karte hain ki engineering drawings ke saath setup information bhi critical hoti hai.
 
 Sabse badi practical mistake
 Sabse common galti ye hoti hai ki designer final profile ko hi har station me copy karke bas thoda-thoda close kar deta hai.
@@ -1992,10 +1992,6 @@ relief socho
 
 springback socho
 
-Warna roll ban jayega, lekin line stable nahi chalegi. Setup issues often tooling fault lagte hain, jabki root cause alignment ya guiding bhi ho sakta hai. 
+Warna roll ban jayega, lekin line stable nahi chalegi. Setup issues often tooling fault lagte hain, jabki root cause alignment ya guiding bhi ho sakta hai.
 
 Agar aap chaho, next message me main isi ka AutoCAD me 2D roll sketch banane ka exact step-by-step method bata deta hoon — line, arc, offset, relief, centerline aur gap ke saath.
-
-
-
-

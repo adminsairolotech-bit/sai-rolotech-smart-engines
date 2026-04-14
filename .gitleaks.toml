@@ -1,0 +1,15 @@
+# Gitleaks Configuration
+# SAI ROLO TECH - Version 1.0
+# Purpose: Detect secrets in code
+
+[allowlist]
+description = "Common development paths"
+files = [
+  "node_modules",
+  ".git",
+  "dist",
+  "build",
+  "__pycache__",
+  "artifacts",
+  "attached_assets"
+]

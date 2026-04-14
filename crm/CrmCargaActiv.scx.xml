@@ -82,16 +82,16 @@ With ThisForm
 	* Asignar la fecha
 	.Fecha1.SetValue(Date())
 	.Fecha2.SetValue(Date())
-	
+
 	* Poner como default que muestre las actividades pendientes
 	.Pend.Value = 1
 	.Ok.Value = 0
-	
+
 	.cNumUser = ''
-	
+
 	* Crear una propiedad con la forma recibida
 	.AddProperty('oForma',oForma)
-	
+
 EndWith
 
 ENDPROC
@@ -558,20 +558,20 @@ Name = "cargar"
 * Cargar
 *
 With ThisForm
-	
+
 	* Si no esta vacio el nombre del contacto, almacenar en una variable su clave
 	cNumCont = ''
 	If Not Empty(.LeeContacto.Nombre.Value)
 		cNumCont = .LeeContacto.Clave.Value
 	EndIf
-	
+
 	* Almacena en una propiedad las restricciones para agregar las actividades al temporal
 	.oForma.cCond = '^'+.cNumUser+'^'+.LeeCliente.Clave.Value+'^'+cNumCont+'^'+;
 		DToS(.Fecha1.dValue)+'^'+DToS(.Fecha2.dValue)+'^'+Allt(Str(.Pend.Value))+'^'+Allt(Str(.Ok.Value))
-	
-	* Cerrar la ventana	
+
+	* Cerrar la ventana
 	.Release
-	
+
 EndWith
 ENDPROC
 </methods>

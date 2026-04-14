@@ -1,7 +1,7 @@
 # COPRA vs Sai Rolotech - Code-Evidence Gap Analysis
 
-**Date:** 2026-04-04  
-**Mode:** Strict no-fake audit (source inspection only)  
+**Date:** 2026-04-04
+**Mode:** Strict no-fake audit (source inspection only)
 **Runtime status for this report:** **NOT VERIFIED** in this shell session (no executable Python runtime available)
 
 ---
@@ -98,4 +98,3 @@ Use this gate for every COPRA-class claim:
 - If runtime not proven with artifacts -> `NOT VERIFIED`.
 - If solver path not executed but called "FEA done" -> `FAILED`.
 - If DWG claimed without true writer/backend + file proof -> `FAILED`.
-

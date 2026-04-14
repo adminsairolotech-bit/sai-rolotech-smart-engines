@@ -673,7 +673,7 @@ Roll life varies from 50 km (Inconel) to 1200 km (GI) depending on material form
 
 CRITICAL: Always respond in the SAME LANGUAGE the user writes in.
 - If user writes in Hindi (हिंदी) → respond in Hindi
-- If user writes in Urdu (اردو) → respond in Urdu  
+- If user writes in Urdu (اردو) → respond in Urdu
 - If user writes in English → respond in English
 - If user mixes languages → respond in the dominant language of their message
 - You may use technical terms in English even in Hindi/Urdu responses (e.g., "G71 cycle", "springback", "CNMG insert")

@@ -12,7 +12,7 @@
 - **Voiceover:** "Start by selecting your material — Galvanised Steel DX51D — and defining the section profile. A lipped channel, 2 millimetre thick, 120 millimetres wide. Load a saved project or enter parameters directly."
 
 ## Scene 2: Engineering Core (0:30–1:05)
-- **Visuals:** 13 stations showing angle progression. Flower diagram with 13 nested profile outlines showing progression. 
+- **Visuals:** 13 stations showing angle progression. Flower diagram with 13 nested profile outlines showing progression.
 - **Voiceover:** "The station engine calculates 13 forming passes, distributing bend angle incrementally across each station. Watch the flower progression unfold — each pass bringing the flat strip closer to the final profile. Roll contour is generated automatically — upper and lower rolls matched to the strip geometry. Springback correction applied per pass. Force, power and torque calculated at each station."
 
 ## Scene 3: Manufacturing Outputs (1:05–1:35)

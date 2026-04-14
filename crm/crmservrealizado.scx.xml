@@ -65,7 +65,7 @@ Width = 618
 DoCreate = .T.
 Caption = "Servicio Realizado"
 KeyPreview = .T.
-cnumuser =  
+cnumuser =
 Name = "Formamsl1"
 Marco.Name = "Marco"
 </properties>
@@ -83,7 +83,7 @@ EndIf
 
 With ThisForm
 
-	
+
 	* Manda llamar el metodo para cargar los tipos de actividades
 	.TiposDeActividades()
 
@@ -91,15 +91,15 @@ With ThisForm
 	.SetAll('Enabled',.f.)
 	.NumOrden.Enabled = .t.
 	.Cerrar.Enabled = .t.
-	
+
 
 	* Si se manda llamar desde consulta de ordenes, mostrar la orden seleccionada
 	If PCount()==1
 		.NumOrden.Value = cNumOrden
-		KeyBoard '{ENTER}'		
+		KeyBoard '{ENTER}'
 	Endif
-	
-EndWith	
+
+EndWith
 
 ENDPROC
 PROCEDURE KeyPress
@@ -110,7 +110,7 @@ With ThisForm
 	If nKeyCode=-7
 		Keyboard '{ALT-P}'
 		NoDefault
-	Endif	
+	Endif
 
 	* Presion ESC
 	If nKeyCode == 27
@@ -127,48 +127,48 @@ With ThisForm
 	* Manda el Focus al contacto
 	If .oContacto.nError = 1
 		.InfoCont.LeeContacto.SetFocus
-	EndIf	
-	
+	EndIf
+
 	* Manda el focus a la empresa del contacto
 	If .oContacto.nError = 2
 		.InfoCont.Empresa.SetFocus
-	EndIf	
-	
+	EndIf
+
 	* Manda el focus al telefono del contacto
 	If .oContacto.nError = 3
 		.InfoCont.Telefono.SetFocus
-	EndIf	
-	
+	EndIf
+
 	* Manda el focus a la fecha
 	If .oActividad.nError = 1
 		.LeeFecha.SetFocus
 	EndIf
-	
+
 	* Manda el focus a la fecha
 	If .oActividad.nError = 2
 		.HoraFin.SetFocus
 	EndIf
-	
+
 	* Manda el focus al tipo de actividad
 	If .oActividad.nError = 3
 		.Tipo.SetFocus
 	EndIf
-	
+
 	* Manda el focus a la descripcion de la actividad
 	If .oActividad.nError = 4
 		.Servicio.SetFocus
 	EndIf
-	
+
 	* Manda el focus al avance
 	If .oOrden.nError = 5
 		.Avance.SetFocus
 	EndIf
-		
+
 	* Manda el focus a las causas por las que queda pendiente el servicio
 	If .oOrden.nError = 6
 		.PendPor.SetFocus
 	EndIf
-	
+
 EndWith
 
 ENDPROC
@@ -183,24 +183,24 @@ With ThisForm
 	.InfoCont.LeeContacto.Clave.Value = ''
 	.InfoCont.LeeContacto.Nombre.Value = ''
 	.InfoCont.LeeContacto.LostFocus()
-	
+
 	* Mostrar el nombre del usuario
 	If Seek(ThisForm.cNumUser,'Usuarios')
 		.Usuario.Value = Usuarios.NOMUSER
 	EndIf
-		
+
 	.NumServ.Value = 0
 	.Problema.Value = ''
 	.Causas.Value = ''
 	.Servicio.Value = ''
 	.PendPor.Value = ''
-	
+
 	* Deshabilitar todo
 	.SetAll('Enabled',.f.)
 	.Cerrar.Enabled = .t.
 	.NumOrden.Enabled = .t.
 	.NumOrden.SetFocus()
-	
+
 EndWith
 
 ENDPROC
@@ -216,10 +216,10 @@ With ThisForm
 	Create Cursor CrmActiv(;
 		NUMACTIV C(5),;
 		NOMACTIV C(20))
-		
+
 	Index on NUMACTIV Tag NumActiv
 	Index on UPPER(NOMACTIV) Tag NomActiv
-	
+
 	* Crear temporal con los tipos
 	i = 1
 	Do While .t.
@@ -242,9 +242,9 @@ ENDPROC
 		<reserved2/>
 		<reserved3>lcontar
 cnumuser
-*tiposdeactividades 
-*enviarfocus 
-*limpiar 
+*tiposdeactividades
+*enviarfocus
+*limpiar
 </reserved3>
 		<reserved4/>
 		<reserved5/>
@@ -335,7 +335,7 @@ ZOrderSet = 4
 calias = CrmActiv
 ccampoclave = CrmActiv.NUMACTIV
 ccamponombre = CrmActiv.NOMACTIV
-cformabusqueda = 
+cformabusqueda =
 ctagclave = NumActiv
 ctagnombre = NomActiv
 nanchoclave = 5
@@ -1112,9 +1112,9 @@ Name = "save"
 		<methods>PROCEDURE Click
 * Grabar la informacion
 With ThisForm
-	
+
 	With ThisForm.oContacto
-		* Llenar la informacion del contacto	
+		* Llenar la informacion del contacto
 		.NumCont = ThisForm.InfoCont.LeeContacto.Clave.Value
 		.NomCont = ThisForm.InfoCont.LeeContacto.Nombre.Value
 		.Empresa = ThisForm.InfoCont.Empresa.Value
@@ -1129,9 +1129,9 @@ With ThisForm
 			ThisForm.EnviarFocus()
 			Return .F.
 		EndIf
-	
+
 	EndWith
-	
+
 	* Manda llamar la funcion ValHora2() para
 	* validar que la fecha y hora esten correctas
 	dFecha = .LeeFecha.Value
@@ -1139,9 +1139,9 @@ With ThisForm
 	cHoraFin = .HoraFin.Value
 	dFechaIni = ValHora2(dFecha,cHoraIni)
 	dFechaFin = ValHora2(dFecha,cHoraFin)
-	
+
 	* Agrega una actividad
-	With ThisForm.oActividad	
+	With ThisForm.oActividad
 		* Llenar la informacion de la actividad
 		.Id = ''
 		.Tipo = ThisForm.Tipo.Nombre.Value
@@ -1153,7 +1153,7 @@ With ThisForm
 		.Actividad = .T.
 		.NumOrden = Padl(Allt(ThisForm.NumOrden.Value),10)
 		.FolioSer = Padl(Allt(Str(ThisForm.NumServ.Value)),10)
-				
+
 		* Manda llamar el metodo para validar la informacion para grabar la actividad
 		If Not .ValidAgregar()
 			Alerta(.cError)
@@ -1169,12 +1169,12 @@ With ThisForm
 		.NumOrden = ThisForm.NumOrden.Value
 		.CantServ = ThisForm.NumServ.Value
 		.Causas = ThisForm.Causas.Value
-		.PendPor = ThisForm.PendPor.Value		
+		.PendPor = ThisForm.PendPor.Value
 		.HrsServ = (dFechaFin-dFechaIni)/3600
-		
-	
+
+
 	EndWith
-	
+
 	* Manda llamar el metodo para grabar al contacto
 	If Not .oContacto.Agregar()
 		Alerta(.oContacto.cError)
@@ -1183,19 +1183,19 @@ With ThisForm
 
 	* Asigna el numero de contacto despues de haberlo grabado
 	.oActividad.NumCont = .oContacto.NumCont
-	
+
 	* Manda llamar el metodo para agregar una nueva actividad
 	If Not .oActividad.Agregar()
 		Alerta(.cError)
 		Return .F.
 	EndIf
-	
+
 	* Manda llamar el metodo para agregar una nueva orden
 	If Not .oOrden.ServicioRealizado()
 		Alerta(.oOrden.cError)
 		Return .F.
 	EndIf
-	
+
 	* Revisar si cambio el problema a resolver
 	If .Problema.Tag &lt;&gt; .Problema.Value
 		* Si cambio el problema a resolver
@@ -1203,11 +1203,11 @@ With ThisForm
 			Replace Ordenes.PROBLEMA	With	.Problema.Value
 		EndIf
 	EndIf
-	
+
 	* Manda llamar el metodo para limpiar la ventana
 	.NumOrden.Value = ''
 	.Limpiar()
-	
+
 EndWith
 
 ENDPROC
@@ -1313,7 +1313,7 @@ Name = "numorden"
 With ThisForm
 	If Not Empty(This.Value)
 		This.Value = Padl(Allt(This.Value),10)
-		
+
 		* Cargar la informacion en caso de que se haya mandado llamar
 		* desde Agregar Actividad o desde la consulta de ordenes
 		If Seek(This.Value,'Ordenes')
@@ -1322,35 +1322,35 @@ With ThisForm
 			.Problema.Value = Ordenes.PROBLEMA
 			.Causas.Value = Ordenes.CAUSAS
 			.PendPor.Value = Ordenes.PENDPOR
-				
-			* Muestra la fecha y hora	
+
+			* Muestra la fecha y hora
 			.LeeFecha.SetValue(Date())
 			.HoraIni.Value = Left(Time(),5)
 			.HoraFin.Value = Time()
 			.Timer1.Enabled = .T.
 			.lContar = .T.
-			
+
 			.Usuario.Value = m.NomUser
 			.cNumUser = m.NumUser
-						
+
 			* Habilitar todo
 			.SetAll('Enabled',.T.)
 			.Usuario.Enabled = .F.
-						
+
 			* Cargar contacto de la orden
 			=Seek(Ordenes.NUMCONT,'Contactos')
 			.InfoCont.LeeContacto.Nombre.Value = Allt(Contactos.NOMCONT)
 			Keyboard '{ALT-C}{ENTER}{ALT-F}'
 		Else
-			
+
 			* Manda mensaje si no existe ese numero de orden
 			Alerta('Folio no existe')
 			Return 0
 		EndIf
-		
+
 	EndIf
-	
-EndWith	
+
+EndWith
 
 ENDPROC
 </methods>

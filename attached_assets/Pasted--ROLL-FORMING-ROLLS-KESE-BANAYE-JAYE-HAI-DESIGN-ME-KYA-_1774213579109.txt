@@ -328,7 +328,7 @@ Material
 Main aapko factory-ready design + drawings + calculation de dunga 🔥
 
 
-MUJE LINE SE ROLLS BANNAE TAK KA STEP BY STEP SAMJAYE SARE RULLES KE SATH 
+MUJE LINE SE ROLLS BANNAE TAK KA STEP BY STEP SAMJAYE SARE RULLES KE SATH
 
 Bilkul. Main ab aapko coil line se lekar final rolls banne tak ka step-by-step full process samjha raha hoon — design rules, practical factory rules, mistakes, aur real engineering logic ke saath.
 
@@ -2765,7 +2765,7 @@ Ab main aapke liye next message me in me se koi ek drawing style me bana sakta h
 Agar aap chaho to main next reply me U-channel ka full station-wise drawing + calculation + roll contour sketch bana deta hoon.
 
 
-EK ROLLS SET ME KYA KYA SIZE HOTE HAI JO DAYAN DENE CHIYE DRAWING KE SATH 
+EK ROLLS SET ME KYA KYA SIZE HOTE HAI JO DAYAN DENE CHIYE DRAWING KE SATH
 
 Bahut important question 👍
 Ab main aapko ek complete roll set me kaun-kaun se size (dimensions) hote hain, unka meaning, kaha use hote hain, aur drawing me kaise dikhte hain — full practical tareeke se samjha raha hoon.
@@ -2928,7 +2928,7 @@ Tight = scratches
 Loose = shape unstable
 
 10. Chamfer / Edge Radius
-| sharp | ❌  
+| sharp | ❌
 | chamfer | ✔
 👉 Entry smooth banata hai
 
@@ -3177,7 +3177,7 @@ Roll forming roll का सबसे important हिस्सा उसका 
            ___________
         __/           \__
       _/                 \_
-     
+
             SHEET PATH
 
         BOTTOM ROLL CONTOUR
@@ -3902,7 +3902,7 @@ ya
 Main aapko next level par le jaunga 🔥
 
 
-ADVANCE ROLLS DESIGN KE SATH ROLLS KI DIMENSION DRAWING ME KESE DIKHTE HAI 
+ADVANCE ROLLS DESIGN KE SATH ROLLS KI DIMENSION DRAWING ME KESE DIKHTE HAI
 
 बहुत बढ़िया 🔥
 अब हम ADVANCED ROLL DESIGN + PROFESSIONAL DRAWING STYLE समझते हैं —
@@ -4407,7 +4407,7 @@ B. Front view
 
            ___________________
         .-'                   '-.
-      .'                       '. 
+      .'                       '.
      /         Ø50 H7            \
     |           |_|               |   Keyway 14 x 4.5
      \                           /
@@ -5090,7 +5090,7 @@ BORE = Ø50 H7
 B. Front view
             ___________________
          .-'                   '-.
-       .'                       '. 
+       .'                       '.
       /         Ø50 H7            \
      |           |_|               |  KEYWAY
       \                           /
@@ -5927,6 +5927,3 @@ X30 Y10
 
 Need to make changes?
 Try sending a follow-up while ChatGPT is thinking.
-
-
-

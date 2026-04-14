@@ -265,7 +265,7 @@ Name = "grabar"
 * Grabar en el Config.msl los tipos de oportunidades
 *
 With ThisForm
-	
+
 	* Recorrer el temporal
 	cTipoOport = ''
 	Select TipoOpor
@@ -274,13 +274,13 @@ With ThisForm
 			cTipoOport = cTipoOport + IIF(Not Empty(cTipoOport),'^','') + Allt(TIPO)
 		EndIf
 	EndScan
-	
+
 	* Grabar en el Config.msl la informacion
 	PutMsl('CrmTiposOport', cTipoOport)
-	
+
 	* Cerrar la ventana
 	.Release
-	
+
 EndWith
 
 ENDPROC

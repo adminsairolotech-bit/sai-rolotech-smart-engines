@@ -65,10 +65,10 @@ Width = 619
 DoCreate = .T.
 Caption = "Agregar Orden de Servicio"
 KeyPreview = .T.
-cnumuser =  
-cidactividad =  
-cnumcont =  
-cobsactiv =  
+cnumuser =
+cidactividad =
+cnumcont =
+cobsactiv =
 Name = "Formamsl1"
 Marco.ZOrderSet = 2
 Marco.Name = "Marco"
@@ -102,16 +102,16 @@ With ThisForm
 	If Not Empty(.cIdActividad) And Not Empty(.cNumCont)
 		.CargarActividad()
 	EndIf
-	
+
 	* Manda llamar el metodo para cargar los tipos de actividades
 	.TiposDeActividades()
-	
+
 	Select Ordenes
 	Go Bott
 	.NumOrden.Value = Padl(Allt(SigDoc(NUMORDEN)),10)
-	
+
 	.HrsEstim.Value = '15m'
-EndWith	
+EndWith
 
 ENDPROC
 PROCEDURE KeyPress
@@ -122,7 +122,7 @@ With ThisForm
 	If nKeyCode=-7
 		Keyboard '{ALT-P}'
 		NoDefault
-	Endif	
+	Endif
 
 	* Presion ESC
 	If nKeyCode == 27
@@ -137,19 +137,19 @@ PROCEDURE cargaractividad
 * Metodo para cargar la actividad
 * se usa cuando se manda llamar la ventana desde Agregar Actividad
 With ThisForm
-	
+
 	* Obtener la informacion del contacto
 	If Seek(.cNumCont,'Contactos')
 		.InfoCont.LeeContacto.Clave.Value = .cNumCont
 		.InfoCont.LeeContacto.Nombre.Value = Contactos.NOMCONT
 		.InfoCont.LeeContacto.LostFocus()
 	EndIf
-	
+
 	.Problema.Value = .cObsActiv
-	
+
 	* Poner el focus en el usuario
 	.Usuario.SetFocus
-	
+
 EndWith
 
 ENDPROC
@@ -184,23 +184,23 @@ With ThisForm
 	* Manda el Focus al contacto
 	If .oContacto.nError = 1
 		.InfoCont.LeeContacto.SetFocus
-	EndIf	
-	
+	EndIf
+
 	* Manda el focus a la empresa del contacto
 	If .oContacto.nError = 2
 		.InfoCont.Empresa.SetFocus
-	EndIf	
-	
+	EndIf
+
 	* Manda el focus al telefono del contacto
 	If .oContacto.nError = 3
 		.InfoCont.Telefono.SetFocus
-	EndIf	
-	
+	EndIf
+
 	* Manda el focus la prioridad
 	If .oOrden.nError = 1
 		.Prioridad.SetFocus
 	EndIf
-		
+
 	* Manda el focus a el usuario
 	If .oOrden.nError = 2
 		.Usuario.SetFocus
@@ -210,7 +210,7 @@ With ThisForm
 	If .oOrden.nError = 3
 		.Tipo.SetFocus
 	EndIf
-	
+
 	* Manda el focus al problema a resolver
 	If .oOrden.nError = 4
 		.Problema.SetFocus
@@ -231,10 +231,10 @@ With ThisForm
 	Create Cursor CrmActiv(;
 		NUMACTIV C(5),;
 		NOMACTIV C(20))
-		
+
 	Index on NUMACTIV Tag NumActiv
 	Index on UPPER(NOMACTIV) Tag NomActiv
-	
+
 	* Crear temporal con los tipos
 	i = 1
 	Do While .t.
@@ -259,10 +259,10 @@ ENDPROC
 cidactividad
 cnumcont
 cobsactiv
-*tiposdeactividades 
-*enviarfocus 
-*cargaractividad 
-*cargarproyectosdelcliente 
+*tiposdeactividades
+*enviarfocus
+*cargaractividad
+*cargarproyectosdelcliente
 </reserved3>
 		<reserved4/>
 		<reserved5/>
@@ -932,16 +932,16 @@ Name = "save"
 		<methods>PROCEDURE Click
 * Grabar la informacion
 With ThisForm
-	
+
 	* Crear la relacion de ordenes y contactos
 	Select Contactos
 	Set Order To NumCont
-	
+
 	Select Ordenes
 	Set Relation To NumCont Into Contactos
-	
+
 	With ThisForm.oContacto
-		* Llenar la informacion del contacto	
+		* Llenar la informacion del contacto
 		.NumCont = ThisForm.InfoCont.LeeContacto.Clave.Value
 		.NomCont = ThisForm.InfoCont.LeeContacto.Nombre.Value
 		.Empresa = ThisForm.InfoCont.Empresa.Value
@@ -956,9 +956,9 @@ With ThisForm
 			ThisForm.EnviarFocus()
 			Return .F.
 		EndIf
-	
+
 	EndWith
-	
+
 	With ThisForm.oOrden
 		* Llenar la informacion de la orden
 		.NumOrden = ThisForm.NumOrden.Value
@@ -969,7 +969,7 @@ With ThisForm
 		.Problema = ThisForm.Problema.Value
 		.EquipoRec = ThisForm.EquipoRec.Value
 		.HrsEstim = ctoh(ThisForm.HrsEstim.Value)
-		
+
 		* Manda llamar el metodo para validar la informacion para grabar la orden
 		If Not .ValidAgregar()
 			Alerta(.cError)
@@ -977,9 +977,9 @@ With ThisForm
 			ThisForm.EnviarFocus()
 			Return .F.
 		EndIf
-	
+
 	EndWith
-	
+
 	* Manda llamar el metodo para grabar al contacto
 	If Not .oContacto.Agregar()
 		Alerta(.oContacto.cError)
@@ -988,7 +988,7 @@ With ThisForm
 
 	* Asigna el numero de contacto despues de haberlo grabado
 	.oOrden.NumCont = .oContacto.NumCont
-	
+
 	* Manda llamar el metodo para agregar una nueva orden
 	If Not .oOrden.Agregar()
 		Alerta(.oOrden.cError)
@@ -996,7 +996,7 @@ With ThisForm
 	EndIf
 
 	* Agrega una actividad
-	With ThisForm.oActividad	
+	With ThisForm.oActividad
 		* Llenar la informacion de la actividad
 		.Id = ''
 		.NumCont = ThisForm.oContacto.NumCont
@@ -1009,7 +1009,7 @@ With ThisForm
 		.Actividad = .T.
 		.NumOrden = ThisForm.oOrden.NumOrden
 
-				
+
 		* Manda llamar el metodo para validar la informacion para grabar la actividad
 		If Not .ValidAgregar()
 			Alerta(.cError)
@@ -1023,34 +1023,34 @@ With ThisForm
 			Alerta(.cError)
 			Return .F.
 		EndIf
-	
+
 		* La orden se genero de una actividad
 		If Not Empty(ThisForm.cIdActividad)
 			.Id = ThisForm.cIdActividad
 			.OrdenPost = ThisForm.oOrden.NumOrden
-			
-			* Manda llamar el metodo para modificar el campo OrdenPost de la actividad		
+
+			* Manda llamar el metodo para modificar el campo OrdenPost de la actividad
 			If Not .ModPost()
 				Alerta(.cError)
 				Return .F.
 			EndIf
-			
+
 		EndIf
-	
+
 	EndWith
 
-		
+
 	Unlock All
-	
+
 	* Manda imprimir la orden de servicio
 	If Seek(.oOrden.NumOrden,'Ordenes')
 		Select Cia
 		SendFto('ORDEN')
 	EndIf
-	
+
 	* Cerrar la ventana
 	.Release()
-	
+
 EndWith
 
 ENDPROC
@@ -1234,12 +1234,12 @@ case right(allt(cvalor),1)=='m'
 	cnewval = htoc( val(strtran(cvalor,'h','')) /60)
 
 case substr(cvalor,3,1)==':'
-	* formato: 01:30	
-	
+	* formato: 01:30
+
 otherwise
 	* formato: 90
 	cnewval = htoc(val(cvalor))
-	
+
 endcase
 
 

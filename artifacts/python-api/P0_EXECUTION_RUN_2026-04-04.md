@@ -1,7 +1,7 @@
 # P0 Execution Run - 2026-04-04
 
-**Mode:** Strict no-fake execution  
-**Base plan:** `COPRA_EXECUTION_PLAN_2026-04-04.md`  
+**Mode:** Strict no-fake execution
+**Base plan:** `COPRA_EXECUTION_PLAN_2026-04-04.md`
 **Overall verdict:** **PARTIALLY FIXED** (code fixes done, runtime proof blocked by missing local runtimes)
 
 ---
@@ -169,4 +169,3 @@ git status --short
 - **FIXED IN CODE:** yes, for all 5 P0 target areas.
 - **RUNTIME VERIFIED:** no (environment blocked).
 - **Overall status:** **PARTIALLY FIXED**.
-

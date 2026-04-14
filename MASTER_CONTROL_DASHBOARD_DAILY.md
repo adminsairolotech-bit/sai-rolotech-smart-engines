@@ -1,6 +1,6 @@
 # Master Control Dashboard (Daily Use)
 
-Project: SAI ROLOTECH ENGINE  
+Project: SAI ROLOTECH ENGINE
 Global rule: No proof = no progress
 
 ## Phase Tracking Table

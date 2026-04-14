@@ -90,18 +90,18 @@ If 	Not OpenDbf('Ordenes','NUMORDEN') Or;
 EndIf
 
 With ThisForm
-	
+
 	* Almacena el modo de mandar llamar la ventana
 	.nModo = nModo
 	.nRec = nRec
-	
+
 	* Manda llamar el metodo para cargar los tipos de actividades
 	.TiposDeActividades()
 
 	* Crear las relaciones
 	Select Contactos
 	Set Relation To NUMCLI	Into Clientes
-	
+
 	* Crear las relaciones
 	Select Ordenes
 	Set Relation To NUMCONT	Into Contactos,;
@@ -115,28 +115,28 @@ With ThisForm
 				Return .f.
 			EndIf
 			GoTo .nRec
-			
+
 			* Deshabilitar el numero de orden
 			With .Pags.Page1.NumOrden
 				.Enabled = .F.
 				.Value = Ordenes.NUMORDEN
 			EndWith
-			.CargarHistorial()	
+			.CargarHistorial()
 			.CargarInfo()
 
-		
+
 		Case .nModo == 2
 			* Deshabilitar todo
 			.SetAll('Enabled',.f.)
-			
+
 			* Habilitar el numero de orden y el boton de cerrar
 			.Pags.Page1.Enabled = .T.
 			.Pags.Page1.NumOrden.Enabled = .T.
 			.Cerrar.Enabled = .t.
-			.Pags.Page1.NumOrden.SetFocus		
+			.Pags.Page1.NumOrden.SetFocus
 	EndCase
-	
-EndWith	
+
+EndWith
 
 ENDPROC
 PROCEDURE KeyPress
@@ -148,13 +148,13 @@ With ThisForm
 		Keyboard '{ALT-P}'
 		NoDefault
 	EndIf
-	
+
 	* Presion ESC
 	If nKeyCode == 27
 		ThisForm.Release()
 		Return
 	EndIf
-	
+
 EndWith
 ENDPROC
 PROCEDURE Unload
@@ -174,7 +174,7 @@ With ThisForm.Pags.Page1
 	dFechaCita = {}
 	dFechaCita = .FechaCita.Value
 	cHoraCita = .HoraCita.Value
-	
+
 	If Empty(Left(cHoracita,2))
 		* Calcula la fecha de la cita en formato DateTime si esta vacia la hora
 		If Not Empty(dFechaCita)
@@ -182,10 +182,10 @@ With ThisForm.Pags.Page1
 			nMes = Month(dFechaCita)
 			nAnio = Year(dFechaCita)
 			cTipo = ''
-			
+
 			* Validar que el tipo de fecha y hora esten correctos
 			cTipo = Type('DateTime(nAnio,nMes,nDia)')
-			
+
 			* Calcular la fecha y hora en formato DateTime
 			If cTipo = 'T'
 				ThisForm.dFechaCita = DateTime(nAnio,nMes,nDia)
@@ -196,7 +196,7 @@ With ThisForm.Pags.Page1
 		* Calcula la fecha y hora de la cita en formato DateTime si no esta vacia la hora
 		ThisForm.dFechaCita = ValHora2(dFechaCita,cHoraCita)
 	EndIf
-	
+
 EndWith
 
 With ThisForm.Pags.Page2
@@ -204,7 +204,7 @@ With ThisForm.Pags.Page2
 	dFechaCre = {}
 	dFechaCre = .FechaCreacion.Value
 	cHoraCre = .HoraCreacion.Value
-	
+
 	If Empty(Left(cHoraCre,2))
 		* Calcula la fecha de la cita en formato DateTime si esta vacia la hora
 		If Not Empty(dFechaCre)
@@ -212,10 +212,10 @@ With ThisForm.Pags.Page2
 			nMes = Month(dFechaCre)
 			nAnio = Year(dFechaCre)
 			cTipo = ''
-			
+
 			* Validar que el tipo de fecha y hora esten correctos
 			cTipo = Type('DateTime(nAnio,nMes,nDia)')
-			
+
 			* Calcular la fecha y hora en formato DateTime
 			If cTipo = 'T'
 				ThisForm.dFechaCre = DateTime(nAnio,nMes,nDia)
@@ -225,12 +225,12 @@ With ThisForm.Pags.Page2
 		* Calcula la fecha y hora de la cita en formato DateTime si no esta vacia la hora
 		ThisForm.dFechaCre = ValHora2(dFechaCre,cHoraCre)
 	EndIf
-	
+
 	* Almacena en unas variables la fecha y hora de termino de la orden
 	dFechaFin = {}
 	dFechaFin = .FechaFin.Value
 	cHoraFin = .HoraFin.Value
-	
+
 	If Empty(Left(cHoraFin,2))
 		* Calcula la fecha de la cita en formato DateTime si esta vacia la hora
 		If Not Empty(dFechaFin)
@@ -238,10 +238,10 @@ With ThisForm.Pags.Page2
 			nMes = Month(dFechaFin)
 			nAnio = Year(dFechaFin)
 			cTipo = ''
-			
+
 			* Validar que el tipo de fecha y hora esten correctos
 			cTipo = Type('DateTime(nAnio,nMes,nDia)')
-			
+
 			* Calcular la fecha y hora en formato DateTime
 			If cTipo = 'T'
 				ThisForm.dFechaFin = DateTime(nAnio,nMes,nDia)
@@ -256,7 +256,7 @@ With ThisForm.Pags.Page2
 	dFechaCierre = {}
 	dFechaCierre = .FechaCierre.Value
 	cHoraCierre = .HoraCierre.Value
-	
+
 	If Empty(Left(cHoraCierre,2))
 		* Calcula la fecha de la cita en formato DateTime si esta vacia la hora
 		If Not Empty(dFechaCierre)
@@ -264,10 +264,10 @@ With ThisForm.Pags.Page2
 			nMes = Month(dFechaCierre)
 			nAnio = Year(dFechaCierre)
 			cTipo = ''
-			
+
 			* Validar que el tipo de fecha y hora esten correctos
 			cTipo = Type('DateTime(nAnio,nMes,nDia)')
-			
+
 			* Calcular la fecha y hora en formato DateTime
 			If cTipo = 'T'
 				ThisForm.dFechaCierre = DateTime(nAnio,nMes,nDia)
@@ -285,10 +285,10 @@ PROCEDURE cargarhistorial
 * Metodo para cargar el historial de actividades
 * relacionadas con la tarea
 With ThisForm.Pags.Page2
-	
+
 	.Historial.Value = ''
 	cNumOrden = Thisform.Pags.Page1.NumOrden.Value
-	
+
 	* Busca en CRM las actividades de la orden
 	If not SqlMsl('Temp','Select Crm.ID,Crm.FECHA,Crm.FECHAFIN,Contactos.NOMCONT,Usuarios.NOMUSER,Crm.TIPO,Crm.OBS,Crm.NUMORDEN ' +;
 		'From Crm '+;
@@ -298,7 +298,7 @@ With ThisForm.Pags.Page2
 		cNumOrden)
 Return
 	Endif
-	
+
 	* Ordenar los servicios x fecha
 	nHrsServ=0
 	Select Temp
@@ -319,7 +319,7 @@ Return
 	Select Ordenes
 	Replace HRSSERV with nHrsServ
 	Unlock All
-	
+
 EndWith
 
 ENDPROC
@@ -328,15 +328,15 @@ PROCEDURE cargarinfo
 
 * Cargar la informacion de la primer pestaña
 With ThisForm.Pags.Page1
-	
+
 	.NumOrden.Value = Ordenes.NUMORDEN
-	
+
 	* Mostrar la prioridad
 	.Prioridad.Value = Ordenes.PRIORIDAD
-	
+
 	.LeeProyecto.Clave.Value = Ordenes.NUMPROY
 	.LeeProyecto.Clave.Valid()
-	
+
 	* Obtener la informacion del contacto
 	cNumCont = Ordenes.NUMCONT
 	If Seek(cNumCont,'Contactos')
@@ -344,46 +344,46 @@ With ThisForm.Pags.Page1
 		.InfoCont.LeeContacto.Nombre.Value = Contactos.NOMCONT
 		.InfoCont.LeeContacto.LostFocus()
 	EndIf
-	
+
 	* Mostrar el nombre del usuario
 	ThisForm.cNumUser = Ordenes.NUMUSER
 	If Seek(ThisForm.cNumUser,'Usuarios')
 		.Usuario.Value = Usuarios.NOMUSER
 	EndIf
-		
+
 	* Mostrar la fecha y hora de la cita
 	.FechaCita.SetValue(SToD(DToS(Ordenes.CITA)))
 	.HoraCita.Value = SubStr(TToC(Ordenes.CITA),12,5)
 	If .HoraCita.Value = '00:00'
 		.HoraCita.Value = '  :  '
 	EndIf
-	
+
 	.Tipo.Nombre.Value = Ordenes.TIPO
 	.Problema.Value = Ordenes.PROBLEMA
 	.EquipoRec.Value = Ordenes.EQUIPOREC
 	.Causas.Value = Ordenes.CAUSAS
-	
+
 EndWith
 
 * Cargar la informacion de la primer pestaña
 With ThisForm.Pags.Page2
-	
+
 	* Mostrar la fecha y hora creacion de la orden
 	.FechaCreacion.SetValue(SToD(DToS(Ordenes.CREADA)))
 	.HoraCreacion.Value = SubStr(TToC(Ordenes.CREADA),12,5)
 	If .HoraCreacion.Value = '00:00'
 		.HoraCreacion.Value = '  :  '
 	EndIf
-	
+
 	* Mostrar la fecha y hora terminacion de la orden
 	.FechaFin.SetValue(SToD(DToS(Ordenes.TERMINADA)))
 	.HoraFin.Value = SubStr(TToC(Ordenes.TERMINADA),12,5)
 	If .HoraFin.Value = '00:00'
 		.HoraFin.Value = '  :  '
 	EndIf
-	
+
 	.Avance.Value = Ordenes.AVANCE
-	
+
 	* Mostrar la fecha y hora en que se cerro la orden
 	.FechaCierre.SetValue(SToD(DToS(Ordenes.CERRADA)))
 	.HoraCierre.Value = SubStr(TToC(Ordenes.CERRADA),12,5)
@@ -398,7 +398,7 @@ With ThisForm.Pags.Page2
 	.HoraCreacion.Enabled = .f.
 	.HoraFin.Enabled = .f.
 	.HoraCierre.Enabled = .f.
-	
+
 	.Calif.Value = Ordenes.CALIF
 	.PendPor.Value = Ordenes.PENDPOR
 	.Factura.Value = Ordenes.FACTURA
@@ -408,7 +408,7 @@ With ThisForm.Pags.Page2
 	.Veces.Value = Ordenes.REABIERTA
 	.HEstimadas.Value = Ordenes.HRSESTIM
 	.IngEstim.Value = Ordenes.INGESTIM
-	
+
 EndWith
 
 
@@ -418,23 +418,23 @@ With ThisForm
 	* Manda el Focus al contacto
 	If .oContacto.nError = 1
 		.InfoCont.LeeContacto.SetFocus
-	EndIf	
-	
+	EndIf
+
 	* Manda el focus a la empresa del contacto
 	If .oContacto.nError = 2
 		.InfoCont.Empresa.SetFocus
-	EndIf	
-	
+	EndIf
+
 	* Manda el focus al telefono del contacto
 	If .oContacto.nError = 3
 		.InfoCont.Telefono.SetFocus
-	EndIf	
-	
+	EndIf
+
 	* Manda el focus la prioridad
 	If .oOrden.nError = 1
 		.Prioridad.SetFocus
 	EndIf
-		
+
 	* Manda el focus a el usuario
 	If .oOrden.nError = 2
 		.Usuario.SetFocus
@@ -444,7 +444,7 @@ With ThisForm
 	If .oOrden.nError = 3
 		.Tipo.SetFocus
 	EndIf
-	
+
 	* Manda el focus al problema a resolver
 	If .oOrden.nError = 4
 		.Problema.SetFocus
@@ -465,10 +465,10 @@ With ThisForm
 	Create Cursor CrmActiv(;
 		NUMACTIV C(5),;
 		NOMACTIV C(20))
-		
+
 	Index on NUMACTIV Tag NumActiv
 	Index on UPPER(NOMACTIV) Tag NomActiv
-	
+
 	* Crear temporal con los tipos
 	i = 1
 	Do While .t.
@@ -496,11 +496,11 @@ dfechafin
 dfechacierre
 nmodo
 nrec
-*tiposdeactividades 
-*cargarinfo 
-*cargarhistorial 
-*enviarfocus 
-*calcularfechas 
+*tiposdeactividades
+*cargarinfo
+*cargarhistorial
+*enviarfocus
+*calcularfechas
 </reserved3>
 		<reserved4/>
 		<reserved5/>
@@ -715,7 +715,7 @@ ZOrderSet = 4
 calias = CrmActiv
 ccampoclave = CrmActiv.NUMACTIV
 ccamponombre = CrmActiv.NOMACTIV
-cformabusqueda = 
+cformabusqueda =
 ctagclave = NumActiv
 ctagnombre = NomActiv
 nanchoclave = 5
@@ -1129,22 +1129,22 @@ Name = "numorden"
 With ThisForm
 	If Not Empty(This.Value)
 		This.Value = Padl(Allt(This.Value),10)
-		
+
 		Select Ordenes
 		If Seek(This.Value)
 			* Habilitar todo
 			.SetAll('Enabled',.T.)
 
-			.CargarHistorial()	
+			.CargarHistorial()
 			.CargarInfo()
 
 		Else
 			Alerta('Folio no existe')
 			Return 0
 		EndIf
-		
-	EndIf	
-	
+
+	EndIf
+
 EndWith
 ENDPROC
 </methods>
@@ -2385,15 +2385,15 @@ Name = "save"
 		<methods>PROCEDURE Click
 * Grabar la informacion
 With ThisForm
-	
+
 	* Preguntar si desea procesar
 	* Cerrar la ventana si no desea procesar los cambios
 	If Not GetNY('¿Desea guardar los cambios?')
 		Return .F.
 	EndIf
-	
+
 	With ThisForm.oContacto
-		* Llenar la informacion del contacto	
+		* Llenar la informacion del contacto
 		.NumCont = ThisForm.Pags.Page1.InfoCont.LeeContacto.Clave.Value
 		.NomCont = ThisForm.Pags.Page1.InfoCont.LeeContacto.Nombre.Value
 		.Empresa = ThisForm.Pags.Page1.InfoCont.Empresa.Value
@@ -2408,12 +2408,12 @@ With ThisForm
 			ThisForm.EnviarFocus()
 			Return .F.
 		EndIf
-	
+
 	EndWith
 
 	* Manda llamar el metodo para obtener las fechas
 	.CalcularFechas()
-	
+
 	With ThisForm.oOrden
 		* Llenar la informacion con los datos de la primer pestaña
 		.NumOrden = ThisForm.Pags.Page1.NumOrden.Value
@@ -2430,21 +2430,21 @@ With ThisForm
 		.Creada = ThisForm.dFechaCre
 		.Terminada = ThisForm.dFechaFin
 		.Cerrada = ThisForm.dFechaCierre
-		
+
 		* Si esta terminada, el avance es del 100%
 		If Empty(DToS(.Terminada))
 			.Avance = ThisForm.Pags.Page2.Avance.Value
 		Else
 			.Avance = 100
 		EndIf
-		
+
 		.Calif = ThisForm.Pags.Page2.Calif.Value
 		.PendPor = ThisForm.Pags.Page2.PendPor.Value
 		.Factura = ThisForm.Pags.Page2.Factura.Value
 		.Importe = ThisForm.Pags.Page2.Importe.Value
 		.HrsEstim = ThisForm.Pags.Page2.HEstimadas.Value
 		.IngEstim = ThisForm.Pags.Page2.IngEstim.Value
-		
+
 		* Manda llamar el metodo para validar la informacion para grabar la orden
 		If Not .ValidAgregar()
 			Alerta(.cError)
@@ -2452,9 +2452,9 @@ With ThisForm
 			ThisForm.EnviarFocus()
 			Return .F.
 		EndIf
-		
-	EndWith	
-	
+
+	EndWith
+
 	* Manda llamar el metodo para grabar al contacto
 	If Not .oContacto.Agregar()
 		Alerta(.oContacto.cError)
@@ -2463,7 +2463,7 @@ With ThisForm
 
 	* Asigna el numero de contacto despues de haberlo grabado
 	.oOrden.NumCont = .oContacto.NumCont
-	
+
 	* Manda llamar el metodo para agregar una nueva orden
 	If Not .oOrden.Modificar()
 		Alerta(.oOrden.cError)
@@ -2472,7 +2472,7 @@ With ThisForm
 
 	* Cerrar la ventana
 	.Release
-	
+
 EndWith
 
 ENDPROC
@@ -2512,23 +2512,23 @@ Name = "copiar"
 		<methods>PROCEDURE Click
 * Copia la informacion al ClipBoard
 With Thisform
-					
+
 	* Datos de la primera pestaña
 	With .Pags.Page1
-		
+
 		cPrioridad = ''
 		* Almacenar la prioridad
 		Do Case
 			Case .Prioridad.Value == 1
 				cPrioridad = 'Baja'
-			
+
 			Case .Prioridad.Value == 2
 				cPrioridad = 'Normal'
-			
+
 			Case .Prioridad.Value == 3
 				cPrioridad = 'Urgente'
 		EndCase
-		
+
 		m.DatosOrden = ;
 				'ORDEN DE SERVICIO'+Chr(13)+;
 				'===================='+Chr(13)+Chr(13)+;
@@ -2539,7 +2539,7 @@ With Thisform
 				'----------------------------'+Chr(13)+;
 				Allt(.InfoCont.LeeContacto.Nombre.Value)+' ('+Proper(Allt(.InfoCont.Empresa.Value))+')'+Chr(13)+;
 				Allt(.InfoCont.Telefono.Value)+Chr(13)+;
-				Allt(.InfoCont.Mail.Value)+Chr(13)+Chr(13)+;				
+				Allt(.InfoCont.Mail.Value)+Chr(13)+Chr(13)+;
 				'Problema a Resolver:'+Chr(13)+;
 				'------------------------------'+Chr(13)+;
 				Allt(.Problema.Value)+Chr(13)+Chr(13)+;
@@ -2552,30 +2552,30 @@ With Thisform
 					'------------------------------'+Chr(13)+;
 					Allt(.Causas.Value)+Chr(13))+;
 				Chr(13)
-				
+
 	EndWith
-	
-	* Datos de la segunda pestaña	
+
+	* Datos de la segunda pestaña
 	With .Pags.Page2
-		
+
 		cCalif = ''
 		* Almacenar la calificacion
 		Do Case
 			Case .Calif.Value == 1
 				cCalif = 'Pesimo'
-				
+
 			Case .Calif.Value == 2
 				cCalif = 'Malo'
-			
+
 			Case .Calif.Value == 3
 				cCalif = 'Regular'
-			
+
 			Case .Calif.Value == 4
 				cCalif = 'Bueno'
-			
+
 			Case .Calif.Value == 5
 				cCalif = 'Excelente'
-				
+
 		EndCase
 		If .f.
 			m.DatosOrden = m.DatosOrden+'Creada: '+MexDate2(.FechaCreacion.Value)+' '+Allt(.HoraCreacion.Value)+Chr(13)+;
@@ -2593,16 +2593,16 @@ With Thisform
 					'Horas Estimadas: '+Allt(Str(.HEstimadas.Value,6,2))+Chr(13)+;
 					'Importe Estimado: '+Allt(Str(.IngEstim.Value,8,2))+Chr(13)
 		Endif
-		
-		m.DatosOrden = m.DatosOrden + ;		
+
+		m.DatosOrden = m.DatosOrden + ;
 				'SERVICIOS REALIZADOS'+Chr(13)+;
 				'==========================='+Chr(13)+;
 				ThisForm.Pags.Page2.Historial.Value
-								
+
 	EndWith
-	
-	_ClipText = m.DatosOrden	
-	
+
+	_ClipText = m.DatosOrden
+
 EndWith
 
 ENDPROC

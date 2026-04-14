@@ -1,8 +1,8 @@
 # COPRA vs Sai Rolotech — Detailed 10-Source Gap Matrix (Initial)
 
-**Version:** v2  
-**Status:** Internal planning artifact  
-**Purpose:** Convert the current COPRA benchmark audit into an execution-ready engineering roadmap.  
+**Version:** v2
+**Status:** Internal planning artifact
+**Purpose:** Convert the current COPRA benchmark audit into an execution-ready engineering roadmap.
 **Scope note:** This is an evidence-based planning matrix, not a customer-facing parity claim. Update it after every major feature merge, regression pass, and acceptance review.
 
 ## Matrix columns
@@ -38,28 +38,28 @@
 ## Recommended implementation sequence
 
 ### P0-A — Smart roll automation MVP
-**Goal:** Auto-draft + finalize loop + auditable constraints  
-**Buckets:** 4, 7  
+**Goal:** Auto-draft + finalize loop + auditable constraints
+**Buckets:** 4, 7
 **Done when:** Roll drafting, constraint checks, visual review, and finalized outputs all exist with regression tests.
 
 ### P0-B — Flower technology depth
-**Goal:** Forming curves, down-hill logic, 3D wire model pipeline  
-**Bucket:** 3  
+**Goal:** Forming curves, down-hill logic, 3D wire model pipeline
+**Bucket:** 3
 **Done when:** Benchmark profiles generate traceable flower artifacts beyond simple staged angle progression.
 
 ### P0-C — DTM-like deformation outputs
-**Goal:** Deformation, elongation, diameter-aware defect pre-optimization  
-**Buckets:** 6, 7  
+**Goal:** Deformation, elongation, diameter-aware defect pre-optimization
+**Buckets:** 6, 7
 **Done when:** Precheck panel/report exposes these metrics with tested benchmark outputs.
 
 ### P0-D — Simulation split architecture
-**Goal:** Separate `Engineering Checks` from `Advanced Solver`  
-**Buckets:** 6, 7  
+**Goal:** Separate `Engineering Checks` from `Advanced Solver`
+**Buckets:** 6, 7
 **Done when:** Claims are clearly scoped and solver-backed outputs are separated from heuristic checks.
 
 ### P1 — Tube / shaped tube / cage forming + tooling lifecycle
-**Goal:** Extend beyond sections into tube strategies and enterprise tooling workflows  
-**Buckets:** 4, 5  
+**Goal:** Extend beyond sections into tube strategies and enterprise tooling workflows
+**Buckets:** 4, 5
 **Done when:** Supported tube/shaped-tube/cage cases run with reusable tooling records and lifecycle traceability.
 
 ## Customer-safe positioning statement (current)

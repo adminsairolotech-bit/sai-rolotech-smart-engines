@@ -108,4 +108,3 @@ def detect_oss_cad_stack_status() -> Dict[str, Any]:
             "contour_driven_tooling_required": True,
         },
     })
-

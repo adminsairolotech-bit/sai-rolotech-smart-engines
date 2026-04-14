@@ -12,7 +12,7 @@ export function DesignCanvas({ stageRef }: DesignCanvasProps) {
   const transformerRef = useRef<any>(null);
   const selectionRectRef = useRef<any>(null);
 
-  const { 
+  const {
     shapes, selectedIds, tool, zoom, pan, canvasColor, showGrid,
     setPan, setZoom, addShape, updateShape, selectShape, clearSelection, pushHistory
   } = useDesignStore();
@@ -43,7 +43,7 @@ export function DesignCanvas({ stageRef }: DesignCanvasProps) {
       const nodes = selectedIds
         .map(id => stageRef.current?.findOne(`#${id}`))
         .filter(Boolean);
-      
+
       transformerRef.current.nodes(nodes);
       transformerRef.current.getLayer().batchDraw();
     }
@@ -108,11 +108,11 @@ export function DesignCanvas({ stageRef }: DesignCanvasProps) {
         addShape({ ...baseAttrs, type: 'pencil', points: [pos.x, pos.y] });
         break;
       case 'text':
-        addShape({ 
-          ...baseAttrs, 
-          type: 'text', 
-          text: 'Double click to edit', 
-          fontSize: 24, 
+        addShape({
+          ...baseAttrs,
+          type: 'text',
+          text: 'Double click to edit',
+          fontSize: 24,
           fontFamily: 'Inter',
           fill: '#ffffff',
           stroke: 'transparent'
@@ -139,20 +139,20 @@ export function DesignCanvas({ stageRef }: DesignCanvasProps) {
     if (!shape) return;
 
     if (tool === 'rectangle') {
-      updateShape(drawingShapeId, { 
-        width: pos.x - shape.x, 
-        height: pos.y - shape.y 
+      updateShape(drawingShapeId, {
+        width: pos.x - shape.x,
+        height: pos.y - shape.y
       });
     } else if (tool === 'circle' || tool === 'triangle') {
       const radius = Math.sqrt(Math.pow(pos.x - shape.x, 2) + Math.pow(pos.y - shape.y, 2));
       updateShape(drawingShapeId, { radius });
     } else if (tool === 'line' || tool === 'arrow') {
-      updateShape(drawingShapeId, { 
-        points: [shape.points![0], shape.points![1], pos.x, pos.y] 
+      updateShape(drawingShapeId, {
+        points: [shape.points![0], shape.points![1], pos.x, pos.y]
       });
     } else if (tool === 'pencil') {
-      updateShape(drawingShapeId, { 
-        points: [...(shape.points || []), pos.x, pos.y] 
+      updateShape(drawingShapeId, {
+        points: [...(shape.points || []), pos.x, pos.y]
       });
     }
   };
@@ -161,7 +161,7 @@ export function DesignCanvas({ stageRef }: DesignCanvasProps) {
     // Handle end of multi-selection
     if (selectionBox.visible && tool === 'select') {
       setSelectionBox(prev => ({ ...prev, visible: false }));
-      
+
       // Select shapes within the box
       const box = selectionRectRef.current?.getClientRect();
       if (box) {
@@ -185,7 +185,7 @@ export function DesignCanvas({ stageRef }: DesignCanvasProps) {
 
     if (!isDrawing) return;
     setIsDrawing(false);
-    
+
     if (drawingShapeId) {
       selectShape(drawingShapeId);
       pushHistory();
@@ -288,11 +288,11 @@ export function DesignCanvas({ stageRef }: DesignCanvasProps) {
         return <Line key={shape.id} {...commonProps} x={0} y={0} points={shape.points || []} tension={0.5} lineCap="round" lineJoin="round" />;
       case 'text':
         return (
-          <Text 
-            key={shape.id} 
-            {...commonProps} 
-            text={shape.text} 
-            fontSize={shape.fontSize} 
+          <Text
+            key={shape.id}
+            {...commonProps}
+            text={shape.text}
+            fontSize={shape.fontSize}
             fontFamily={shape.fontFamily}
             width={shape.width}
             onDblClick={(e) => {
@@ -330,8 +330,8 @@ export function DesignCanvas({ stageRef }: DesignCanvasProps) {
   };
 
   return (
-    <div 
-      ref={containerRef} 
+    <div
+      ref={containerRef}
       className="flex-1 overflow-hidden relative cursor-crosshair"
       style={{ backgroundColor: canvasColor, cursor: tool === 'select' ? 'default' : 'crosshair' }}
     >
@@ -361,9 +361,9 @@ export function DesignCanvas({ stageRef }: DesignCanvasProps) {
         </Layer>
         <Layer>
           {shapes.map(renderShape)}
-          
-          <Transformer 
-            ref={transformerRef} 
+
+          <Transformer
+            ref={transformerRef}
             boundBoxFunc={(oldBox, newBox) => {
               // limit resize
               if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {

@@ -9,7 +9,7 @@
 Function ValHora2
 LParameters dFecha,cHora
 Local nDia,nMes,nAnio,nHora,nMin,cTipo,dFechaFin
-	
+
 	* Crear variables
 	nDia = Day(dFecha)
 	nMes = Month(dFecha)
@@ -18,7 +18,7 @@ Local nDia,nMes,nAnio,nHora,nMin,cTipo,dFechaFin
 	nMin = Val(SubStr(cHora,4,2))
 	cTipo = ''
 	dFechaFin = {}
-	
+
 	* validar que la fecha y hora sean correctos
 	cTipo = Type('DateTime(nAnio,nMes,nDia,nHora,nMin)')
 
@@ -28,5 +28,5 @@ Local nDia,nMes,nAnio,nHora,nMin,cTipo,dFechaFin
 			dFechaFin = DateTime(nAnio,nMes,nDia,nHora,nMin)
 		EndIf
 	EndIf
-			
+
 Return dFechaFin

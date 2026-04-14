@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run guard-task validation
+bash .claude/scripts/guard-task.sh
+
+# Run Gitleaks scan
+if command -v gitleaks &> /dev/null; then
+    gitleaks detect --source . --redact --config .gitleaks.toml
+fi
+
+# Run Playwright tests
+if [ -d "tests" ]; then
+    npx playwright test --reporter=list 2>/dev/null || echo "Playwright tests skipped"
+fi

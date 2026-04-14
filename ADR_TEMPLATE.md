@@ -62,37 +62,37 @@ Optional additional drivers:
 **Description:**
 
 **Pros:**
-- 
+-
 
 **Cons:**
-- 
+-
 
 **Known Failure Modes / Safety Concerns:**
-- 
+-
 
 ### Option B — `<Name>`
 **Description:**
 
 **Pros:**
-- 
+-
 
 **Cons:**
-- 
+-
 
 **Known Failure Modes / Safety Concerns:**
-- 
+-
 
 ### Option C — `<Name>` (optional)
 **Description:**
 
 **Pros:**
-- 
+-
 
 **Cons:**
-- 
+-
 
 **Known Failure Modes / Safety Concerns:**
-- 
+-
 
 ---
 
@@ -160,16 +160,16 @@ Specify how correctness and safety are verified:
 ## 8) Consequences
 
 ### Positive
-- 
+-
 
 ### Negative
-- 
+-
 
 ### Risks
-- 
+-
 
 ### Mitigations
-- 
+-
 
 ### Operational Impact
 - Monitoring, alerts, fallback behavior, and incident response implications
