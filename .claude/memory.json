@@ -1,9 +1,13 @@
 {
-  "lastUpdated": "2026-04-14",
-  "sessionCount": 3,
-  "totalCommits": 10,
+  "lastUpdated": "2026-04-15",
+  "sessionCount": 5,
+  "totalCommits": 15,
   "rulesRead": true,
   "checkpointKey": "CHECKPOINT.md",
+  "superRulesCreated": true,
+  "superRulesFile": "SUPER_RULES.md",
+  "superRulesMandatory": true,
+  "implementationComplete": true,
   "skills": {
     "mnemon": {
       "used": true,
@@ -62,12 +66,40 @@
   "memoryFiles": [
     ".claude/memory.json",
     "RULES.md",
+    "SUPER_RULES.md",
     ".claude/CHECKPOINT.md",
     "CLAUDE.md"
   ],
   "mnemonInsights": 3,
-  "lastTask": "OpenClaw gateway fixed, WhatsApp configured with allowlist for +919274749494",
-  "nextTask": "Test WhatsApp self-chat after gateway restart",
+  "lastTask": "Git push blocked - exposed token in history. Reset to origin/main, recreating all files on clean-push branch",
+  "nextTask": "Verify build and API server, then push to GitHub",
+  "copra": {
+    "simulation": {
+      "location": "copra-simulation/index.html",
+      "server": "localhost:3001",
+      "measurementPoints": 80,
+      "profileTypes": ["C-Channel", "Z-Purlin", "U-Channel", "Lipped C"],
+      "materials": ["GI", "CR", "HR", "SS", "AL", "HSLA"],
+      "rollTypes": ["GUIDE", "BREAKDOWN", "FORMING", "GROOVE", "FINPASS", "SIZING"],
+      "features": ["DXF Import", "Strip Width", "Forming Force", "Motor Power", "Shaft Dia", "Roll Gap", "BOM", "Export"],
+      "standards": ["DIN 6935", "VDI 3389", "COPRA RF"],
+      "kFactors": {
+        "GI": 0.44, "CR": 0.44, "HR": 0.42, "SS": 0.50, "AL": 0.43, "HSLA": 0.45
+      }
+    }
+  },
+  "artifacts": {
+    "engineering-constants.ts": {
+      "location": "artifacts/api-server/src/lib/",
+      "status": "RECREATED",
+      "exports": ["STATION_LIMITS", "MAX_ANGLE", "K_FACTORS", "SPRINGBACK_DEG", "thicknessBand", "maxAnglePerPass", "passesPerBend", "SECTION_EXTRA"]
+    },
+    "sai-config.ts": {
+      "location": "artifacts/design-tool/src/lib/",
+      "status": "RECREATED",
+      "exports": ["STATION_LIMITS", "MAX_ANGLE", "K_FACTORS", "thicknessBand", "maxAnglePerPass", "passesPerBend", "calculateStations", "bendAllowance", "SAI_CONFIG"]
+    }
+  },
   "openclaw": {
     "installed": true,
     "version": "2026.4.11",

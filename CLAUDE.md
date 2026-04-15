@@ -2,6 +2,23 @@
 
 ## 🚨 BEFORE ANY TASK - MUST READ 🚨
 
+### 🚨 NEW: SUPER RULES (STRICTEST - MUST READ FIRST)
+
+**SUPER_RULES.md** mein duniya ki sabse strict rules hain.
+**Ye file todh skip NAHI kar sakte.**
+
+Quick Summary:
+```
+1. SUPER_RULES.md PEHLE → har task se pehle
+2. Small batches (5 steps) → commit har batch ke baad
+3. TEST = PROOF (assumption nahi)
+4. No multitask → ek kaam, pura karo, next
+5. Git push har commit ke baad
+6. API keys check pehle → blocked keys mat use karo
+```
+
+Full SUPER_RULES.md padhne ke baad, ye CLAUDE.md padho for details.
+
 ### ⚠️ CHECKPOINT VALIDATION (MANDATORY)
 
 ```
