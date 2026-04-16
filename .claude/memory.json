@@ -40,7 +40,14 @@
     },
     "openrouter": {
       "working": true,
-      "key": "sk-or-v1-*** configured"
+      "key": "sk-or-v1-c4bd8b... (light tasks - FREE)",
+      "free_models": ["google/gemini-2.5-flash", "qwen/qwen3-coder"]
+    },
+    "anthropic": {
+      "working": true,
+      "key": "sk-ant-opm-_T9xtDe5LO6b7i_CabyatBBKs3drNPjC (heavy coding)",
+      "model": "claude-opus-4.6",
+      "cost": "$5/1M tokens"
     }
   },
   "engine": {

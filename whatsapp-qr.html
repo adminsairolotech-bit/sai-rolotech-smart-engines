@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp QR Code</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            padding: 20px;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            max-width: 600px;
+        }
+        h1 { color: #25D366; margin-bottom: 30px; font-size: 2rem; }
+        .whatsapp-icon { font-size: 4rem; margin-bottom: 20px; }
+        #qr-text {
+            font-family: 'Courier New', monospace;
+            white-space: pre;
+            font-size: 7px;
+            line-height: 1.1;
+            color: #000;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 100%;
+            overflow-x: auto;
+            display: inline-block;
+        }
+        .instructions {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(37, 211, 102, 0.2);
+            border-radius: 10px;
+            border: 1px solid #25D366;
+            text-align: left;
+        }
+        .instructions h3 { color: #25D366; margin-bottom: 15px; }
+        .instructions li { margin: 10px 0; line-height: 1.6; }
+        .timer {
+            font-size: 1.5rem;
+            margin: 15px 0;
+            color: #ffc107;
+        }
+        .refresh-btn {
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        .refresh-btn:hover { background: #128C7E; transform: scale(1.05); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="whatsapp-icon">📱</div>
+        <h1>WhatsApp QR Code</h1>
+        <div class="timer" id="timer">⏱️ Waiting for QR...</div>
+        <div id="qr-text">QR code will appear here when generated.\nRun the command in terminal first.</div>
+        <br>
+        <button class="refresh-btn" onclick="location.reload()">🔄 Refresh</button>
+        <div class="instructions">
+            <h3>📋 Scan Instructions:</h3>
+            <ol>
+                <li>Open WhatsApp on your phone</li>
+                <li>Tap ⋮ → Linked Devices</li>
+                <li>Tap Link a Device</li>
+                <li>Point camera at the QR code</li>
+            </ol>
+        </div>
+    </div>
+    <script>
+        // Store QR when received via postMessage
+        window.addEventListener('message', (e) => {
+            if (e.data && e.data.type === 'qr') {
+                document.getElementById('qr-text').textContent = e.data.qr;
+                localStorage.setItem('whatsapp_qr', e.data.qr);
+            }
+        });
+        // Load cached QR
+        const cached = localStorage.getItem('whatsapp_qr');
+        if (cached) document.getElementById('qr-text').textContent = cached;
+    </script>
+</body>
+</html>
