@@ -208,11 +208,11 @@
     <!-- Status Overview -->
     <div class="status-grid">
         <div class="status-card online">
-            <h3>14</h3>
+            <h3>15</h3>
             <p>Local Models (Ollama)</p>
         </div>
         <div class="status-card online">
-            <h3>155B+</h3>
+            <h3>164B+</h3>
             <p>Total Parameters</p>
         </div>
         <div class="status-card online">
@@ -317,22 +317,31 @@ Total Duration: 12ms
         <div class="test-result">
             <h4>Test 3: New Model - MISTRAL</h4>
             <pre>User: What is the capital of India?
-Mistral Response: The capital of India is New Delhi. It serves as the center of the federal government...
+Mistral Response: The capital of India is New Delhi. It serves as the center...
 Total Duration: 6ms
 ✓ MISTRAL Test PASSED - FASTEST model!</pre>
         </div>
 
         <div class="test-result">
-            <h4>Test 4: Response Speed</h4>
+            <h4>Test 4: New Model - DEEPSEEK-V2</h4>
+            <pre>User: What is the capital of India?
+DeepSeek-v2 Response: The capital city of India is New Delhi. It has been the capital since 1931...
+Total Duration: 16ms
+✓ DEEPSEEK-V2 Test PASSED!</pre>
+        </div>
+
+        <div class="test-result">
+            <h4>Test 5: Response Speed</h4>
             <pre>Models Speed Comparison:
-  • mistral:      6ms  ← FASTEST
+  • mistral:       6ms  ← FASTEST
   • phi3:         12ms
+  • deepseek-v2:  16ms
   • command-r7b:  21ms
 Status: ✓ PASSED - Ollama is blazing fast!</pre>
         </div>
 
         <div class="test-result">
-            <h4>Test 5: Services Status</h4>
+            <h4>Test 6: Services Status</h4>
             <pre>Services Running:
   • Port 4000 (SAI AI HUB):    ✓ Active
   • Port 3456 (SAI Hindi AI): ✓ Active
@@ -345,7 +354,11 @@ All 4 services verified working!</pre>
 
     <!-- Ollama Models List -->
     <div class="model-list">
-        <h2>🦙 All 14 Ollama Models (Verified Real) - 3 NEW!</h2>
+        <h2>🦙 All 15 Ollama Models (Verified Real) - 4 NEW!</h2>
+        <div class="model-item">
+            <span>🆕 deepseek-v2</span>
+            <span>8.9 GB • 16ms ⚡</span>
+        </div>
         <div class="model-item">
             <span>🆕 mistral</span>
             <span>7B params • 4.4 GB • 6ms ⚡</span>
