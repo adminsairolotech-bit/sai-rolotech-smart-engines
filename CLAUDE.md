@@ -123,7 +123,7 @@ Full SUPER_RULES.md padhne ke baad, ye CLAUDE.md padho for details.
 - Location: `computer-use/computer_use.py`
 - Mouse, Keyboard, Windows, Files, Screenshots
 - Use: `from computer_use import ComputerUse`
-- OpenRouter: ❌ FAILING (401 error)
+- **All Tests: PASSED** ✅
 
 ---
 
@@ -140,6 +140,44 @@ git add . && git commit -m "checkpoint" && git push
 
 # TEST BEFORE CLAIM:
 npm run test 2>&1 || echo "FIX THIS FIRST"
+```
+
+---
+
+## 🖥️ COMPUTER USE - QUICK REFERENCE
+
+```python
+# IMPORT (Har baar ye karo!)
+from computer_use import ComputerUse
+
+# CREATE
+c = ComputerUse()
+
+# MOUSE
+c.click(500, 500)             # Click
+c.move_mouse(100, 100)       # Move
+c.double_click(300, 400)    # Double click
+c.scroll(10)                 # Scroll
+
+# KEYBOARD
+c.type_text("Hello!")          # Type
+c.press_key("enter")         # Press
+c.press_combination("ctrl","c") # Hotkey
+
+# WINDOWS
+c.list_windows()              # List all
+c.get_active_window()         # Current
+c.focus_window("Chrome")     # Focus
+
+# FILES
+c.create_file("test.txt", "Hi")   # Create
+c.read_file("test.txt")          # Read
+c.delete_file("test.txt")        # Delete
+
+# SYSTEM
+c.take_screenshot()          # Screenshot
+c.get_system_info()        # CPU/RAM/Disk
+c.open_application("notepad") # Open app
 ```
 
 ---
