@@ -117,6 +117,12 @@ Full SUPER_RULES.md padhne ke baad, ye CLAUDE.md padho for details.
 
 ### 🔑 API Keys:
 - Gemini: ✅ WORKING (13 keys rotating)
+- OpusMax: ✅ WORKING (Claude via api.opusmax.pro)
+
+### 🤖 Computer Use Module:
+- Location: `computer-use/computer_use.py`
+- Mouse, Keyboard, Windows, Files, Screenshots
+- Use: `from computer_use import ComputerUse`
 - OpenRouter: ❌ FAILING (401 error)
 
 ---
