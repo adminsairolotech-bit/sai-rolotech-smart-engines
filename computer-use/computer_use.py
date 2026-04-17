@@ -96,13 +96,29 @@ class ComputerUse:
         windows = pywinauto.Desktop(backend="win32").windows()
         result = []
         for w in windows:
-            if w.visible():
-                result.append(f"- {w.window_text()}")
+            try:
+                if w.is_visible():
+                    text = w.window_text()
+                    if text:
+                        result.append(f"- {text}")
+            except:
+                pass
         return "\n".join(result) if result else "No windows found"
 
     def get_active_window(self):
         """Get currently active window"""
-        return pywinauto.Desktop(backend="win32").active.window_text()
+        try:
+            return pywinauto.Desktop(backend="win32").active.window_text()
+        except:
+            # Fallback using ctypes
+            import ctypes
+            from ctypes import wintypes
+            user32 = ctypes.windll.user32
+            hwnd = user32.GetForegroundWindow()
+            length = user32.GetWindowTextLengthW(hwnd)
+            buff = ctypes.create_unicode_buffer(length + 1)
+            user32.GetWindowTextW(hwnd, buff, length + 1)
+            return buff.value if buff.value else "Unknown Window"
 
     def focus_window(self, title):
         """Focus window by title"""
