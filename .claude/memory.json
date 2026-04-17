@@ -78,8 +78,8 @@
     "CLAUDE.md"
   ],
   "mnemonInsights": 3,
-  "lastTask": "Git push blocked - exposed token in history. Reset to origin/main, recreating all files on clean-push branch",
-  "nextTask": "Verify build and API server, then push to GitHub",
+  "lastTask": "OpenClaw skills: Explored 31 categories, installed 4 via clawhub, tested CRM (2/2 passed)",
+  "nextTask": "Browse more skill categories, install additional skills",
   "copra": {
     "simulation": {
       "location": "copra-simulation/index.html",
@@ -119,6 +119,25 @@
       "dmPolicy": "allowlist",
       "allowFrom": ["+919274749494"],
       "selfChatMode": true
+    },
+    "clawhub": {
+      "localDev": "http://localhost:3000",
+      "location": "C:/pinokio/api/clawhub/",
+      "skillsCatalog": "C:/pinokio/api/awesome-openclaw-skills/",
+      "categories": 31,
+      "totalSkills": "2500+"
     }
+  },
+  "crmOfficial": {
+    "skillsInstalled": true,
+    "installedViaClawhub": ["playwright-mcp", "supabase", "e2e-testing-patterns", "api-doc-writer"],
+    "customSkills": ["playwright-testing", "git-workflow", "tdd-workflow", "api-testing", "supabase-integration", "deployment"],
+    "location": "C:/Users/Sai Rolotech/New folder/cloud-code-extension/crm-official/.claude/skills/",
+    "tests": "PASSED (2/2)"
+  },
+  "cloudCodeExtension": {
+    "openclawSkills": true,
+    "skills": ["openclw-setup", "vscode-ext-dev"],
+    "location": "C:/Users/Sai Rolotech/New folder/cloud-code-extension/.claude/skills/openclaw/"
   }
 }
