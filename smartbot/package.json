@@ -1,0 +1,1 @@
+{"name":"smartbot","type":"module","dependencies":{"@anthropic-ai/sdk":"^0.90.0","telegraf":"^4.16.3"}}
