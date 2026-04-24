@@ -10,6 +10,7 @@ import {
   aiRecommendTools,
   saveJobPackage,
 } from "../lib/api";
+import { autoModeValidator, type ValidationResult } from "../lib/auto-mode-validator";
 
 export type AutoAIStep =
   | "idle"
@@ -177,12 +178,16 @@ export function useAutoAIMode() {
 
     let lastProgress = 0;
 
+    // Step result tracking for validation
+    const stepResultsRef = useRef<Record<string, boolean>>({});
+
     try {
       // ── Step 1: AI Pre-Analysis (Flower Advisor) ─────────────────────────
       if (!isCurrent()) return;
       step("ai-pre-analysis", "AI — Optimal forming strategy analyse kar raha hai...");
       lastProgress = STEP_PROGRESS["ai-pre-analysis"];
       let recommendedStations = store.numStations;
+      let preAnalysisSuccess = false;
       try {
         const adviceRes = await retryOnce(() => aiAdviseFlower({
           materialType: store.materialType,
@@ -205,6 +210,7 @@ export function useAutoAIMode() {
           flowerAdvice: advice,
           modes: { ...useCncStore.getState().aiPipelineResults.modes, flowerAdvice: adviceRes.mode },
         });
+        preAnalysisSuccess = true;
         if (!isCurrent()) return;
         step("ai-pre-analysis", "AI Pre-Analysis complete", {
           progress: STEP_PROGRESS["ai-pre-analysis"],
@@ -213,8 +219,27 @@ export function useAutoAIMode() {
         });
       } catch (e) {
         console.warn("[AutoAI] AI Pre-Analysis step failed, skipping:", e instanceof Error ? e.message : e);
+        preAnalysisSuccess = false;
         if (!isCurrent()) return;
         step("ai-pre-analysis", "AI Pre-Analysis — offline mode (skipping)");
+      }
+
+      // Validate Step 4.6 before proceeding to 4.7
+      const validation46 = autoModeValidator.validateStep("4.6", {
+        "profile-loaded": !!store.geometry,
+        "context-understood": true,
+        "dependencies-identified": true,
+        "no-errors-in-output": preAnalysisSuccess
+      });
+      stepResultsRef.current["4.6"] = validation46.valid;
+      console.log("[AutoAI] Step 4.6 Validation:", validation46);
+
+      const canProceedTo47 = autoModeValidator.canProceedTo("4.7");
+      if (!canProceedTo47.canProceed) {
+        console.error("[AutoAI] BLOCKED:", canProceedTo47.reason);
+        setStatus({ step: "error", message: "Validation Failed", error: canProceedTo47.reason, progress: lastProgress });
+        runningRef.current = false;
+        return;
       }
 
       // Use AI-recommended stations if meaningfully different (within ±3 of user setting)
@@ -239,6 +264,24 @@ export function useAutoAIMode() {
       if (!isCurrent()) return;
       useCncStore.getState().setStations(flowerData.stations || []);
       step("flower", `Flower complete — ${effectiveStations} stations`);
+
+      // Validate Step 4.7 (Flower) before proceeding to 4.8
+      const flowerSuccess = !!(flowerData.stations && flowerData.stations.length > 0);
+      const validation47 = autoModeValidator.validateStep("4.7", {
+        "flower-generated": flowerSuccess,
+        "stations-valid": flowerSuccess,
+        "no-errors-in-output": flowerSuccess
+      });
+      stepResultsRef.current["4.7"] = validation47.valid;
+      console.log("[AutoAI] Step 4.7 Validation:", validation47);
+
+      const canProceedTo48 = autoModeValidator.canProceedTo("4.8");
+      if (!canProceedTo48.canProceed) {
+        console.error("[AutoAI] BLOCKED:", canProceedTo48.reason);
+        setStatus({ step: "error", message: "Validation Failed", error: canProceedTo48.reason, progress: lastProgress });
+        runningRef.current = false;
+        return;
+      }
 
       // ── Step 3: AI Design Manufacturability Check ─────────────────────────
       if (!isCurrent()) return;

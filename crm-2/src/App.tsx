@@ -9,7 +9,7 @@ import { ModeSelector } from "@/components/ModeSelector";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Toaster } from "@/components/Toaster";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
-import { lazy, Suspense, useEffect, type LazyExoticComponent, type ComponentType } from "react";
+import { lazy, Suspense, useEffect, useRef, type LazyExoticComponent, type ComponentType } from "react";
 import { toast } from "@/hooks/use-toast";
 import { isRouteAllowed } from "@/lib/role-routes";
 
@@ -105,10 +105,14 @@ function PublicRoute({ Component }: { Component: LazyExoticComponent<ComponentTy
 }
 
 function GlobalErrorHandlers() {
+  const toastRef = useRef<typeof toast | null>(null);
+
   useEffect(() => {
+    toastRef.current = toast;
+
     const handleError = (event: ErrorEvent) => {
       console.error("[Global] Uncaught error:", event.error);
-      toast({
+      toastRef.current?.({
         title: "Unexpected Error",
         description: "Something went wrong. Please refresh the page if things look broken.",
         variant: "destructive",
@@ -117,7 +121,7 @@ function GlobalErrorHandlers() {
 
     const handleRejection = (event: PromiseRejectionEvent) => {
       console.error("[Global] Unhandled promise rejection:", event.reason);
-      toast({
+      toastRef.current?.({
         title: "Unexpected Error",
         description: "An unhandled error occurred. Some features may not work correctly.",
         variant: "destructive",

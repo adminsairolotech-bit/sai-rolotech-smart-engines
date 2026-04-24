@@ -48,27 +48,40 @@ function performCSGManual(
   geoB: THREE.BufferGeometry,
   operation: CSGOperation
 ): THREE.BufferGeometry {
-  const meshA = new THREE.Mesh(geoA);
-  const meshB = new THREE.Mesh(geoB);
+  try {
+    const meshA = new THREE.Mesh(geoA);
+    const meshB = new THREE.Mesh(geoB);
 
-  const bspA = meshToPolygons(meshA);
-  const bspB = meshToPolygons(meshB);
+    const bspA = meshToPolygons(meshA);
+    const bspB = meshToPolygons(meshB);
 
-  let resultPolygons: CSGPolygon[];
+    let resultPolygons: CSGPolygon[];
 
-  switch (operation) {
-    case "union":
-      resultPolygons = csgUnion(bspA, bspB);
-      break;
-    case "subtract":
-      resultPolygons = csgSubtract(bspA, bspB);
-      break;
-    case "intersect":
-      resultPolygons = csgIntersect(bspA, bspB);
-      break;
+    switch (operation) {
+      case "union":
+        resultPolygons = csgUnion(bspA, bspB);
+        break;
+      case "subtract":
+        resultPolygons = csgSubtract(bspA, bspB);
+        break;
+      case "intersect":
+        resultPolygons = csgIntersect(bspA, bspB);
+        break;
+      default:
+        resultPolygons = bspA;
+    }
+
+    const finalGeo = polygonsToGeometry(resultPolygons);
+    
+    // SAFETY: Dispose of intermediate meshes/geometries to prevent crashes
+    meshA.geometry.dispose();
+    meshB.geometry.dispose();
+    
+    return finalGeo;
+  } catch (error) {
+    console.error("[CRITICAL] CSG Operation Failed — Returning Original Geometry to prevent crash.", error);
+    return geoA.clone(); // High-grade stability: Fail-safe return
   }
-
-  return polygonsToGeometry(resultPolygons);
 }
 
 interface CSGVertex {

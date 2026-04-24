@@ -1,0 +1,1 @@
+import{c as e}from"./index-DyjskZgT.js";const o=[["path",{d:"M5 12h14",key:"1ays0h"}],["path",{d:"M12 5v14",key:"s699le"}]],s=e("plus",o);const t=[["path",{d:"M16 7h6v6",key:"box55l"}],["path",{d:"m22 7-8.5 8.5-5-5L2 17",key:"1t1m79"}]],c=e("trending-up",t);export{s as P,c as T};

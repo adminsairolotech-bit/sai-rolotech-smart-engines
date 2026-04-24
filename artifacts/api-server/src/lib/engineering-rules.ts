@@ -76,6 +76,19 @@ export const MATERIAL_STATION_CORRECTION: Record<string, number> = {
   TI:   3,   // very hard — titanium
 };
 
+export const K_FACTORS: Record<string, number> = {
+  GI: 0.44,
+  CR: 0.44,
+  HR: 0.42,
+  SS: 0.50,
+  AL: 0.43,
+  MS: 0.42,
+  CU: 0.44,
+  TI: 0.50,
+  PP: 0.44,
+  HSLA: 0.45,
+};
+
 // 2d. Recommended min station count (used as range floor)
 // Base rule: 1 bend ≈ 1–1.5 stations, minimum 4 for any profile
 export function estimateStationsRuleBook(
@@ -206,34 +219,41 @@ export function selectBearingForShaft(shaftDiamMm: number): string {
 }
 
 // ─── 8. K-FACTORS (DIN 6935 neutral axis) ────────────────────────────────────
+// Rule: K = f(r/t)
+// If r/t < 0.65 -> K = 0.3
+// If r/t < 1.0  -> K = 0.35
+// If r/t < 1.5  -> K = 0.4
+// If r/t < 2.4  -> K = 0.45
+// If r/t >= 2.4 -> K = 0.5
+export function calculateKFactor(radius: number, thickness: number, material: string): number {
+  const rt = radius / Math.max(thickness, 0.1);
+  if (rt < 0.65) return 0.3;
+  if (rt < 1.0)  return 0.35;
+  if (rt < 1.5)  return 0.4;
+  if (rt < 2.4)  return 0.45;
+  return 0.5;
+}
 
-export const K_FACTORS: Record<string, number> = {
-  GI:   0.44,
-  CR:   0.44,
-  HR:   0.42,
-  SS:   0.50,
-  AL:   0.43,
-  MS:   0.42,
-  CU:   0.44,
-  TI:   0.50,
-  PP:   0.44,
-  HSLA: 0.45,
+// ─── 9. SPRINGBACK CALCULATION (Professional Grade) ──────────────────────────
+// Rule: θ_final = θ_initial * (1 + 3*(σy/E)*(r/t))
+export const MATERIAL_PROPERTIES: Record<string, { E: number; yield: number }> = {
+  GI:   { E: 210000, yield: 250 },
+  CR:   { E: 210000, yield: 280 },
+  HR:   { E: 200000, yield: 235 },
+  SS:   { E: 193000, yield: 290 },
+  AL:   { E: 70000,  yield: 95  },
+  MS:   { E: 210000, yield: 250 },
+  CU:   { E: 117000, yield: 70  },
+  TI:   { E: 116000, yield: 450 },
+  HSLA: { E: 210000, yield: 550 },
 };
 
-// ─── 9. SPRINGBACK FACTORS ────────────────────────────────────────────────────
-
-export const SPRINGBACK_FACTORS: Record<string, number> = {
-  GI:   1.03,
-  CR:   1.04,
-  HR:   1.05,
-  SS:   1.10,
-  AL:   1.06,
-  MS:   1.05,
-  CU:   1.03,
-  TI:   1.12,
-  PP:   1.02,
-  HSLA: 1.08,
-};
+export function calculateSpringback(angle: number, radius: number, thickness: number, material: string): number {
+  const props = MATERIAL_PROPERTIES[material.toUpperCase()] || MATERIAL_PROPERTIES.MS;
+  const rt = radius / Math.max(thickness, 0.1);
+  const factor = 1 + (3 * (props.yield / props.E) * rt);
+  return angle * factor;
+}
 
 // ─── 10. SUPPORTED MATERIALS LIST ────────────────────────────────────────────
 

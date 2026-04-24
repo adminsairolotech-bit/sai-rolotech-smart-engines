@@ -1,0 +1,99 @@
+/* index.css - COPRA RF Industrial Aesthetic */
+:root {
+    --bg-dark: #0a0f14;
+    --panel-bg: #12181f;
+    --accent-cyan: #00f2ff;
+    --accent-green: #00ff9d;
+    --accent-red: #ff4d4d;
+    --text-main: #e2e8f0;
+    --text-dim: #64748b;
+    --border-color: #1e293b;
+    --grid-line: rgba(255, 255, 255, 0.03);
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.copra-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr 320px;
+    grid-template-rows: 60px 1fr 200px;
+    height: 100vh;
+    gap: 2px;
+    background: var(--border-color); /* Lines between panels */
+}
+
+.panel {
+    background: var(--panel-bg);
+    padding: 15px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #0f172a;
+    padding: 0 20px;
+}
+
+.project-tree {
+    grid-row: 2 / 4;
+}
+
+.canvas-viewport {
+    background: #05070a;
+    background-image: 
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 40px 40px;
+    position: relative;
+}
+
+.data-grid {
+    grid-column: 2 / 3;
+}
+
+.properties-panel {
+    grid-row: 2 / 4;
+}
+
+/* Technical Components */
+.tree-item {
+    font-size: 12px;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.tree-item:hover { background: rgba(0, 242, 255, 0.05); color: white; }
+.tree-item.active { color: var(--accent-cyan); font-weight: bold; }
+
+.status-badge {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(0, 255, 157, 0.1);
+    color: var(--accent-green);
+    border: 1px solid var(--accent-green);
+}
+
+h3 {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}

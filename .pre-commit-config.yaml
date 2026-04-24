@@ -18,6 +18,15 @@ repos:
       - id: mixed-line-ending
         args: ['--fix=lf']
 
+  # Cursor/AI rules hardening (prevent hidden Unicode payloads)
+  - repo: local
+    hooks:
+      - id: scan-ai-rules-unicode
+        name: Scan .cursorrules/.cursor/rules for hidden Unicode
+        entry: pwsh -NoProfile -File scripts/scan_rules_unicode.ps1
+        language: system
+        files: ^(\.cursorrules|\.cursor/rules/.*\.mdc)$
+
   # Secret scanning (Gitleaks integrated via pre-commit)
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.24.2

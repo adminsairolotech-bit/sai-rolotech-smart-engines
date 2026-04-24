@@ -1,0 +1,85 @@
+[1] 975
+[2] 976
+
+> @workspace/design-tool@0.0.0 dev /home/runner/workspace/artifacts/design-tool
+> vite --config vite.config.ts --host 0.0.0.0
+
+
+> @workspace/api-server@0.0.0 dev /home/runner/workspace/artifacts/api-server
+> tsx --tsconfig tsconfig.json src/index.ts
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1;1H[0J
+  [32m[1mVITE[22m v7.3.1[39m  [2mready in [0m[1m634[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5000[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://172.31.103.194:[1m5000[22m/[39m
+[2m[32m  ➜[39m[22m[2m  press [22m[1mh + enter[22m[2m to show help[22m
+[32mINFO[0m:     Will watch for changes in these directories: ['/home/runner/workspace/artifacts/python-api']
+[32mINFO[0m:     Uvicorn running on [1mhttp://0.0.0.0:9000[0m (Press CTRL+C to quit)
+[32mINFO[0m:     Started reloader process [[36m[1m977[0m] using [36m[1mStatReload[0m
+[DWG] Converter binary: /nix/store/qlsrrnhdij42y9a8js3088dk4fz59sqk-libredwg-0.13.3/bin/dwg2dxf
+[GeminiRotator] No Gemini keys found. Add GEMINI_KEY_1 to GEMINI_KEY_6.
+[AI] No OpenAI/Gemini API keys set. Chat features unavailable.
+[AI] No Anthropic key. Claude features unavailable.
+[AI] No Gemini key. Native Gemini features unavailable.
+AI_INTEGRATIONS_OPENAI_BASE_URL or AI_INTEGRATIONS_OPENAI_API_KEY not set. Image AI features will be unavailable.
+[system-info] systeminformation not available — using fallback
+[serial] SerialPort not available — hardware routes disabled (normal on cloud/Replit)
+[License] License + Admin routes loaded OK
+[auto-update] [success] Auto-update SHURU — har 5 min mein check karega
+[Watchdog] [SUCCESS] Watchdog SHURU — auto-push + health monitor active
+[server] FRONTEND_DIST: /home/runner/workspace/artifacts/design-tool/dist/public | index.html: found
+[server] index.html cached: 5543 bytes
+[api-server] listening on http://0.0.0.0:8080 [development]
+[32mINFO[0m:     Started server process [[36m1071[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[Watchdog] [INFO] Startup auto-push check kar raha hai...
+[auto-update] [info] Up to date — Local: b94933087d = GitHub: b94933087d
+[req] GET /api/healthz
+[Watchdog] [INFO] Health: API OK
+[req] GET /api/healthz
+[Watchdog] [INFO] Health: API OK
+[auto-update] [info] Up to date — Local: 3cd610c4ff = GitHub: b94933087d
+[req] GET /api/healthz
+[Watchdog] [INFO] Health: API OK
+[req] GET /api/healthz
+[Watchdog] [INFO] Health: API OK
+[req] GET /api/healthz
+[Watchdog] [INFO] Health: API OK
+[auto-update] [info] Up to date — Local: cbecff5ad3 = GitHub: b94933087d
+[req] GET /api/healthz
+[Watchdog] [INFO] Health: API OK
+[req] GET /api/healthz
+[Watchdog] [INFO] Health: API OK
+[auto-update] [info] 1 naya commit milga! Local: cbecff5ad3 → GitHub: 76a7de83b1 — Pulling...
+[auto-update] [warn] Local uncommitted changes detected (artifacts/api-server/data/watchdog-status.json) — using hard reset to sync
+[auto-update] [success] Hard reset complete — local synced to origin/main
+[auto-update] [info] Git pull complete — ab pnpm install chala rahe hain...
+[auto-update] [success] pnpm install complete!
+[auto-update] [success] AUTO-UPDATE DONE! cbecff5ad3 → 76a7de83b1 | 7 files (4 safe, 0 antivirus-blocked)
+[auto-update] [info] Server 4 second mein restart hoga — nayi code load hogi...
+[auto-update] [success] Server restart ho raha hai — auto-update complete!

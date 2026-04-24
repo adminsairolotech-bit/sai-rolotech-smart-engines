@@ -37,9 +37,9 @@ const app = express();
 
 app.set("trust proxy", 1);
 
-// Gzip compression — JS/CSS files 60-70% chote ho jaate hain (6.7MB → 2.4MB)
+// Gzip compression — optimized level 9 for max compression
 app.use(compression({
-  level: 6,
+  level: 9,
   threshold: 1024,
   filter: (req, res) => {
     if (req.headers["x-no-compression"]) return false;
@@ -159,9 +159,10 @@ app.use("/api", (err: Error, _req: express.Request, res: express.Response, _next
 
   // SPA catch-all — must never intercept /ollama or /agents
   // Guard here ensures any misrouted API paths return 404 JSON instead of HTML
-  app.use((req, res, next) => {
+  app.use((req, res) => {
     if (req.path.startsWith("/api/") || req.path.startsWith("/ollama") || req.path.startsWith("/agents")) {
-      return res.status(404).json({ error: "API route not found", path: req.path });
+      res.status(404).json({ error: "API route not found", path: req.path });
+      return;
     }
     res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     res.setHeader("Pragma", "no-cache");
@@ -172,30 +173,59 @@ app.use("/api", (err: Error, _req: express.Request, res: express.Response, _next
     if (req.query._app || req.path !== "/" || alreadyCleaned) {
       if (indexHtml) {
         res.send(indexHtml);
+        return;
       } else {
         res.status(503).send("Frontend not available. Path: " + indexHtmlPath);
+        return;
       }
     } else {
       res.send(RECOVERY_HTML);
+      return;
     }
   });
 }
 
-app.listen(PORT, "0.0.0.0", () => {
+const servers: ReturnType<typeof app.listen>[] = [];
+
+const server = app.listen(PORT, "0.0.0.0", () => {
   console.log(`[api-server] listening on http://0.0.0.0:${PORT} [${IS_PRODUCTION ? "production" : "development"}]`);
+  servers.push(server);
+
+  if (IS_PRODUCTION && PORT !== 5000 && !process.env.ELECTRON) {
+    const fallback = app.listen(5000, "0.0.0.0", () => {
+      console.log(`[api-server] also listening on http://0.0.0.0:5000 [webview-fallback]`);
+      servers.push(fallback);
+    });
+    fallback.on("error", (err: NodeJS.ErrnoException) => {
+      if (err.code === "EADDRINUSE") {
+        console.log(`[api-server] port 5000 already in use, skipping fallback`);
+      } else {
+        console.error(`[api-server] fallback port error:`, err.message);
+      }
+    });
+  }
 });
 
-if (IS_PRODUCTION && PORT !== 5000 && !process.env.ELECTRON) {
-  const fallback = app.listen(5000, "0.0.0.0", () => {
-    console.log(`[api-server] also listening on http://0.0.0.0:5000 [webview-fallback]`);
+// Graceful shutdown
+const gracefulShutdown = (signal: string) => {
+  console.log(`\n[server] Received ${signal}, shutting down gracefully...`);
+  let timeout: NodeJS.Timeout;
+
+  const forceExit = () => {
+    console.log("[server] Force exit after timeout");
+    process.exit(0);
+  };
+
+  timeout = setTimeout(forceExit, 10000);
+
+  server.close(() => {
+    clearTimeout(timeout);
+    console.log("[server] HTTP server closed");
+    process.exit(0);
   });
-  fallback.on("error", (err: NodeJS.ErrnoException) => {
-    if (err.code === "EADDRINUSE") {
-      console.log(`[api-server] port 5000 already in use, skipping fallback`);
-    } else {
-      console.error(`[api-server] fallback port error:`, err.message);
-    }
-  });
-}
+};
+
+process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
+process.on("SIGINT", () => gracefulShutdown("SIGINT"));
 
 export default app;

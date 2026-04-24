@@ -59,7 +59,7 @@ router.get("/", async (_req: Request, res: Response) => {
     // Fetch leads
     const leadsRes = await fetch(`${SUPABASE_URL}/rest/v1/leads?select=*`, { headers });
     if (!leadsRes.ok) throw new Error("Failed to fetch leads from Supabase");
-    const leads: Array<{
+    const leads = await leadsRes.json() as Array<{
       id: number;
       name: string;
       source: string | null;
@@ -68,7 +68,7 @@ router.get("/", async (_req: Request, res: Response) => {
       budget: string | null;
       lead_score: number | null;
       created_at: string;
-    }> = await leadsRes.json();
+    }>;
 
     // Aggregate by source
     const sourceMap: Record<string, { count: number; won: number; value: number }> = {};

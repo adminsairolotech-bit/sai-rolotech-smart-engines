@@ -11,6 +11,9 @@ export interface IncrementalSolverInput {
   previousPlasticStrain: number;
   previousEffectiveAngle: number;
   contactPressureHintMPa: number;
+  // COPRA RF LEVEL INPUTS
+  stationDistanceMm?: number;
+  heightDeltaMm?: number;
 }
 
 export interface IncrementalSolverResult {
@@ -22,6 +25,7 @@ export interface IncrementalSolverResult {
   plasticStrain: number;
   tangentModulusMPa: number;
   elasticRecoveredStrain: number;
+  longitudinalStrain?: number;
 }
 
 function clamp(value: number, min: number, max: number): number {
@@ -67,7 +71,7 @@ export function solveIncrementalElastoPlasticPass(
   let residual = 1;
   let iterations = 0;
 
-  for (let iteration = 1; iteration <= 10; iteration += 1) {
+  for (let iteration = 1; iteration <= 500; iteration += 1) { // Deep-Scan High Accuracy Mode
     iterations = iteration;
     const state = stressFromStrain(materialCurve, strain);
     const stressRatio = state.stressMPa / Math.max(materialCurve.utsMPa, 1);
@@ -78,16 +82,25 @@ export function solveIncrementalElastoPlasticPass(
       clearanceRelief *
       (1 + stressRatio * 0.03);
 
-    const relaxation = state.regime === "PLASTIC" ? 0.42 : 0.58;
+    const relaxation = state.regime === "PLASTIC" ? 0.32 : 0.48; // Slower relaxation for higher stability
     const nextStrain = strain + (targetStrain - strain) * relaxation;
     residual = Math.abs(nextStrain - strain);
     strain = nextStrain;
-    if (residual < 1e-5) break;
+    if (residual < 1e-8) break; // Tight convergence for industrial sale-grade accuracy
   }
 
   const solvedState = stressFromStrain(materialCurve, strain);
   const tangent = tangentModulus(materialCurve, strain);
   const elasticRecoveredStrain = solvedState.stressMPa / Math.max(materialCurve.elasticModulusMPa, 1);
+
+  // COPRA RF LONGITUDINAL STRAIN (εL) CALCULATION
+  let longitudinalStrain = 0;
+  if (input.stationDistanceMm && input.stationDistanceMm > 0) {
+    const L_original = input.stationDistanceMm;
+    const dy = input.heightDeltaMm || 0;
+    const L_stretched = Math.sqrt(L_original ** 2 + dy ** 2);
+    longitudinalStrain = (L_stretched - L_original) / L_original;
+  }
 
   return {
     converged: residual < 5e-5,
@@ -98,5 +111,6 @@ export function solveIncrementalElastoPlasticPass(
     plasticStrain: toNumber(solvedState.plasticStrain, 6),
     tangentModulusMPa: toNumber(tangent),
     elasticRecoveredStrain: toNumber(elasticRecoveredStrain, 6),
+    longitudinalStrain: toNumber(longitudinalStrain, 6),
   };
 }

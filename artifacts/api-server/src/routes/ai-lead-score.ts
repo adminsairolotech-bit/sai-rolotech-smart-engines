@@ -146,14 +146,14 @@ router.post("/score-leads", async (req: Request, res: Response) => {
     // Fetch all leads
     const leadsRes = await fetch(`${SUPABASE_URL}/rest/v1/leads?select=*`, { headers });
     if (!leadsRes.ok) throw new Error("Failed to fetch leads");
-    const leads: RawLead[] = await leadsRes.json();
+    const leads = await leadsRes.json() as RawLead[];
 
     // Fetch activity counts per lead
     const activitiesRes = await fetch(
       `${SUPABASE_URL}/rest/v1/lead_activities?select=lead_id`, { headers }
     );
     const activities: Array<{ lead_id: number }> = activitiesRes.ok
-      ? await activitiesRes.json()
+      ? await activitiesRes.json() as Array<{ lead_id: number }>
       : [];
     const activityMap: Record<number, number> = {};
     activities.forEach(a => {
@@ -204,7 +204,7 @@ router.post("/score-leads", async (req: Request, res: Response) => {
  */
 router.get("/score-leads/:id", async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = String(req.params.id ?? "");
     const SUPABASE_URL = process.env["SUPABASE_URL"];
     const SUPABASE_SERVICE_KEY = process.env["SUPABASE_SERVICE_KEY"];
 
@@ -212,7 +212,7 @@ router.get("/score-leads/:id", async (req: Request, res: Response) => {
       return res.json({
         success: true,
         source: "mock",
-        scored: mockScoreAllLeads().find(l => l.id === parseInt(id)),
+        scored: mockScoreAllLeads().find(l => l.id === parseInt(id, 10)),
       });
     }
 
@@ -223,17 +223,19 @@ router.get("/score-leads/:id", async (req: Request, res: Response) => {
 
     // Fetch lead
     const leadRes = await fetch(`${SUPABASE_URL}/rest/v1/leads?id=eq.${id}&select=*`, { headers });
-    const leads: RawLead[] = await leadRes.json();
+    const leads = await leadRes.json() as RawLead[];
     if (leads.length === 0) return res.status(404).json({ success: false, error: "Lead not found" });
 
     // Fetch activities
     const activitiesRes = await fetch(
       `${SUPABASE_URL}/rest/v1/lead_activities?lead_id=eq.${id}`, { headers }
     );
-    const activities: Array<{ lead_id: number }> = activitiesRes.ok ? await activitiesRes.json() : [];
+    const activities: Array<{ lead_id: number }> = activitiesRes.ok
+      ? await activitiesRes.json() as Array<{ lead_id: number }>
+      : [];
 
     const scored = scoreLead(leads[0], activities.length);
-    return res.json({ success: true, source: "supabase", ...scored });
+    return res.json({ success: true, ...scored, backendSource: "supabase" });
   } catch (err) {
     console.error("[ai-score] Error:", err);
     return res.status(500).json({ success: false, error: "Scoring failed" });

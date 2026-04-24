@@ -1,6 +1,6 @@
-import React, { useRef, useMemo, useState, useCallback, useEffect } from "react";
+import React, { Suspense, useRef, useMemo, useState, useCallback, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls, Grid, GizmoHelper, GizmoViewport, Html, Line } from "@react-three/drei";
+import { OrbitControls, Grid, GizmoHelper, GizmoViewport, Html, Line, Environment, ContactShadows } from "@react-three/drei";
 import * as THREE from "three";
 import { useCncStore } from "../../store/useCncStore";
 import type { RollToolingResult, StationProfile } from "../../store/useCncStore";
@@ -143,10 +143,11 @@ function ProfiledRollMesh({
       <primitive object={geo} attach="geometry" />
       <meshStandardMaterial
         color={color}
-        roughness={0.25}
-        metalness={0.75}
-        emissive={color}
-        emissiveIntensity={emissiveIntensity}
+        roughness={0.05}
+        metalness={1.0}
+        envMapIntensity={2.5}
+        transparent={true}
+        opacity={0.65} // Professional transparency for inner-strip visibility
         side={THREE.DoubleSide}
       />
     </mesh>
@@ -507,7 +508,13 @@ function AnimatedStrip({
 
   return (
     <mesh ref={meshRef} geometry={initialGeometry}>
-      <meshStandardMaterial color={STRIP_COLOR} roughness={0.4} metalness={0.6} transparent opacity={0.8} side={THREE.DoubleSide} />
+      <meshStandardMaterial 
+        color={STRIP_COLOR} 
+        roughness={0.1} 
+        metalness={1.0} 
+        envMapIntensity={1.5}
+        side={THREE.DoubleSide} 
+      />
     </mesh>
   );
 }
@@ -803,7 +810,26 @@ export function RollFormingViewport3D() {
         <color attach="background" args={["#080812"]} />
         <fog attach="fog" args={["#080812", 3000, 15000]} />
 
-        <ambientLight intensity={0.35} />
+        <Suspense fallback={null}>
+          <Environment preset="city" />
+          <ContactShadows
+            position={[0, FLOOR_Y_MM, zCenter]}
+            opacity={0.4}
+            scale={10000}
+            blur={2.5}
+            far={500}
+          />
+        </Suspense>
+
+        <ambientLight intensity={0.5} />
+        <pointLight position={[1000, 1000, zCenter]} intensity={1.5} castShadow />
+        <spotLight
+          position={[-1000, 1500, zCenter]}
+          angle={0.3}
+          penumbra={1}
+          intensity={2}
+          castShadow
+        />
         <directionalLight
           position={[1000, 1500, 800]}
           intensity={1.2}

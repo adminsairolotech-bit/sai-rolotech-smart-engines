@@ -1,0 +1,63 @@
+name: Workspace CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: workspace-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies (frozen lockfile)
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm install --frozen-lockfile
+
+      - name: Validation gates (g-code / export)
+        run: |
+          pnpm -C scripts validate:gcode
+          pnpm -C scripts validate:golden
+          pnpm -C scripts test:deterministic-export
+
+      - name: design-tool: typecheck
+        run: pnpm -C artifacts/design-tool typecheck
+
+      - name: design-tool: test
+        run: pnpm -C artifacts/design-tool test
+
+      - name: design-tool: lint
+        run: pnpm -C artifacts/design-tool lint
+
+      - name: api-server: typecheck
+        run: pnpm -C artifacts/api-server typecheck
+
+      - name: api-server: test
+        run: pnpm -C artifacts/api-server test
+
+      - name: api-server: lint (if present)
+        run: pnpm -C artifacts/api-server run lint --if-present
+

@@ -540,6 +540,39 @@ Return ONLY valid JSON:
   ]
 }`;
 
+  // NVIDIA NIM VERIFICATION (Primary)
+  const nvidiaKey = process.env.NVIDIA_API_KEY;
+  if (nvidiaKey) {
+    try {
+      console.log("[deep-accuracy] Initiating NVIDIA NIM (Llama 3.1 405B) Verification...");
+      const res = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${nvidiaKey}` },
+        body: JSON.stringify({
+          model: "nvidia/llama-3.1-405b-instruct",
+          messages: [{ role: "user", content: prompt }],
+          max_tokens: 2048,
+          temperature: 0.1,
+          response_format: { type: "json_object" },
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json() as {
+          choices?: Array<{ message?: { content?: string } }>;
+        };
+        const text = data.choices?.[0]?.message?.content;
+        if (!text) {
+          throw new Error("NVIDIA verification response was missing message content");
+        }
+        const parsed = JSON.parse(text);
+        console.log(`[deep-accuracy] NVIDIA 405B Verified — Accuracy Score: ${parsed.overallScore}`);
+        return { verified: true, discrepancies: [], geminiAccuracyScore: parsed.overallScore, rawText: text };
+      }
+    } catch (e) {
+      console.warn("[deep-accuracy] NVIDIA Verification failed, falling back to Gemini...", e);
+    }
+  }
+
   const messages = [{ role: "user", content: prompt }];
 
   for (const entry of personalGeminiKeys) {

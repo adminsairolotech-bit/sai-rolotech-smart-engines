@@ -1,0 +1,8 @@
+{
+    "line_speed": 10.65,
+    "motor_current": 5.1,
+    "current_station": 4,
+    "emergency_stop": false,
+    "plc_sync": "OK",
+    "timestamp": "09:27:47"
+}

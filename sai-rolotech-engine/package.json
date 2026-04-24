@@ -39,7 +39,7 @@
     "url": "https://github.com/adminsairolotech-bit/sai-rolotech-engine.git"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.52.0",
+    "@anthropic-ai/sdk": "^0.80.0",
     "axios": "^1.7.9",
     "better-sqlite3": "^11.7.0",
     "cheerio": "^1.0.0",

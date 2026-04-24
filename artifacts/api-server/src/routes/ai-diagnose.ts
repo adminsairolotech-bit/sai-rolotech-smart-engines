@@ -156,7 +156,7 @@ router.post("/ai/optimize", async (req: Request, res: Response) => {
 router.get("/ai/status", (_req: Request, res: Response) => {
   const rotator = getGeminiRotatorInstance();
   const keyStatus = rotator ? rotator.getStatus() : [];
-  const activeKeys = keyStatus.filter(k => k.active).length;
+  const activeKeys = keyStatus.filter((k) => k.active).length;
   const geminiActive = activeKeys > 0;
 
   res.json({

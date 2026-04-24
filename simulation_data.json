@@ -1,0 +1,86 @@
+[
+    {
+        "station": 1,
+        "design_angle": 7.5,
+        "overbend_target": 7.65,
+        "longitudinal_strain": 0.005,
+        "status": "PASS"
+    },
+    {
+        "station": 2,
+        "design_angle": 15.0,
+        "overbend_target": 15.3,
+        "longitudinal_strain": 0.01,
+        "status": "PASS"
+    },
+    {
+        "station": 3,
+        "design_angle": 22.5,
+        "overbend_target": 22.95,
+        "longitudinal_strain": 0.015,
+        "status": "PASS"
+    },
+    {
+        "station": 4,
+        "design_angle": 30.0,
+        "overbend_target": 30.6,
+        "longitudinal_strain": 0.02,
+        "status": "PASS"
+    },
+    {
+        "station": 5,
+        "design_angle": 37.5,
+        "overbend_target": 38.25,
+        "longitudinal_strain": 0.025,
+        "status": "PASS"
+    },
+    {
+        "station": 6,
+        "design_angle": 45.0,
+        "overbend_target": 45.9,
+        "longitudinal_strain": 0.03,
+        "status": "PASS"
+    },
+    {
+        "station": 7,
+        "design_angle": 52.5,
+        "overbend_target": 53.55,
+        "longitudinal_strain": 0.035,
+        "status": "PASS"
+    },
+    {
+        "station": 8,
+        "design_angle": 60.0,
+        "overbend_target": 61.2,
+        "longitudinal_strain": 0.04,
+        "status": "PASS"
+    },
+    {
+        "station": 9,
+        "design_angle": 67.5,
+        "overbend_target": 68.85,
+        "longitudinal_strain": 0.045,
+        "status": "PASS"
+    },
+    {
+        "station": 10,
+        "design_angle": 75.0,
+        "overbend_target": 76.5,
+        "longitudinal_strain": 0.05,
+        "status": "CRITICAL"
+    },
+    {
+        "station": 11,
+        "design_angle": 82.5,
+        "overbend_target": 84.15,
+        "longitudinal_strain": 0.055,
+        "status": "CRITICAL"
+    },
+    {
+        "station": 12,
+        "design_angle": 90.0,
+        "overbend_target": 91.8,
+        "longitudinal_strain": 0.06,
+        "status": "CRITICAL"
+    }
+]

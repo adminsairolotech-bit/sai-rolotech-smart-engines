@@ -1,0 +1,31 @@
+{
+    "profile": "SIGMA-80-SS304",
+    "material": "SS304 (Yield: 310MPa, E: 193GPa)",
+    "longitudinal_strains": [
+        5.4e-05,
+        5.4e-05,
+        5.4e-05,
+        5.4e-05,
+        5.4e-05,
+        5.4e-05,
+        5.4e-05,
+        5.4e-05,
+        5.4e-05,
+        5.4e-05,
+        5.4e-05,
+        5.4e-05,
+        5.4e-05,
+        5.4e-05,
+        5.4e-05,
+        5.4e-05,
+        5.4e-05,
+        5.4e-05,
+        5.4e-05,
+        5.4e-05,
+        5.4e-05,
+        5.4e-05
+    ],
+    "max_eps_L": 5.4e-05,
+    "predicted_twist_deg_per_m": 0.0,
+    "verdict": "STABLE"
+}

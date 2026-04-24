@@ -11,3 +11,7 @@
 /scripts/validateGcode.ts @sai-rolotech/cnc-safety @sai-rolotech/platform
 /scripts/validateGoldenCorpus.ts @sai-rolotech/cnc-safety @sai-rolotech/qa
 /scripts/testDeterministicExport.ts @sai-rolotech/cnc-safety @sai-rolotech/platform
+
+# Cursor / AI policy files (security-critical)
+/.cursorrules @sai-rolotech/platform @sai-rolotech/security
+/.cursor/ @sai-rolotech/platform @sai-rolotech/security

@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/Sai Rolotech/.local/ripgrep/**)",
+      "Bash(dir \"C:\\\\Users\\\\Sai Rolotech\\\\.local\\\\ripgrep\")",
+      "Bash(gh repo *)",
+      "Bash(./venv/Scripts/python.exe run_hermes.py --query \"Hello Hermes!\")",
+      "Bash(./venv/Scripts/python.exe -c ' *)",
+      "Edit(/.claude/skills/cursor/**)"
+    ]
+  }
+}

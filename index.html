@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAI Rolotech COPRA-Master - RSB1164</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="copra_theme.css">
+</head>
+<body>
+    <div class="copra-layout">
+        <!-- Header -->
+        <header class="header">
+            <div style="font-weight: 800; font-size: 18px; color: #fff;">SAI <span style="color: var(--accent-cyan);">SMART ENGINES</span> <span style="font-size: 10px; font-weight: 400; color: var(--text-dim);">V2.3.0 SPECIALIST</span></div>
+            <div id="sync-val" class="status-badge">ENGINEERING SYNC ACTIVE</div>
+        </header>
+
+        <!-- 1. Project Tree (Left) -->
+        <aside class="panel project-tree">
+            <h3>Project Explorer</h3>
+            <div class="tree-item active">📁 Project: C-Channel_80x40</div>
+            <div class="tree-item">  ∟ 📐 Geometry (Verified)</div>
+            <div class="tree-item">  ∟ 🌸 Flower Pattern (12 Stations)</div>
+            <div class="tree-item">  ∟ ⚙️ Roll Tooling (Generating...)</div>
+            <div class="tree-item">  ∟ 📜 G-Code (Locked)</div>
+        </aside>
+
+        <!-- 2. Technical Viewport (Center) -->
+        <main class="panel canvas-viewport">
+            <h3>3D Station Viewport</h3>
+            <div class="machine-placeholder" style="width: 100%; height: 100%;"></div>
+        </main>
+
+        <!-- 3. Agentic Thought Stream & Execution (Right) -->
+        <aside class="panel properties-panel">
+            <h3>Agentic Thought Stream</h3>
+            <div id="thought-stream" style="font-family: 'JetBrains Mono', monospace; font-size: 11px; height: 250px; overflow-y: auto; background: #05070a; padding: 10px; border: 1px solid #1e293b; margin-bottom: 10px;">
+                <div style="color: #64748b;">[SYSTEM] Initializing Hermes Agentic Brain...</div>
+            </div>
+            
+            <h3>Live Execution Logs</h3>
+            <div id="execution-logs" style="font-family: 'JetBrains Mono', monospace; font-size: 10px; height: 200px; overflow-y: auto; color: var(--accent-green);">
+                <div style="opacity: 0.5;">> python master_orchestrator.py --run-audit</div>
+                <div>[SUCCESS] Station 1: Geometry Match 100%</div>
+            </div>
+        </aside>
+
+        <!-- 4. Data Grid (Bottom) -->
+        <footer class="panel data-grid">
+            <h3>Station Data Grid (0.001mm Precision)</h3>
+            <table style="width: 100%; font-size: 12px; border-collapse: collapse; text-align: left;">
+                <tr style="color: var(--text-dim); border-bottom: 1px solid var(--border-color);">
+                    <th>Station</th>
+                    <th>Bend Angle</th>
+                    <th>Springback</th>
+                    <th>Arc Length</th>
+                    <th>Tolerance</th>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border-color);">
+                    <td style="color: var(--accent-cyan);">ST-01</td>
+                    <td>7.500°</td>
+                    <td>1.02</td>
+                    <td>15.421mm</td>
+                    <td style="color: var(--accent-green);">±0.005</td>
+                </tr>
+                <tr>
+                    <td style="color: var(--accent-cyan);">ST-02</td>
+                    <td>15.000°</td>
+                    <td>1.02</td>
+                    <td>15.421mm</td>
+                    <td style="color: var(--accent-green);">±0.005</td>
+                </tr>
+            </table>
+        </footer>
+    </div>
+
+    <script src="flower_viz.module.js"></script>
+    <script>
+        async function syncWithAgents() {
+            try {
+                const response = await fetch('live_data.json');
+                const data = await response.json();
+                
+                // Update Thought Stream
+                const thoughtStream = document.getElementById('thought-stream');
+                const tEntry = document.createElement('div');
+                tEntry.style.marginBottom = '8px';
+                tEntry.innerHTML = `<span style="color: var(--accent-cyan);">[${data.timestamp}]</span> <span style="color: #fff;">${data.thought}</span>`;
+                thoughtStream.prepend(tEntry);
+                if(thoughtStream.children.length > 10) thoughtStream.lastElementChild.remove();
+
+                // Update Execution Log
+                const executionLog = document.getElementById('execution-logs');
+                const eEntry = document.createElement('div');
+                eEntry.innerHTML = `<span style="color: #64748b;">></span> ${data.action}`;
+                executionLog.prepend(eEntry);
+                if(executionLog.children.length > 8) executionLog.lastElementChild.remove();
+                
+                // Update Accuracy Badge
+                document.getElementById('sync-val').innerText = `ACCURACY: ${data.accuracy}%`;
+                document.getElementById('sync-val').style.color = data.accuracy > 97 ? 'var(--accent-green)' : 'var(--accent-red)';
+
+            } catch (e) {}
+        }
+        setInterval(syncWithAgents, 2000);
+    </script>
+</body>
+</html>

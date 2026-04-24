@@ -88,6 +88,7 @@ function SceneSetup({ progress = 0 }: { progress?: number }) {
 }
 
 function SceneDXFImport() {
+  const stripWidth = 247.3;
   return (
     <div className="flex flex-col items-center justify-center w-full h-full p-8">
       <div className="flex gap-8 w-full max-w-4xl items-center">

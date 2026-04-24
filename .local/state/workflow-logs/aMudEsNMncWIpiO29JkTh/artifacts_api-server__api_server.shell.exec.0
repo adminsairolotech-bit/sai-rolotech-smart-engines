@@ -1,0 +1,38 @@
+
+> @workspace/api-server@0.0.0 dev /home/runner/workspace/artifacts/api-server
+> tsx --tsconfig tsconfig.json src/index.ts
+
+[DWG] Converter binary: /nix/store/qlsrrnhdij42y9a8js3088dk4fz59sqk-libredwg-0.13.3/bin/dwg2dxf
+[GeminiRotator] No Gemini keys found. Add GEMINI_KEY_1 to GEMINI_KEY_6.
+[AI] No OpenAI/Gemini API keys set. Chat features unavailable.
+[AI] No Anthropic key. Claude features unavailable.
+[AI] No Gemini key. Native Gemini features unavailable.
+AI_INTEGRATIONS_OPENAI_BASE_URL or AI_INTEGRATIONS_OPENAI_API_KEY not set. Image AI features will be unavailable.
+[system-info] systeminformation not available — using fallback
+[serial] SerialPort not available — hardware routes disabled (normal on cloud/Replit)
+[License] License + Admin routes loaded OK
+[auto-update] [success] Auto-update SHURU — har 5 min mein check karega
+[Watchdog] [SUCCESS] Watchdog SHURU — auto-push + health monitor active
+[server] FRONTEND_DIST: /home/runner/workspace/artifacts/design-tool/dist/public | index.html: found
+[server] index.html cached: 5543 bytes
+[api-server] listening on http://0.0.0.0:8080 [development]
+[req] GET /
+[req] GET /
+[req] GET /assets/index-Bw2SXhXz.js
+[req] GET /assets/index-BCbtXm5l.css
+[req] GET /assets/LandingPage-BSCrq1jd.js
+[req] GET /assets/appVersion-e8Q4SKWR.js
+[req] GET /assets/cog-CtdtK5Rw.js
+[req] GET /assets/award-WB4o72aZ.js
+[req] GET /assets/factory-B2hE3tlv.js
+[req] GET /assets/globe-BUaROPCA.js
+[req] GET /assets/arrow-right-BGSuiduj.js
+[req] GET /assets/settings-2-BKehnZnu.js
+[req] GET /assets/monitor-H155lyXG.js
+[req] GET /assets/star-BsmpemS-.js
+[req] GET /assets/circle-check-DSuvDI_V.js
+[req] GET /assets/sparkles-DLHYBW0C.js
+[req] GET /assets/gauge-UiT1GQmV.js
+[req] GET /assets/shield-BNDJSYT3.js
+[req] GET /assets/cpu-PgakRZ68.js
+[req] GET /assets/layers-CasE7MUn.js

@@ -61,11 +61,33 @@ const DELTA_CONFIG: GcodeConfig = {
   toolNumber: 4,
   material: "GI",
   maxRpm: 500,
-  programNumber: 5000,
+  programNumber: 1002,
+};
+
+const SIEMENS_CONFIG: GcodeConfig = {
+  controller: "Siemens 828D",
+  spindleDirection: "M3",
+  useCSS: true,
+  useDwell: true,
+  useCoolant: true,
+  roughingRpm: 1000,
+  finishingRpm: 1500,
+  roughingSpeed: 180,
+  finishingSpeed: 210,
+  roughingFeed: 0.25,
+  finishingFeed: 0.08,
+  roughingDepth: 1.5,
+  finishingDepth: 0.2,
+  safeZ: 10.0,
+  toolNumber: 1,
+  material: "D2 Steel (HRC 60)",
+  maxRpm: 3000,
+  programNumber: 1,
 };
 
 export function getDefaultConfig(): GcodeConfig { return { ...DEFAULT_CONFIG }; }
 export function getDelta2XConfig(): GcodeConfig { return { ...DELTA_CONFIG }; }
+export function getSiemensConfig(): GcodeConfig { return { ...SIEMENS_CONFIG }; }
 
 export function generateGcode(
   stations: FlowerStation[],

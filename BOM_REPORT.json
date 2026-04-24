@@ -1,0 +1,26 @@
+{
+    "project": "C-Channel 80x40",
+    "material": "GI Steel 2.0mm",
+    "total_stations": 12,
+    "items": [
+        {
+            "id": "R-TOP-01",
+            "name": "Top Roller St-1",
+            "qty": 1,
+            "material": "EN31"
+        },
+        {
+            "id": "R-BOT-01",
+            "name": "Bottom Roller St-1",
+            "qty": 1,
+            "material": "EN31"
+        },
+        {
+            "id": "B-SHAFT-01",
+            "name": "Main Shaft Bearing",
+            "qty": 2,
+            "spec": "6205-ZZ"
+        }
+    ],
+    "generated_at": "2026-04-24 08:10:52"
+}

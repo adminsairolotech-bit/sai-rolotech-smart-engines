@@ -11,10 +11,13 @@ const LandingPage      = lazy(() => import("@/pages/LandingPage").then(m => ({ d
 const Dashboard        = lazy(() => import("@/pages/Dashboard").then(m => ({ default: m.Dashboard })));
 const LoginPage        = lazy(() => import("@/components/auth/LoginPage").then(m => ({ default: m.LoginPage })));
 const ForgotPasswordPage = lazy(() => import("@/components/auth/ForgotPasswordPage").then(m => ({ default: m.ForgotPasswordPage })));
+// FEAT-001: Hermes Login
+const HermesLogin      = lazy(() => import("@/pages/Login").then(m => ({ default: m.Login })));
 const DemoVideo        = lazy(() => import("@/pages/DemoVideo"));
 const DemoDownloadPage = lazy(() => import("@/pages/DemoDownloadPage"));
 const AdminPanel       = lazy(() => import("@/pages/AdminPanel"));
 const NotFound         = lazy(() => import("@/pages/not-found"));
+const AgenticWorkspace = lazy(() => import("@/pages/AgenticWorkspace").then(m => ({ default: m.AgenticWorkspace })));
 const PythonDashboard  = lazy(() => import("@/pages/PythonDashboard"));
 const OnboardingTutorial = lazy(() => import("@/components/OnboardingTutorial").then(m => ({ default: m.OnboardingTutorial })));
 
@@ -431,10 +434,25 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
         <Switch>
+          <Route path="/agentic">
+            <Suspense fallback={<PageSpinner />}>
+              <ErrorBoundary fallbackTitle="Agentic Workspace Error">
+                <AgenticWorkspace />
+              </ErrorBoundary>
+            </Suspense>
+          </Route>
           <Route path="/python">
             <Suspense fallback={<PageSpinner />}>
               <ErrorBoundary fallbackTitle="Python Dashboard Error">
                 <PythonDashboard />
+              </ErrorBoundary>
+            </Suspense>
+          </Route>
+          {/* FEAT-001: Hermes Login Page */}
+          <Route path="/hermes-login">
+            <Suspense fallback={<PageSpinner />}>
+              <ErrorBoundary fallbackTitle="Hermes Login Error">
+                <HermesLogin />
               </ErrorBoundary>
             </Suspense>
           </Route>

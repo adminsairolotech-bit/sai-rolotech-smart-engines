@@ -97,7 +97,7 @@ router.post("/account-deletion-request", async (req: Request, res: Response) => 
  */
 router.delete("/users/:id", deletionRateLimiter, async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = String(req.params.id ?? "");
 
     // Check admin auth from header
     const adminToken = req.headers["x-admin-password"] as string | undefined;

@@ -13,3 +13,14 @@ fi
 if [ -d "tests" ]; then
     npx playwright test --reporter=list 2>/dev/null || echo "Playwright tests skipped"
 fi
+
+# Run design-tool typecheck + tests (skip if pnpm unavailable)
+if command -v pnpm &> /dev/null; then
+    pnpm -C "artifacts/design-tool" typecheck || exit 1
+    pnpm -C "artifacts/design-tool" test || exit 1
+
+    # Validation gates (export / g-code safety)
+    pnpm -C "scripts" validate:gcode || exit 1
+    pnpm -C "scripts" validate:golden || exit 1
+    pnpm -C "scripts" test:deterministic-export || exit 1
+fi
