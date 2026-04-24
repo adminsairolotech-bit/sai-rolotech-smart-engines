@@ -1,7 +1,16 @@
 node_modules/
+.env
 .env.local
 .env.*.local
-
 *.log
 .DS_Store
 artifacts/desktop/release/win-unpacked/*.exe
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/

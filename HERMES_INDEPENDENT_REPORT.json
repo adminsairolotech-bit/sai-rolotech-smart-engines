@@ -1,0 +1,20 @@
+{
+  "agent": "Agent-DIMENSION",
+  "blueprint_scanned": "attached_assets\\Drawing1_1774780944987.dxf",
+  "entity_count": 2,
+  "lines": 2,
+  "arcs": 0,
+  "polylines": 0,
+  "bbox_min": [
+    -3.598338355190039,
+    -25.52603502608434
+  ],
+  "bbox_max": [
+    52.97020413973377,
+    2.758236221377565
+  ],
+  "width_mm": 56.569,
+  "height_mm": 28.284,
+  "parser": "ezdxf-1.4.3",
+  "status": "READY_FOR_HANDOVER"
+}
