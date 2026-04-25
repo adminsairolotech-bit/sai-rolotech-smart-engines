@@ -1,0 +1,134 @@
+version: "0.1"
+
+# AI Code Review Configuration for SAI Rolotech Smart Engines
+
+chat:
+  auto_reply: true
+  workspace_mode: true
+
+reviews:
+  profile: default
+  request_changes_workflow: true
+  high_level_summary: true
+  auto_title_placeholder: null
+  collapse_walkthrough: false
+  review_status: true
+  poem: true
+
+  collapse Walkthrough: false
+  sequence_diagrams: true
+  path_filters:
+    exclude:
+      - "**/*.md"
+      - "**/*.txt"
+      - "**/node_modules/**"
+      - "**/.venv/**"
+      - "**/__pycache__/**"
+      - "**/.pytest_cache/**"
+      - "**/.qa-runtime/**"
+
+  path_filters:
+    include: []
+
+  file_evidence_header: "📁 File"
+  file_evidence_footer: ""
+
+  tools:
+    goto:
+      open: true
+      type: browser
+
+    toolbar:
+      title: "CodeRabbit Tools"
+      tools:
+        - name: goto
+          description: "Navigate to code location"
+        - name: search
+          description: "Search in workspace"
+        - name: chat
+          description: "Chat with CodeRabbit"
+        - name: workspace
+          description: "Workspace root"
+
+    search:
+      max_results: 10
+
+    chat:
+      auto_retry: true
+      max_retries: 3
+
+  navigation:
+    tabs:
+      - title: "Files"
+        icon: "file"
+      - title: "Search"
+        icon: "search"
+      - title: "Chat"
+        icon: "message-square"
+      - title: "Settings"
+        icon: "settings"
+
+  status_bar:
+    priority_thresholds:
+      critical: 1
+      high: 2
+      medium: 3
+      low: 4
+    show_level: true
+    level_labels:
+      critical: "🔴 Critical"
+      high: "🟠 High"
+      medium: "🟡 Medium"
+      low: "🟢 Low"
+
+notification:
+  mode: silent
+  verification:
+    complete: true
+
+ui:
+  anchor:
+    show_evidence: true
+  callout:
+    collapse_walkthrough: false
+  feedback:
+    emojis: true
+  footer:
+    show_review_status: true
+  header:
+    show_line_numbers: true
+    show_tabs: true
+  layout:
+    full_screen: false
+    vertical_flow: true
+  navigation:
+    show_line_numbers: true
+    word_wrap: false
+  open:
+    in_editor: true
+  sequence:
+    show_comments: true
+
+  theme: "default"
+
+execution:
+  openai:
+    model: "gpt-4o"
+    temperature: 0.7
+    max_tokens: 8000
+
+  anthropic:
+    model: "claude-opus-4-7"
+    temperature: 0.7
+    max_tokens: 8000
+
+  retry:
+    max_attempts: 3
+    delay_seconds: 5
+
+  cache:
+    enabled: true
+    ttl_hours: 72
+
+  concurrency:
+    max_parallel: 3
