@@ -1,1 +1,12 @@
-{"name":"smartbot","type":"module","dependencies":{"@anthropic-ai/sdk":"^0.90.0","telegraf":"^4.16.3"}}
+{
+  "name": "smartbot",
+  "type": "module",
+  "scripts": {
+    "start": "node smartbot.mjs"
+  },
+  "dependencies": {
+    "openai": "^4.28.0",
+    "telegraf": "^4.16.3",
+    "dotenv": "^16.4.5"
+  }
+}
